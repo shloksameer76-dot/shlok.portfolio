@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<script>document.documentElement.setAttribute("data-theme","light")</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shlok Shetye · Product Designer</title>
+<meta name="description" content="Product designer in Bangalore, working across AI, fintech, robotics, and healthcare. Currently designing at Thine AI and Merlin AI.">
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+Great+Primer:ital@0;1&family=Space+Mono&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<!-- the concept note is set in the two faces from the Figma sheet -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica:ital@0;1&family=Hedvig+Letters+Serif&family=Caveat:wght@400&display=swap" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+Double+Pica:ital@0;1&family=Hedvig+Letters+Serif&family=Caveat:wght@400&display=swap">
+</noscript>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#fbfbfb;
+  /* the colour the footer artwork ends on, used for the overscroll canvas */
+  --edge:#e4f0f1;
+  --ink:#1a1a1a;
+  --body:#707070;
+  --muted:#9a9a9a;
+  --rule:#ececea;
+  --ph:#dcdcd8;          /* placeholder / avatar fill */
+  --pill:#ededea;
+  --pill-active:#ffffff;
+  --pill-shadow:0 1px 3px rgba(0,0,0,.07);
+  --uline:#c2c2bd;
+  --gutter:24px;
+
+  /* ── Vertical rhythm ──────────────────────────────────────────
+     One number governs the page: 47px, the gap the hero already
+     sets between the film and the copy below it. Every other gap
+     is a multiple of half that, so nothing is chosen by eye.
+
+       --sp-1  23.5px   text to text, inside one block
+       --sp-2  47px     image to text, on either side of the image
+       --sp-3  70.5px   block to block
+
+     Three values, no exceptions. If a gap needs a fourth value the
+     answer is to change the grouping, not to add the value. */
+  --sp-1:23.5px;
+  --sp-2:47px;
+  --sp-3:70.5px;
+
+  /* The fold is a full screen with the hero centred inside it, so it
+     leaves unused space under the closing paragraph. That space is not
+     a designed gap and it changes with the window height, which is why
+     the rhythm drifted. This is its exact height, so .col can cancel it
+     and the portrait can then take its gap from --sp-2 like any image.
+       surplus below the copy = (fold - nav - paddings - content) / 2
+       floor                  = the paddings alone, once the fold is full */
+  --fold-tail:max(calc(1svh + 40px), calc(50.5svh - 294.6px));
+  --col-lede:522px; /* "Hey," block, matched to the column below it */
+  --hero-w:522px;   /* hero image, laptop; widened on desktop below */
+  --col:522px;      /* below-fold content, matched to the image */
+  --f:'Switzer','Inter',system-ui,-apple-system,sans-serif;
+  --arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7'/%3E%3Cpath d='M8 7h9v9'/%3E%3C/svg%3E");
+  /* wabi glass */
+  --glass-bg:transparent;
+  --glass-border:rgba(255,255,255,.9);
+  --glass-hover:rgba(255,255,255,.62);
+  --glass-shadow:inset 0 1px 4px rgba(255,255,255,.667),
+                 inset 0 -4px 4px rgba(255,255,255,.85),
+                 inset 0 0 14px rgba(229,229,229,.55),
+                 0 11px 28px rgba(0,0,0,.047),
+                 0 23px 31px rgba(0,0,0,.035);
+}
+
+/* dark palette, measured from jasso.design */
+:root[data-theme="dark"]{
+  --bg:#535353;
+  --edge:#4e6064;
+  --ink:#e6e6e6;
+  --body:#d8d8d8;
+  --muted:#b5b5b5;
+  --rule:#6a6a6a;
+  --ph:#6b6b6b;
+  --pill:#474747;
+  --pill-active:#6e6e6e;
+  --pill-shadow:0 1px 3px rgba(0,0,0,.22);
+  --uline:#909090;
+  --glass-bg:transparent;
+  --glass-border:rgba(255,255,255,.17);
+  --glass-hover:rgba(255,255,255,.12);
+  --glass-shadow:inset 0 1px 4px rgba(255,255,255,.14),
+                 inset 0 -4px 4px rgba(255,255,255,.06),
+                 inset 0 0 14px rgba(0,0,0,.20),
+                 0 11px 28px rgba(0,0,0,.22),
+                 0 23px 31px rgba(0,0,0,.16);
+}
+
+html{overflow-x:clip;-webkit-text-size-adjust:100%;scroll-behavior:smooth;overscroll-behavior-y:none}
+/* a phone would otherwise rubber-band past the footer into empty page.
+   iOS bounces past the end of the document whatever overscroll-behavior
+   says, so the canvas is painted the footer artwork's own bottom tone:
+   pulling at the end reveals more sky, not a white band under it. */
+html{background:var(--edge)}
+
+/* the theme-change wave; sits over everything but the loader */
+.wavecv{
+  position:fixed;inset:0;z-index:9000;pointer-events:none;
+  opacity:1;transition:opacity .22s ease;
+}
+
+body{overscroll-behavior-y:none}
+body{
+  background:var(--bg);color:var(--ink);transition:background-color .25s ease,color .25s ease;
+  font-family:var(--f);font-weight:400;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  padding:0 var(--gutter) 0;
+}
+a{color:inherit}
+
+/* ── Pill nav ─────────────────────────────── */
+/* Lifted from wabi.ai's NAV button (not its hero buttons, which are a heavier
+   frosted fill): the fill is transparent, the rim is near-white, three inset
+   highlights give the bevel, and two very soft outer shadows float it off the
+   page. Hover scales DOWN to .975 over .4s. All values measured, not guessed. */
+.nav{display:flex;justify-content:center;padding:22px 0 22px}
+.nav__pill{
+  display:inline-flex;gap:4px;padding:5px;
+  border-radius:999px;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  box-shadow:var(--glass-shadow);
+}
+.nav__btn{
+  width:47px;height:47px;border-radius:999px;
+  display:grid;place-items:center;
+  background:transparent;border:0;cursor:pointer;
+  transition:transform .4s cubic-bezier(.25,1,.5,1),
+             background .4s cubic-bezier(.25,1,.5,1),
+             box-shadow .4s cubic-bezier(.25,1,.5,1);
+}
+.nav__btn.is-active{background:var(--pill-active);box-shadow:var(--pill-shadow)}
+.nav__btn:hover:not(.is-active){background:var(--glass-hover)}
+.nav__btn svg{width:18px;height:18px;display:block}
+/* the whole pill is the button surface, so it is what reacts */
+.nav__pill:hover{transform:scale(.975)}
+.nav__pill{transition:transform .4s cubic-bezier(.25,1,.5,1)}
+
+/* ── Inline brand marks ───────────────────── */
+/* The company logos sit in the sentence at the size of the text itself:
+   1em square, aligned to the cap height rather than the baseline so they
+   sit level with the words instead of hanging below them. */
+.brand{
+  display:inline-block;
+  width:1em;height:1em;
+  margin:0 .1em 0 .34em;
+  vertical-align:-.13em;
+  border-radius:.22em;
+  object-fit:contain;
+}
+
+/* ── Hero: per-character reveal (wabi) ────── */
+.ch{
+  display:inline-block;white-space:pre;
+  opacity:0;transform:translateY(.34em);
+  transition:opacity .5s cubic-bezier(.25,1,.5,1),
+             transform .5s cubic-bezier(.25,1,.5,1);
+}
+.ch.is-in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .ch{opacity:1!important;transform:none!important;transition:none!important}
+}
+
+/* ── Column ───────────────────────────────── */
+/* The fold owns a full screen and centres the hero inside it, so it
+   leaves a tail of unused space under the closing paragraph. That tail
+   is cancelled here, and the gap to the portrait is then set by --sp-2
+   on .ident like every other image gap. */
+.col{width:100%;max-width:var(--col);margin:calc(var(--fold-tail) * -1) auto 0}
+/* the opening copy shares the column width of the content below it */
+.lede-wrap{width:100%;max-width:var(--col);margin:0 auto}
+
+/* the fold owns a full screen, so nothing below it peeks in */
+.fold{
+  min-height:100vh;
+  min-height:100svh;          /* ignores mobile browser chrome */
+  display:flex;flex-direction:column;
+  padding-bottom:40px;
+}
+/* hero + copy centre in the space under the nav, biased slightly high */
+.fold__body{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding-bottom:1vh;
+}
+
+/* ── Footer scene: the crayon sky ────────── */
+/* One artwork, exported with its own alpha, so the page colour shows through
+   and it needs no white plate in either theme. */
+.scene{
+  position:relative;
+  width:calc(100% + (var(--gutter) * 2));
+  margin:clamp(-60px,-3vw,-14px) calc(var(--gutter) * -1) 0;
+  aspect-ratio:2172/560;
+  overflow:hidden;
+}
+.scene__layer{
+  position:absolute;inset:0;width:100%;height:100%;display:block;
+  object-fit:cover;object-position:bottom;
+}
+/* the crayon is pale, so dark mode gets a touch more presence, not less */
+:root[data-theme="dark"] .scene__layer{filter:saturate(1.08) brightness(1.04)}
+/* On a phone the 3:1 artwork squashes to a 125px sliver, so the page ends
+   in pale nothing. Crop the sides instead of squeezing: the sun stays
+   centred and the sky reads at the same scale it does on a laptop. */
+/* -3vw is 43px on a laptop but only 12px on a phone, so the sky used to sit
+   far lower under the footer line there. Pin the same 44px tuck on mobile. */
+@media (max-width:640px){ .scene{aspect-ratio:1180/560;margin-top:-44px} }
+@media (max-width:420px){ .scene{aspect-ratio:1040/560} }
+
+/* ── Hero image (soft feathered edge) ─────── */
+.hero{
+  position:relative;
+  width:var(--col);max-width:100%;
+  margin:0 auto var(--sp-2);
+  aspect-ratio:1240/800;
+}
+/* ── Hero: the film ──────────────────────────
+   The climb is a rendered film, so the motion is exactly as authored
+   rather than reconstructed from parts. The canvas over it keeps the
+   scene interactive: tapping the water still startles the fish. */
+/* Frame 252:7475 / 253:14605: a white frame whose inner shadow is also
+   white, so the film's edges dissolve into the page rather than ending
+   on a border. Values taken straight from the Figma node. */
+.hero{background:var(--bg)}
+.film{
+  position:absolute;inset:0;
+  padding:0;border:0;background:none;
+  display:block;cursor:pointer;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.film__v{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;display:block;
+  pointer-events:none;        /* clicks belong to the button, not the video */
+}
+.film__fish{
+  position:absolute;
+  inset:1.5% 2% 4% 1.5%;        /* the painted area inside the paper edge */
+  pointer-events:none;
+}
+.film:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+
+.film::after{
+  content:"";
+  position:absolute;inset:0;
+  pointer-events:none;z-index:3;
+  /* the vignette is the page colour, so the film dissolves into the
+     page rather than into a white card that floats on it */
+  box-shadow:inset 0 -20px 4px 0 var(--bg),
+             inset 0 4px 19.6px 15px var(--bg);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   Loader, Figma 344:6293
+
+   The frame is 1800 x 1164 and every value below is the node's own,
+   expressed against that frame so the whole thing scales as one piece:
+   142.049px of type is 7.892vw, the line sits at 50% + 31.75px and
+   14vh down, the count at 91/1800 and 927/1164.
+
+   It counts real progress rather than a timer: each image and font that
+   resolves moves the number. It stands down on load, and a hard stop
+   means a slow asset can never trap anyone behind it.
+   ══════════════════════════════════════════════════════════════ */
+.ldr{
+  position:fixed; inset:0; z-index:9999;
+  background:#f1f1f1; overflow:hidden;
+  transition:opacity .7s cubic-bezier(.22,1,.36,1), visibility 0s linear .7s;
+}
+.ldr.is-done{opacity:0; visibility:hidden; pointer-events:none}
+
+.ldr__line{
+  position:absolute; top:14vh;              /* 163 of 1164 */
+  left:50%; transform:translateX(-50%);
+  margin-left:1.764vw;                      /* the node's +31.75 of 1800 */
+  width:45.75vw;                            /* 823.498 of 1800 */
+  color:#025584;
+  font-family:'IM Fell Great Primer',Georgia,serif;
+  font-size:7.892vw; line-height:1.045; letter-spacing:-.3157vw;
+  text-align:center;
+}
+.ldr__line em{font-style:italic}
+.ldr__line span{display:block}
+
+.ldr__count{
+  position:absolute; left:5.055vw; top:79.6vh;     /* 91 of 1800, 927 of 1164 */
+  font-family:'Space Mono',ui-monospace,monospace;
+  font-size:7.892vw; line-height:1; letter-spacing:-.3157vw;
+  color:#90c5de; font-variant-numeric:tabular-nums;
+}
+
+@media (max-width:860px){
+  .ldr__line{width:88vw; margin-left:0; font-size:13.6vw; letter-spacing:-.544vw; top:17vh}
+  .ldr__count{font-size:13.6vw; letter-spacing:-.544vw; left:8vw; top:auto; bottom:7vh}
+}
+@media (prefers-reduced-motion: reduce){
+  .ldr{transition:opacity .2s linear}
+}
+
+/* ── Concept note ─────────────────────────────────────────────
+   A letter folded in three, tucked into the corner of the film.
+   Clicking it flies the letter to the centre of the screen and
+   unfolds it: bottom leaf first, then top, the creases fading as
+   they flatten. Closing reverses the order, folding before it
+   flies home. The mechanism is the one billguo.me uses for his
+   resume, rebuilt here in plain CSS.
+   ──────────────────────────────────────────────────────────── */
+/* Figma 270:2790 (the card) placed per 270:2520 (the page): a cream
+   card in Caveat with a real paperclip hung over its top right corner,
+   straddling the film's bottom right corner so it reads as a note left
+   on the picture. Measured off 270:2520, where the film is 522x336.773
+   at (615, 164.07) and the card is 101x67 at (1048, 455): the card hangs
+   12px past the right edge and 21.16px below the bottom one. Nothing in
+   the chain may clip overflow, or the overhang and clip are cut off. */
+.note-open{
+  position:absolute; z-index:4;
+  right:-12px; bottom:-21.157px;
+  width:101px; height:67px;
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:8.609px 15.066px 8.609px 11.838px;
+  border:0; border-radius:4.305px;
+  background:#faf4e4; cursor:pointer;
+  font-family:'Caveat','Switzer','Inter',system-ui,sans-serif;
+  font-weight:400; font-size:20px; line-height:21.523px;
+  letter-spacing:-.1399px; color:#1a1a1a; text-align:center;
+  box-shadow:
+    inset 0 1.076px 8.717px rgba(221,221,221,.96),
+    0 12.914px 5.85px rgba(0,0,0,.05),
+    0 24.752px 8.15px rgba(0,0,0,.04);
+  transition:transform .4s cubic-bezier(.25,1,.5,1), opacity .3s ease;
+}
+.note-open:hover{transform:scale(.975)}
+.note-open:active{transform:scale(.95)}
+/* 89px wide and never shrunk, as in Figma: the line is 88.6px in Caveat,
+   so it holds on one line even though the padded box is narrower */
+.note-open__label{display:block; flex:0 0 auto; width:89px; word-break:break-word}
+/* the clip: 67px from the card's left edge, hooked 27px above it */
+.note-open__clip{
+  position:absolute; left:67px; top:-27px;
+  width:55.589px; height:52.407px;
+  display:flex; align-items:center; justify-content:center;
+  pointer-events:none;
+}
+/* the node's own inner box: the photo is laid into a 30.728 x 46.433
+   frame, left aligned and a touch taller than it, and that frame is
+   what turns. Figma composes the transform rotate-then-flip, which is
+   the order Tailwind emits; writing it the other way round mirrors the
+   wire and lays it almost flat. */
+.note-open__clip-i{
+  position:relative; width:30.728px; height:46.433px; overflow:hidden;
+  transform:rotate(53.24deg) scaleY(-1);
+  /* Figma has the clip on white; over the film it needs a hair of
+     shadow to read. Remove this line to go back to the flat node. */
+  filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.22));
+}
+.note-open__clip-i img{
+  position:absolute; left:0; top:-.35%;
+  width:91.11%; height:100.7%; max-width:none; display:block;
+}
+
+.note{position:fixed; inset:0; z-index:1000; visibility:hidden}
+.note.is-shown{visibility:visible}
+.note__scrim{
+  position:absolute; inset:0; opacity:0; border:0; padding:0; cursor:pointer;
+  background:rgba(20,20,20,.42); backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  transition:opacity .34s ease;
+}
+.note.is-open .note__scrim{opacity:1}
+
+.note__sheet{
+  /* Figma 258:18359, built at its own size. Nothing inside is
+     re-proportioned; if the window is smaller the whole sheet is
+     scaled down as one, so the drawing is never redesigned. */
+  /* The drawing is Figma's 400x500 and every value inside it is the
+     node's own. It is enlarged as one piece by --zoom rather than
+     having its type resized, which would redraw the design. */
+  --zoom:1.6;
+  --w:calc(400px * var(--zoom));
+  --h:calc(500px * var(--zoom));
+  position:absolute; top:50%; left:50%;
+  width:var(--w); height:var(--h);
+  margin:calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
+  perspective:calc(var(--h) * 2.1); perspective-origin:50% 50%;
+  /* set by script: where the trigger is, and how small it is */
+  transform:translate3d(var(--tx,0px), var(--ty,0px), 0) scale(var(--s,.06));
+  transition:transform .62s cubic-bezier(.22,1,.36,1);
+  transform-origin:50% 50%;
+}
+/* --tx/--ty/--s are set inline by the script, which measures the trigger */
+
+.note__panel{
+  position:absolute; left:0; right:0; height:33.34%;
+  background:#f0f0f0; overflow:hidden;   /* each leaf shows only its own third */
+  transition:transform .54s cubic-bezier(.33,1,.5,1);
+}
+/* the leaves overlap by a hair, so no scrim shows through the seams
+   where a third of the sheet lands on a fractional device pixel */
+.note__panel--top{top:0;        height:33.45%; transform-origin:50% 100%; transform:rotateX(180deg); z-index:3}
+.note__panel--mid{top:33.33%;   height:33.45%; z-index:1}
+.note__panel--bot{top:66.66%;   transform-origin:50% 0;   transform:rotateX(-180deg); z-index:2}
+.note.is-open .note__panel--top,
+.note.is-open .note__panel--bot{transform:rotateX(0deg)}
+/* bottom leaf opens first, top follows; reversed on the way out */
+.note__panel--bot{transition-delay:.06s}
+.note__panel--top{transition-delay:0s}
+.note.is-open .note__panel--bot{transition-delay:.30s}
+.note.is-open .note__panel--top{transition-delay:.44s}
+
+/* the shadow a fold leaves along its crease, gone once it lies flat */
+.note__panel--top::after,.note__panel--bot::after{
+  content:""; position:absolute; left:0; right:0; height:14%;
+  pointer-events:none; opacity:.2; transition:opacity .5s ease .1s;
+}
+.note__panel--top::after{bottom:0; background:linear-gradient(to top,rgba(0,0,0,.5),transparent)}
+.note__panel--bot::after{top:0;    background:linear-gradient(to bottom,rgba(0,0,0,.5),transparent)}
+.note.is-open .note__panel--top::after,
+.note.is-open .note__panel--bot::after{opacity:0}
+
+/* each leaf shows its own third of one continuous page */
+.note__face{
+  position:absolute; left:0; right:0; height:300%;
+}
+/* A folded leaf is showing you its back, so its ink must not be there.
+   backface-visibility cannot do this: the leaf clips its contents, which
+   flattens the 3D context. The ink is simply held back until the leaf has
+   turned past 90 degrees, and withdrawn the instant it starts to fold. */
+.note__panel .note__face{opacity:0; transition:opacity .04s linear}
+/* The last leaf lands at .44 + .54 = .98s. Every third of the page takes
+   its ink together just after that, so the heading arrives with the body
+   rather than a beat behind it, and the middle third no longer shows its
+   slice of text while the note is still folded. Closing withdraws the ink
+   at once, before the fold starts, so nothing is read off a back face. */
+.note.is-open .note__panel .note__face{opacity:1; transition:opacity .26s ease 1.02s}
+.note__panel--top .note__face{top:0}
+.note__panel--mid .note__face{top:-100%}
+.note__panel--bot .note__face{top:-200%}
+
+/* every value below is the Figma node's own, in px, unscaled */
+.note__page{
+  width:400px; height:500px;
+  transform:scale(var(--zoom)); transform-origin:top left;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:8px;
+  padding:73px 67.5px;
+  color:#000; text-align:center;
+}
+.note__title{
+  width:207px;
+  font-family:'IM Fell Double Pica',Georgia,serif; font-weight:400;
+  font-size:32px; line-height:32px; letter-spacing:-2px;
+  margin:0;
+}
+.note__title em{font-style:italic}
+.note__body{
+  width:208px;
+  font-family:'Hedvig Letters Serif',Georgia,serif;
+  font-size:8px; line-height:13px; letter-spacing:-.032px;
+}
+.note__body p{margin:0}
+
+/* the cross sits in the top-right of the paper. It lives in the overlay
+   rather than inside a leaf, so it does not fold with the letter; the
+   script hands it the sheet's half-width and half-height to sit on. */
+.note__close{
+  position:absolute; z-index:5;
+  top:calc(50% - var(--sheetHalfH,282px) + 20px);
+  left:calc(50% + var(--sheetHalfW,226px) - 20px);
+  width:28px; height:28px; padding:0;
+  display:grid; place-items:center;
+  border:0; border-radius:50%; cursor:pointer;
+  background:rgba(0,0,0,.055); color:#1a1a1a;
+  opacity:0; pointer-events:none;
+  transform:translate(-50%,-50%);
+  /* closing: leaves at once, so it is never left hanging over the page */
+  transition:opacity .16s ease, background-color .22s ease;
+}
+/* opening: waits for the top leaf to finish unfolding, then appears */
+.note.is-open .note__close{
+  opacity:1; pointer-events:auto;
+  transition:opacity .26s ease .62s, background-color .22s ease;
+}
+.note__close:hover{background:rgba(0,0,0,.1)}
+.note__close svg{width:13px;height:13px;display:block}
+
+.note__sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:560px){
+  /* the card keeps its Figma proportions, set down a shade smaller */
+  /* same straddle, scaled down, but pulled in so the card and its clip
+     stay inside the viewport rather than forcing a sideways scroll */
+  .note-open{right:2px; bottom:-14px; transform:scale(.8); transform-origin:100% 100%}
+  .note-open:hover{transform:scale(.78)} .note-open:active{transform:scale(.76)}
+  /* the sheet keeps its Figma size here too and is scaled to fit */
+}
+@media (prefers-reduced-motion: reduce){
+  /* no flight and no fold: the note simply appears, already open */
+  .note__sheet{transition:opacity .2s ease; transform:none; opacity:0}
+  .note.is-open .note__sheet{opacity:1}
+  .note__panel--top,.note__panel--bot{transform:rotateX(0deg); transition:none}
+  .note__panel--top::after,.note__panel--bot::after{opacity:0}
+  .note-open,.note__close{transition:none}
+}
+
+/* ── Hero copy ────────────────────────────── */
+.lede{font-size:15px;line-height:22.5px;font-weight:500;color:var(--body);letter-spacing:-.003em}
+.lede p + p{margin-top:var(--sp-1)}
+.lede__hey{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.lede strong{font-weight:600;color:var(--ink)}
+
+/* ── Identity block ───────────────────────── */
+/* the break out of the fold is the biggest in the page, so the portrait
+   clears the closing paragraph by a double image gap rather than one */
+.ident{margin-top:calc(var(--sp-2) * 2)}
+/* the portrait sits above the name at the column width, scaled to fit
+   so it is never cropped */
+.portrait{
+  display:block;
+  width:100%;max-width:var(--col);height:auto;
+  margin:0 0 var(--sp-2);
+}
+/* The portrait holds back until you have actually scrolled to it: it sits
+   out of focus while it is still below the fold and resolves as it comes
+   into view. Nothing is hidden by the stylesheet alone — the veil is only
+   applied by script, so if the script never runs the photo is simply sharp. */
+/* holds the blur a beat after the fold is crossed, then resolves */
+.portrait{transition:filter 1.05s cubic-bezier(.22,1,.36,1) .3s, opacity .8s ease .3s}
+/* transition:none on the way in, so it starts blurred rather than
+   animating into blur; removing the class animates it back to sharp */
+.portrait.is-veiled{filter:blur(16px); opacity:.45; transition:none}
+@media (prefers-reduced-motion: reduce){
+  .portrait{transition:opacity .3s ease}
+  .portrait.is-veiled{filter:none; opacity:0}
+}
+/* only one print is ever in the flow, so the gap below it stays --sp-2 */
+.portrait--dark{display:none}
+:root[data-theme="dark"] .portrait--light{display:none}
+:root[data-theme="dark"] .portrait--dark{display:block}
+.ident__row{display:flex;align-items:baseline;justify-content:space-between;gap:20px}
+.ident__name{font-size:16px;font-weight:500;letter-spacing:-.012em}
+.ident__meta{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* theme toggle (sits where the year was) */
+.theme{
+  width:28px;height:28px;border:0;background:transparent;cursor:pointer;
+  display:grid;place-items:center;color:var(--muted);
+  border-radius:999px;transition:color .18s ease,background .18s ease;
+  flex:0 0 auto;
+}
+.theme:hover{color:var(--ink)}
+.theme svg{width:16px;height:16px;display:block}
+.theme .i-sun{display:none}
+:root[data-theme="dark"] .theme .i-sun{display:block}
+:root[data-theme="dark"] .theme .i-moon{display:none}
+
+/* ── Bio ──────────────────────────────────── */
+.bio{margin-top:var(--sp-1);font-size:16px;line-height:1.68;color:var(--body);letter-spacing:-.004em}
+.bio p + p{margin-top:var(--sp-1)}
+.bio strong{font-weight:500;color:var(--ink)}
+.bio a,.lede a{text-decoration:underline;text-underline-offset:2.5px;text-decoration-thickness:.6px;
+  text-decoration-color:var(--uline);transition:text-decoration-color .18s ease}
+.bio a:hover,.lede a:hover{text-decoration-color:var(--ink)}
+
+/* ── Lists (jasso) ────────────────────────── */
+.block{margin-top:var(--sp-3)}
+.block__label{font-size:14px;color:var(--muted);margin-bottom:var(--sp-1)}
+/* a two-part label breaks at the separator, never mid-phrase */
+.block__label .nb{white-space:nowrap}
+/* Education sits below the closing paragraphs, so its label is quieter than
+   the two above it: smaller, a little more tracking to hold at that size. */
+.block__label--sm{font-size:12px;letter-spacing:.012em;margin-bottom:14px}
+.bio--close{margin-top:var(--sp-3)}   /* closing paragraphs, after the lists */
+.row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+  padding:7px 0;font-size:15px;letter-spacing:-.006em;
+}
+a.row{text-decoration:none}
+.row__name{color:var(--ink)}
+a.row:hover .row__name{text-decoration:underline;text-underline-offset:2.5px;text-decoration-thickness:.6px}
+
+/* Selected work rows go somewhere; the experience rows above them do not.
+   A small outward arrow marks the difference, so the links read as links
+   before anyone hovers to find out. Drawn as a mask so it inherits colour. */
+a.row .row__name{display:inline-flex;align-items:center;gap:6px}
+a.row .row__name::after{
+  content:"";
+  flex:0 0 auto;
+  width:10px;height:10px;
+  background:currentColor;
+  opacity:.4;
+  -webkit-mask:var(--arrow) center/contain no-repeat;
+          mask:var(--arrow) center/contain no-repeat;
+  transition:opacity .22s cubic-bezier(.25,1,.5,1),
+             transform .22s cubic-bezier(.25,1,.5,1);
+}
+a.row:hover .row__name::after{opacity:1;transform:translate(2px,-2px)}
+@media(prefers-reduced-motion:reduce){
+  a.row .row__name::after{transition:none}
+  a.row:hover .row__name::after{transform:none}
+}
+.row__date{font-size:13px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ── Footer ───────────────────────────────── */
+.foot{margin-top:var(--sp-3);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;position:relative;z-index:2}
+
+@media(max-width:560px){
+  body{padding:0 var(--gutter) 0}
+  .nav{padding:20px 0 30px}
+  /* the scale tightens as a whole rather than gap by gap, so the
+     same three-step rhythm survives on a phone */
+  /* on a phone the fold is left to fit its own content, so there is no
+     tail to cancel and the portrait gap is simply --sp-2 */
+  :root{--sp-1:17px;--sp-2:34px;--sp-3:51px;--fold-tail:0px}
+  .fold{min-height:0;padding-bottom:0}
+  .fold__body{padding-bottom:0}
+  /* hero stays wide + near full-bleed, matching the mobile ref. The box
+     takes the film's own ratio, so the phone cut has no dead bands above
+     and below the artwork. */
+  .hero{aspect-ratio:760/490}
+  .lede{font-size:16px;line-height:1.68}
+  .bio{font-size:15.5px}
+  .row{font-size:14.5px;gap:14px}
+  .row__date{font-size:12.5px}
+}
+/* very small phones: let long names wrap instead of crowding the date */
+@media(max-width:360px){
+  .row{align-items:flex-start}
+  .row__name{overflow-wrap:anywhere}
+}
+</style>
+
+<link rel="canonical" href="https://shlokshetye.vercel.app/home">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shlok Shetye">
+<meta property="og:title" content="Shlok Shetye — Product Designer">
+<meta property="og:description" content="Product designer in Bangalore, working across AI, fintech, robotics, and healthcare. Currently designing at Thine AI and Merlin AI.">
+<meta property="og:url" content="https://shlokshetye.vercel.app/home">
+<meta property="og:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shlok Shetye, product designer. Designing for a future, still taking shape.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Shlok Shetye — Product Designer">
+<meta name="twitter:description" content="Product designer in Bangalore, working across AI, fintech, robotics, and healthcare. Currently designing at Thine AI and Merlin AI.">
+<meta name="twitter:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">Shlok Shetye, product designer</h1>
+<div class="ldr" id="ldr" role="status" aria-live="polite" aria-label="Loading">
+  <span class="ldr__count" id="ldrCount">0</span>
+  <div class="ldr__line" aria-hidden="true">
+    <span>&#47;&#8201;Designing</span>
+    <span>for a <em>future</em> :)</span>
+    <span><em>still</em></span>
+    <span>&#8594; <em>taking</em> shape.</span>
+  </div>
+</div>
+
+
+<div class="fold">
+
+<nav class="nav">
+  <div class="nav__pill">
+    <button class="nav__btn is-active" aria-label="Home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+    </button>
+    <a class="nav__btn" href="#work" aria-label="Selected work">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="13" rx="2.5"/><path d="M8.5 7V5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2"/></svg>
+    </a>
+  </div>
+</nav>
+
+<div class="fold__body">
+
+<!-- Hero visual: wider than the text column, centred independently -->
+<div class="hero">
+  <button class="film" id="heroScene" type="button"
+          aria-label="A boy and his dog climbing, the world changing around them. Tap the water to startle the fish.">
+    <video class="film__v" id="heroFilm" muted loop playsinline autoplay
+           preload="metadata" poster="system/hero/film/poster.webp"
+           width="1240" height="800" disablepictureinpicture>
+      <!-- the phone never fetches the wide cut: media is read before the
+           request, unlike a script that swaps src after loading starts -->
+      <source src="system/hero/film/hero-760.mp4" media="(max-width:560px)" type="video/mp4">
+      <source id="heroFilmSrc" src="system/hero/film/hero-1240.mp4" type="video/mp4">
+    </video>
+    <canvas class="film__fish" id="heroFish" aria-hidden="true"></canvas>
+  </button>
+  <!-- sits outside the film button: a button cannot contain a button -->
+  <button class="note-open" id="noteOpen" type="button" aria-haspopup="dialog" aria-expanded="false">
+    <span class="note-open__label">On the film</span>
+    <span class="note-open__clip" aria-hidden="true">
+      <span class="note-open__clip-i">
+        <img src="system/hero/paperclip.webp" alt="" width="180" height="301" loading="lazy" decoding="async">
+      </span>
+    </span>
+  </button>
+</div>
+
+<!-- The concept note, folded in three until it is asked for -->
+<template id="noteCopy">
+  <div class="note__page">
+    <h2 class="note__title">A <em>Little Further</em>, <em>Every</em> Time.</h2>
+    <div class="note__body">
+      <p>A project image can show what I’ve made. A typeface can set a mood. I wanted this film to share something more personal: the journey that shaped how I see and design.</p>
+      <p>Studying and working across Australia, the UK, Italy and India meant beginning again, finding my footing in unfamiliar places and carrying what I learned into the next.</p>
+      <p>In the film, a boy and his dog keep climbing as the landscape changes around them. The changing scenery holds those new beginnings; the steady uphill carries the effort between them. The dog brings company, the watercolour brings warmth, and the fish that respond to a touch invite a moment of curiosity.</p>
+      <p>There is no finish line in view. I’m still learning, still moving, still becoming. I wanted visitors to feel that part of my story before they see the work it helped shape.</p>
+    </div>
+  </div>
+</template>
+
+<div class="note" id="note" role="dialog" aria-modal="true" aria-labelledby="noteSrTitle" aria-hidden="true">
+  <button class="note__scrim" id="noteScrim" type="button" tabindex="-1" aria-label="Close the concept note"></button>
+  <div class="note__sheet" id="noteSheet" aria-hidden="true">
+    <div class="note__panel note__panel--mid"><div class="note__face"></div></div>
+    <div class="note__panel note__panel--bot"><div class="note__face"></div></div>
+    <div class="note__panel note__panel--top"><div class="note__face"></div></div>
+  </div>
+  <!-- the panels are three views of one page, so the readable copy lives here -->
+  <div class="note__sr" id="noteSr"><h2 id="noteSrTitle">A Little Further, Every Time.</h2></div>
+  <button class="note__close" id="noteClose" type="button" aria-label="Close the concept note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+</div>
+
+<!-- Hero copy at the column width -->
+<div class="lede-wrap">
+  <div class="lede">
+    <p class="lede__hey">
+      <span data-chars>Hey,</span>
+      <button class="theme" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </p>
+    <p>I'm <strong>Shlok</strong>, a product designer in <strong>Bangalore</strong>, working where technology, design, and business meet.</p>
+
+    <p>Nearly two years in <strong>AI</strong>, fintech, robotics, and healthcare.</p>
+  </div>
+</div>
+
+</div><!-- /.fold__body -->
+
+</div><!-- /.fold -->
+
+<!-- Everything below the fold -->
+<main class="col">
+
+  <!-- Identity (jasso) -->
+  <div class="ident">
+    <!-- two prints of the same photograph. The paper has a deckled edge,
+         so the colour outside it is baked into the file and cannot be
+         restyled; dark mode gets its own print whose surround is #535353. -->
+    <img class="portrait portrait--light" src="system/hero/portrait.webp" alt="Shlok Shetye"
+         width="555" height="423" loading="lazy" decoding="async">
+    <img class="portrait portrait--dark" src="system/hero/portrait-dark.webp" alt="Shlok Shetye"
+         width="555" height="423" loading="lazy" decoding="async">
+    <div class="ident__row">
+      <span class="ident__name">Shlok Shetye</span>
+      <span class="ident__meta">2026</span>
+    </div>
+  </div>
+
+  <!-- Bio (jasso) -->
+  <div class="bio">
+    <p>I've worked with early-stage teams and emerging technology to turn complex ideas into clear, usable products.</p>
+
+    <p>Right now I'm designing at <strong>Thine AI</strong><img class="brand" src="system/inline/thine-logo.svg" alt="" aria-hidden="true">, a personal superintelligence that acts like a founder for your life, and at <strong>Merlin AI</strong><img class="brand" src="system/inline/merlin-logo.svg" alt="" aria-hidden="true">, an AI super-app that brings your favourite models into one workspace. The work spans agents, multi-model experiences, and AI-powered browsing.</p>
+
+  </div>
+
+  <!-- Experience -->
+  <section class="block">
+    <div class="block__label">Experience</div>
+    <div class="row"><span class="row__name">Thine AI</span><span class="row__date">Jul 2026 – Present</span></div>
+    <div class="row"><span class="row__name">Merlin AI</span><span class="row__date">Jul 2026 – Present</span></div>
+    <div class="row"><span class="row__name">Studio Carbon</span><span class="row__date">Jan 2025 – Apr 2026</span></div>
+    <div class="row"><span class="row__name">Lemon Yellow Global Studio</span><span class="row__date">Apr 2025 – Jan 2026</span></div>
+    <div class="row"><span class="row__name">Sandeep Paul Studio</span><span class="row__date">Feb 2023 – Apr 2023</span></div>
+    <div class="row"><span class="row__name">Ahmedabad Design Week</span><span class="row__date">Feb 2022 – May 2022</span></div>
+  </section>
+
+  <!-- Selected work -->
+  <section class="block" id="work">
+    <div class="block__label">Selected work</div>
+    <a class="row" href="/thine"><span class="row__name">Thine PMF</span><span class="row__date">2026</span></a>
+    <a class="row" href="/beta"><span class="row__name">Thine Beta</span><span class="row__date">2026</span></a>
+    <a class="row" href="/merlin"><span class="row__name">Merlin AI</span><span class="row__date">2026</span></a>
+    <a class="row" href="/peer"><span class="row__name">Peer Robotics</span><span class="row__date">2025</span></a>
+    <a class="row" href="/dbs"><span class="row__name">DBS Bank</span><span class="row__date">2025</span></a>
+    <a class="row" href="/swivl"><span class="row__name">Swivl Tech</span><span class="row__date">2025</span></a>
+    <a class="row" href="/hyperlab"><span class="row__name">Hyperlab</span><span class="row__date">2025</span></a>
+    <a class="row" href="/fynd"><span class="row__name">Fynd</span><span class="row__date">2024</span></a>
+  </section>
+
+  <div class="bio bio--close">
+    <p>AI is a big part of how I work. I use it to prototype quickly, ship early, and iterate on what I learn. Vibe coding lets me move past static designs and build something I can actually test, which makes it easier to question what a product could be.</p>
+
+    <p>Earlier work meant designing for very different users, problems, and technical constraints. Studying across Australia, Italy, and the UK shaped how I think about people, products, and technology in different contexts.</p>
+
+    <p>What excites me most is designing for what comes next: products that question how people might use technology.</p>
+
+  </div>
+
+  <!-- Education: the Global Design Programme, read by where each year was spent -->
+  <section class="block" id="education">
+    <div class="block__label block__label--sm">Studied across the world</div>
+    <div class="row"><span class="row__name">Unitedworld Institute of Design</span><span class="row__date">India</span></div>
+    <div class="row"><span class="row__name">Swinburne University of Technology</span><span class="row__date">Australia</span></div>
+    <div class="row"><span class="row__name">NABA Milano</span><span class="row__date">Italy</span></div>
+    <div class="row"><span class="row__name">Nottingham Trent University</span><span class="row__date">UK</span></div>
+  </section>
+
+  <div class="bio bio--close">
+    <p>You can find me on <a href="https://www.linkedin.com/in/shlok-shetye-a8b24920a/" target="_blank" rel="noopener">LinkedIn</a> and <a href="https://www.behance.net/Shl0kShetye" target="_blank" rel="noopener">Behance</a>, or reach me by <a href="mailto:shlokshetye@gmail.com">email</a>.</p>
+  </div>
+
+  <div class="foot">Bangalore, India · <span id="clock"></span></div>
+
+
+</main>
+
+<!-- hills first, flowers bloom up out of them -->
+<div class="scene" id="scene" aria-hidden="true">
+  <img class="scene__layer" src="system/footer/sky-v2.webp" alt=""
+       loading="lazy" decoding="async" width="2172" height="560">
+</div>
+
+<div class="fade-bottom"></div>
+
+<script>
+/* ── Concept note ─────────────────────────────────────────────
+   Three leaves, each showing its own third of one page, so the
+   copy is written once and cloned. Opening measures where the
+   trigger sits and hands the sheet that offset, which is what
+   makes it look like the letter came out of the button. */
+;(function(){
+  var tpl   = document.getElementById('noteCopy');
+  var note  = document.getElementById('note');
+  var sheet = document.getElementById('noteSheet');
+  var open  = document.getElementById('noteOpen');
+  if(!tpl || !note || !sheet || !open) return;
+
+  [].forEach.call(sheet.querySelectorAll('.note__face'), function(face){
+    face.appendChild(tpl.content.cloneNode(true));
+  });
+  document.getElementById('noteSr')
+          .appendChild(tpl.content.cloneNode(true).querySelector('.note__body'));
+
+  var lastFocus = null, shown = false;
+
+  /* offsetWidth is the laid-out size, so it is not affected by the
+     scale currently on the sheet and can be measured at any time */
+  /* the sheet is drawn at its Figma size and scaled as one piece, so a
+     small window shrinks the whole note rather than reflowing it */
+  function fit(){
+    return Math.min(1, (innerWidth - 28) / sheet.offsetWidth,
+                       (innerHeight - 28) / sheet.offsetHeight);
+  }
+  function sizeVars(){
+    var f = fit();
+    note.style.setProperty('--sheetHalfW', Math.round(sheet.offsetWidth  * f / 2) + 'px');
+    note.style.setProperty('--sheetHalfH', Math.round(sheet.offsetHeight * f / 2) + 'px');
+  }
+  function atTrigger(){
+    var t = open.getBoundingClientRect();
+    sheet.style.setProperty('--tx', Math.round(t.left + t.width/2  - innerWidth/2)  + 'px');
+    sheet.style.setProperty('--ty', Math.round(t.top  + t.height/2 - innerHeight/2) + 'px');
+    sheet.style.setProperty('--s',  (t.width / Math.max(sheet.offsetWidth, 1)).toFixed(3));
+    sizeVars();
+  }
+  function atCentre(){
+    sheet.style.setProperty('--tx','0px');
+    sheet.style.setProperty('--ty','0px');
+    sheet.style.setProperty('--s', fit().toFixed(4));
+  }
+
+  function show(){
+    if(shown) return; shown = true;
+    lastFocus = document.activeElement;
+    note.classList.add('is-shown');
+    note.setAttribute('aria-hidden','false');
+    open.setAttribute('aria-expanded','true');
+    document.body.style.overflow = 'hidden';
+    atTrigger();
+    sheet.getBoundingClientRect();                   /* commit the start state */
+    /* a backgrounded tab never runs rAF, which would leave the letter
+       stuck at the button, so a timer backs it up. Running twice is
+       harmless: the second call finds the state already set. */
+    function go(){
+      if(!shown || note.classList.contains('is-open')) return;
+      note.classList.add('is-open');
+      atCentre();
+      document.getElementById('noteClose').focus({preventScroll:true});
+    }
+    requestAnimationFrame(go);
+    setTimeout(go, 60);
+  }
+
+  function hide(){
+    if(!shown) return; shown = false;
+    atTrigger();                                      /* fly back to the button */
+    note.classList.remove('is-open');
+    open.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+    setTimeout(function(){
+      if(shown) return;
+      note.classList.remove('is-shown');
+      note.setAttribute('aria-hidden','true');
+      if(lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
+    }, 760);
+  }
+
+  open.addEventListener('click', function(e){ e.stopPropagation(); show(); });
+  document.getElementById('noteScrim').addEventListener('click', hide);
+  document.getElementById('noteClose').addEventListener('click', hide);
+  addEventListener('keydown', function(e){ if(e.key === 'Escape' && shown) hide(); });
+  /* keep the cross on the paper's corner when the window changes size */
+  addEventListener('resize', function(){ if(!shown) return; atCentre(); sizeVars(); });
+})();
+
+/* ── Portrait: blurred until it is properly in view ───────────
+   Armed only once, and only for a photo that is still below the
+   fold, so a reader who lands further down never sees it blur in
+   late. Every failure path leaves the photo sharp. */
+;(function(){
+  var imgs = [].slice.call(document.querySelectorAll('.portrait'));
+  if(!imgs.length) return;
+
+  var armed = [];
+  /* Arm only on a fresh landing at the top of the page. Someone who
+     arrives deep-linked or restores a scroll position partway down is
+     already looking at the photo, so it stays sharp for them. */
+  if((window.pageYOffset || document.documentElement.scrollTop || 0) < 48){
+    imgs.forEach(function(img){ img.classList.add('is-veiled'); armed.push(img); });
+  }
+  if(!armed.length) return;
+
+  function reveal(img){ img.classList.remove('is-veiled'); }
+
+  /* Crossing the fold is the whole trigger. How much of the photo happens
+     to be peeking over the bottom edge is deliberately not consulted: on
+     a tall window it is already half visible while you are still reading
+     the opening lines, and clearing it then defeats the effect. */
+  function sweep(){
+    var h = innerHeight || 800;
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    if(y <= h * 0.6) return;
+    armed.forEach(reveal);
+    removeEventListener('scroll', sweep);
+    removeEventListener('resize', sweep);
+  }
+  addEventListener('scroll', sweep, {passive:true});
+  addEventListener('resize', sweep);
+  sweep();                      /* in case the page restored mid-scroll */
+})();
+
+/* Theme: the portfolio always opens light, on every device and every
+   visit, whatever the operating system is set to. A phone in dark mode
+   no longer darkens the site on arrival. The toggle still works for the
+   visit; it is deliberately not remembered, so the next load is light
+   again. Any choice stored by an earlier version is cleared. */
+;(function(){
+  var root=document.documentElement;
+  root.setAttribute('data-theme','light');
+  try{ localStorage.removeItem('shlok-theme') }catch(e){}
+
+  var btn=document.getElementById('themeToggle');
+  if(!btn) return;
+
+  function flip(){
+    root.setAttribute('data-theme',
+      root.getAttribute('data-theme')==='dark' ? 'light' : 'dark');
+  }
+
+  /* ── Distortion wave ────────────────────────────────────────
+     Same architecture as the reference (libraries.dev/waves): the
+     screen you are leaving is rasterised to a texture, and a WebGL2
+     fragment shader bends that texture along a travelling front
+     while the screen you are going to sits live underneath.
+
+     The shader is written here, not taken from the library: that
+     package is React and SwiftUI only, and its source is licensed.
+
+     Matched to a captured frame of the reference running in its
+     Vertical mode, which is its default:
+       · a straight front sweeping upward, bowed toward the point
+         that was touched, so it reads as leaving from the button
+       · red and blue displaced in opposite directions, which is
+         what splits the glyphs warm on one side, cool on the other
+       · a blown-out white leading edge with colour bleeding off it
+       · displacement concentrated at the front, not spread thin  */
+  /* Built from measurements of a 60fps recording of the reference,
+     not from its description.
+
+     GEOMETRY, from fitting a circle to the bright band across three
+     frames: the centre RISES while the radius grows only slightly
+       t=1.08  centre y 739  R 196
+       t=1.13  centre y 699  R 215
+       t=1.18  centre y 687  R 230
+     so it is a dome travelling upward, holding its curvature, not a
+     circle expanding from a fixed point. R is about 0.41 of the
+     surface width at the start.
+
+     COLOUR, sampled radially at four angles, u = (d-R)/R:
+       outer  u +0.22   gold #997e5e at the crest, turning pink
+                        #c38b93 toward the sides
+       peak   u  0.00   pale #a696b6, the brightest ring
+       inner  u -0.22   grey-blue at the crest, teal #3c627c at the
+                        sides, falling away to dark purple
+
+     TEXT: the channels separate along the direction of travel, hard,
+     and AHEAD of the arc. At 1.03s the type above the crest is
+     already three offset copies, red high and blue low, each barely
+     blurred. The split is the effect; the blur is secondary.
+
+     Their surface is near-black, so those are glow values. This page
+     is #fbfbfb, so the arc dims what is under it first.  */
+  /* Timing measured off the 60fps recording, by tracking how many
+     colourful pixels are on screen and where the bright ring is:
+
+       0.70 - 1.30s  BUILD   colour seeps up from the bottom and the
+                             type starts splitting, but the arc does
+                             not travel yet. 600ms of anticipation.
+       1.30 - 1.65s  SWEEP   the crest climbs 44% of the height in
+                             350ms, and it ACCELERATES then slows:
+                             -26, -73, -115, -107, -89, -73, -59 px
+                             per frame. Ease-in-out, not ease-out.
+       1.65 - 1.90s  HOLD    peak colour, roughly flat.
+       1.90 - 2.60s  DECAY   colour falls away over 700ms.          */
+  var BUILD   = 600,
+      SWEEP   = 350,
+      HOLD    = 250,
+      DECAY   = 700,
+      DUR     = 1900,
+      R0F     = 0.64,  /* dome radius as a fraction of the width */
+      R0H     = 0.34,  /* ...or of the height, whichever is larger, so a
+                          portrait phone gets a dome and not a bubble */
+      RGROW   = 0.18,  /* how much it grows on the way up */
+      RIMW    = 0.055, /* thickness of the glass edge */
+      REFR    = 150,   /* how hard that edge bends the page */
+      DISP    = 0.38,  /* channel separation: the iridescence */
+      SPEC    = 0.34,  /* the highlight running along it */
+      BLUR    = 7,     /* softening just inside the sheet */
+      SPARK   = 0.30,  /* motes caught in the glass */
+      PAGEBLUR= 3;     /* the live page behind it */
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var cv, gl, prog, tex, uni = {}, snap = null, busy = false, running = false, safety, hardReset;
+
+  var VS =
+    '#version 300 es\n' +
+    'void main(){\n' +
+    '  vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);\n' +
+    '  gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);\n' +
+    '}';
+
+  var FS =
+    '#version 300 es\n' +
+    'precision highp float;\n' +
+    'uniform sampler2D uTex;\n' +
+    'uniform vec2  uRes;\n' +
+    'uniform float uTrav, uTail, uGlobal, uR0, uRGrow, uRimW, uRefr,\n' +
+    '              uDisp, uSpec, uBlur, uSpark;\n' +
+    'out vec4 o;\n' +
+    'float hash(vec2 p){\n' +
+    '  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);\n' +
+    '}\n' +
+    'void main(){\n' +
+    '  vec2  frag = gl_FragCoord.xy;\n' +
+    '  vec2  tuv  = frag / uRes;\n' +
+    '  vec2  px   = vec2(1.0) / uRes;\n' +
+    '  float ease = uTrav;\n' +
+    /* the rising dome, unchanged: it is the shape that was measured */
+    '  float R   = uR0 * (1.0 + uRGrow * ease);\n' +
+    '  float cy  = mix(-0.16 * uRes.y - R, uRes.y + 0.42 * R, ease);\n' +
+    '  float dx  = frag.x - uRes.x * 0.5;\n' +
+    '  float k   = R * R - dx * dx;\n' +
+    '  float top = cy + (k > 0.0 ? sqrt(k) : 0.0);\n' +
+    '  float u   = (frag.y - top) / R;\n' +
+    '  vec2  dir = normalize(vec2(-dx * 0.22 / R, 1.0));\n' +
+    /* GLASS, not paint. The sheet is clear: you see it only through
+       what it does to the page behind it. A lens profile at its edge
+       bends the page, the channels bend by different amounts so the
+       edge goes iridescent, and a thin highlight runs along it.
+       Nothing is tinted, nothing is washed, and the page ahead of the
+       edge is left exactly as it is. */
+    '  float rim  = exp(-(u * u) / (uRimW * uRimW));\n' +
+    '  float lens = -2.0 * u / (uRimW * uRimW) * rim;\n' +
+    '  vec2  off  = dir * lens * uRefr * 0.0006;\n' +
+    '  float sp   = uDisp * rim;\n' +
+    /* a little softening just inside the glass, to give it thickness */
+    '  float soft = smoothstep(0.05, -0.12, u) * uBlur * uTail;\n' +
+    '  vec3  acc  = vec3(0.0);\n' +
+    '  for(int i = 0; i < 8; i++){\n' +
+    '    float fi = float(i);\n' +
+    '    float rr = soft * sqrt((fi + 0.5) / 8.0);\n' +
+    '    float aa = 2.39996323 * fi;\n' +
+    '    vec2  j  = vec2(cos(aa), sin(aa)) * rr * px;\n' +
+    '    acc.r += texture(uTex, tuv + off * (1.0 + sp) + j).r;\n' +
+    '    acc.g += texture(uTex, tuv + off               + j).g;\n' +
+    '    acc.b += texture(uTex, tuv + off * (1.0 - sp) + j).b;\n' +
+    '  }\n' +
+    '  vec3 col = acc / 8.0;\n' +
+    /* the highlight on the edge of the sheet, and a cooler one behind it */
+    '  col += vec3(1.00, 0.99, 0.97) * pow(rim, 7.0) * uSpec * uTail;\n' +
+    '  col += vec3(0.72, 0.84, 1.00) * pow(rim, 2.2) * 0.055 * uTail;\n' +
+    /* the faintest lift inside the glass, the way a pane catches light */
+    '  float insd = smoothstep(0.03, -0.10, u);\n' +
+    '  col += vec3(0.012, 0.014, 0.022) * insd * uTail;\n' +
+    /* a few motes caught in it */
+    '  float CELL = 46.0;\n' +
+    '  vec2  cid  = floor(frag / CELL);\n' +
+    '  vec2  cpt  = (cid + vec2(hash(cid + 1.3), hash(cid + 7.7))) * CELL;\n' +
+    '  float dots = smoothstep(2.0, 0.0, length(frag - cpt))\n' +
+    '             * step(0.80, hash(cid));\n' +
+    '  col += vec3(1.0) * dots * smoothstep(0.02, -0.55, u) * uTail * uSpark;\n' +
+    /* the new page is behind the sheet; the old one ahead of it is
+       untouched, so the page never greys out */
+    '  float a = smoothstep(-0.012, 0.030, u);\n' +
+    '  a = max(a, rim * 0.85 * uTail);\n' +
+    '  o = vec4(col, a);\n' +
+    '}';
+
+  function sh(t, src){
+    var s = gl.createShader(t);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(s);
+    return s;
+  }
+
+  function initGL(){
+    cv = document.createElement('canvas');
+    cv.className = 'wavecv';
+    root.appendChild(cv);
+    gl = cv.getContext('webgl2', { alpha:true, premultipliedAlpha:false, antialias:false });
+    if(!gl) return false;
+    prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+    gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog);
+    if(!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw gl.getProgramInfoLog(prog);
+    gl.useProgram(prog);
+    ['uTex','uRes','uTrav','uTail','uGlobal','uR0','uRGrow','uRimW',
+     'uRefr','uDisp','uSpec','uBlur','uSpark']
+      .forEach(function(n){ uni[n] = gl.getUniformLocation(prog, n); });
+    tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    cv.addEventListener('webglcontextlost', function(ev){
+      ev.preventDefault();
+      gl = null; running = false;
+      cv.style.opacity = '0'; cv.style.display = 'none';
+      document.body.style.transform = '';
+      document.body.style.filter = '';
+    }, false);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    return true;
+  }
+
+  /* Rasterise what is on screen now, ahead of the click and on idle,
+     so the cost never lands inside the animation. */
+  function snapshot(){
+    if(innerWidth < 560) return;   /* phones use the flat plate */
+    if(busy || running || !window.html2canvas) return;
+    busy = true;
+    window.html2canvas(document.body, {
+      backgroundColor: getComputedStyle(root).getPropertyValue('--bg').trim() || '#fbfbfb',
+      scale: Math.min(devicePixelRatio || 1, 1.5),
+      x: window.scrollX, y: window.scrollY,
+      width: innerWidth, height: innerHeight,
+      scrollX: 0, scrollY: 0,
+      windowWidth: innerWidth, windowHeight: innerHeight,
+      logging: false, useCORS: true, removeContainer: true,
+      ignoreElements: function(el){
+        return el.classList && (el.classList.contains('wavecv') ||
+               el.classList.contains('ldr') || el.classList.contains('note'));
+      }
+    }).then(function(c){ snap = c; busy = false; })
+      .catch(function(){ busy = false; setTimeout(function(){ if(!snap) snapshot(); }, 1500); });
+  }
+
+  function flatTex(){
+    var c = document.createElement('canvas');
+    c.width = 4; c.height = 4;
+    var x = c.getContext('2d');
+    x.fillStyle = getComputedStyle(root).getPropertyValue('--bg').trim() || '#fbfbfb';
+    x.fillRect(0, 0, 4, 4);
+    return c;
+  }
+
+  function idle(fn){
+    (window.requestIdleCallback || function(f){ setTimeout(f, 400); })(fn, { timeout: 2500 });
+  }
+
+  function run(ox, oy){
+    var w = innerWidth, h = innerHeight,
+        dpr = Math.min(devicePixelRatio || 1, 1.5);
+
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    cv.style.width = w + 'px'; cv.style.height = h + 'px';
+    cv.style.opacity = '1';
+    gl.viewport(0, 0, cv.width, cv.height);
+
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, snap);
+
+    flip();                       /* the new theme is live underneath */
+
+    gl.useProgram(prog);
+    gl.uniform1i(uni.uTex, 0);
+    gl.uniform2f(uni.uRes, cv.width, cv.height);
+    gl.uniform1f(uni.uR0,    Math.max(R0F * cv.width, R0H * cv.height));
+    gl.uniform1f(uni.uRGrow, RGROW);
+    gl.uniform1f(uni.uRimW,  RIMW);
+    gl.uniform1f(uni.uRefr,  REFR * dpr);
+    gl.uniform1f(uni.uDisp,  DISP);
+    gl.uniform1f(uni.uSpec,  narrow ? SPEC * 1.35 : SPEC);
+    var narrow = w < 560, lite = narrow;
+    gl.uniform1f(uni.uBlur,  (narrow ? BLUR * 0.55 : BLUR) * dpr);
+    gl.uniform1f(uni.uSpark, SPARK);
+
+    /* "The screen pulls toward the button first" */
+    var page = document.body, sy = window.scrollY;
+    var cx = ox - w / 2, cy = oy - h / 2;
+    if(!lite) page.style.willChange = 'transform, filter';
+    page.style.transformOrigin = ox + 'px ' + (oy + sy) + 'px';
+
+    function clear(){
+      running = false;
+      cv.style.opacity = '0';
+      page.style.transform = '';
+      page.style.filter = '';
+      page.style.willChange = '';
+      page.style.transformOrigin = '';
+      clearTimeout(safety);
+      safety = setTimeout(function(){
+        if(!running){ cv.style.display = 'none'; }
+      }, 300);
+    }
+    /* If the loop is interrupted - a backgrounded tab, a dropped frame,
+       anything - the page must still come back. */
+    clearTimeout(safety);
+    safety = setTimeout(clear, DUR + 450);
+
+    cv.style.display = '';
+    var t0 = performance.now();
+    running = true;
+
+    function smooth(e0, e1, x){
+      var t = Math.min(Math.max((x - e0) / (e1 - e0), 0), 1);
+      return t * t * (3 - 2 * t);
+    }
+
+    (function frame(now){
+      var el   = now - t0;
+      var p    = Math.min(el / DUR, 1);          /* the whole thing */
+      /* The crest barely moves during the build, then sweeps with an
+         ease-IN-out: it accelerates to a peak around the middle of
+         the sweep and slows into the top. Measured, not chosen. */
+      var trav;
+      if(el < BUILD){
+        trav = 0.10 * (el / BUILD);
+      } else if(el < BUILD + SWEEP){
+        var x = (el - BUILD) / SWEEP;
+        trav = 0.10 + 0.90 * (x * x * (3 - 2 * x));
+      } else {
+        trav = 1;
+      }
+
+      /* colour and blur: in over the build, flat over the hold,
+         out over the decay */
+      var tail = smooth(0, BUILD * 0.85, el)
+               * (1 - smooth(BUILD + SWEEP + HOLD, DUR, el));
+
+      /* the page leans as the arc leaves it, then settles */
+      var pull = Math.sin(Math.min(el / (BUILD + SWEEP), 1) * Math.PI) * 0.9;
+      if(!lite){
+        page.style.transform =
+          'translate(' + (cx * 0.028 * pull).toFixed(2) + 'px,' +
+                         (cy * 0.028 * pull).toFixed(2) + 'px) ' +
+          'scale(' + (1 - 0.016 * pull).toFixed(4) + ')';
+      }
+
+      /* The live page behind the glass is blurred too, and clears on
+         the same tail. Ahead of the front the canvas is opaque, so
+         this only shows where the arch has already gone past. */
+      if(!lite){
+        var pb = PAGEBLUR * Math.max(tail, glob);
+        page.style.filter = pb > 0.15 ? 'blur(' + pb.toFixed(2) + 'px)' : '';
+      }
+
+      /* The whole surface goes soft while the arc is out, then clears.
+         Ramps in over the first third of the travel so the page does
+         not snap out of focus. */
+      var glob = smooth(BUILD * 0.3, BUILD + SWEEP * 0.5, el) * tail;
+
+      gl.uniform1f(uni.uTrav, trav);
+      gl.uniform1f(uni.uTail, tail);
+      gl.uniform1f(uni.uGlobal, glob);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      if(p < 1){ requestAnimationFrame(frame); }
+      else {
+        running = false;
+        page.style.transform = '';
+        page.style.filter = '';
+        page.style.willChange = '';
+        page.style.transformOrigin = '';
+        clear();
+        snap = null;
+        idle(snapshot);           /* ready for the way back */
+      }
+    })(performance.now());
+  }
+
+  btn.addEventListener('click', function(){
+    if(running) return;
+    if(reduce.matches || !gl){ flip(); return; }
+    /* no raster yet? run it over a flat plate rather than not at all,
+       and queue another attempt for next time */
+    if(!snap){ snap = flatTex(); idle(snapshot); }
+    /* The arch leaves from the bottom centre of the viewport, the way
+       the reference leaves from the bottom of its card, whatever the
+       viewport is. Not from the toggle: the toggle sits high on the
+       page, and an arch starting there has nowhere to rise. */
+    try {
+      run(innerWidth / 2, innerHeight);
+    } catch(e) {
+      gl = null;
+      if(cv){ cv.style.opacity = '0'; cv.style.display = 'none'; }
+      document.body.style.transform = '';
+      document.body.style.filter = '';
+      document.body.style.willChange = '';
+      running = false;
+      return;
+    }
+    /* belt and braces: a reset owned by the click, not by the frame
+       loop, so the sheet can never be left on screen whatever happens
+       inside run() */
+    clearTimeout(hardReset);
+    hardReset = setTimeout(function(){
+      if(cv){ cv.style.opacity = '0'; cv.style.display = 'none'; }
+      document.body.style.transform = '';
+      document.body.style.filter = '';
+      document.body.style.willChange = '';
+      running = false;
+    }, DUR + 500);
+  });
+
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      try{ if(!initGL()) return; }catch(e){ return; }
+      idle(snapshot);
+    }, 500);
+  });
+  window.addEventListener('resize', function(){ snap = null; idle(snapshot); });
+  /* a snapshot taken at a different scroll offset would jump when it
+     is drawn, so it is thrown away as soon as the page moves */
+  var scrollT;
+  window.addEventListener('scroll', function(){
+    if(running) return;
+    snap = null;
+    clearTimeout(scrollT);
+    scrollT = setTimeout(function(){ if(!running) snapshot(); }, 350);
+  }, { passive: true });
+})()
+
+/* The bottom blur is for text; it lifts once the artwork is on screen */
+;(function(){
+  var scene=document.getElementById('scene');
+  if(!scene) return;
+  var inView=false, lastCheck=0;
+  function check(){
+    var r=scene.getBoundingClientRect(), vh=window.innerHeight||0;
+    if(!r.height) return;
+    var on = r.top < vh*0.96 && r.bottom > 0;
+    if(on!==inView){
+      inView=on;
+      document.documentElement[on?'setAttribute':'removeAttribute']('data-scene-visible','');
+    }
+  }
+  addEventListener('scroll',function(){
+    var n=Date.now(); if(n-lastCheck<100) return; lastCheck=n; check();
+  },{passive:true});
+  addEventListener('resize',check);
+  addEventListener('load',check);
+  check();
+})()
+
+/* ── Hero: the film is interactive ───────────────────────────────
+   The climb itself is a rendered film. This keeps the scene alive to
+   the pointer: tapping the water sends a few fish up out of it, drawn
+   on a canvas sitting over the video. */
+;(function(){
+  var scene=document.getElementById('heroScene');
+  var cv=document.getElementById('heroFish');
+  var film=document.getElementById('heroFilm');
+  if(!scene||!cv) return;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* pick the encode by viewport. <source media> is resolved once at parse
+     time and never re-checked, which handed desktop the phone file. */
+
+  /* the film only runs while it is on screen, and never on reduced motion */
+  if(film){
+    if(reduce){ try{ film.pause(); }catch(e){} }
+    else if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){ var p=film.play(); if(p&&p.catch) p.catch(function(){}); }
+          else film.pause();
+        });
+      },{threshold:0.1}).observe(scene);
+    }
+  }
+
+  /* ── fish ── */
+  var ctx=cv.getContext('2d'), fish=[], ripples=[], raf=0, dpr=1, last=0;
+  function size(){
+    var r=scene.getBoundingClientRect();
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    cv.width=Math.max(1,Math.round(r.width*dpr));
+    cv.height=Math.max(1,Math.round(r.height*dpr));
+  }
+  size(); addEventListener('resize',size);
+
+  function spawn(nx,ny){
+    var y=Math.max(ny,0.68);
+    var n=2+Math.floor(Math.random()*3);
+    for(var i=0;i<n;i++) fish.push({
+      x:nx+(Math.random()-0.5)*0.10, y:y+(Math.random()-0.5)*0.03,
+      t:0, dur:900+Math.random()*500, rise:0.10+Math.random()*0.07,
+      drift:(Math.random()-0.5)*0.05, size:6+Math.random()*5,
+      delay:i*90+Math.random()*120
+    });
+    ripples.push({x:nx,y:y,t:0,dur:900});
+    if(!raf) raf=requestAnimationFrame(tick);
+  }
+  function drawFish(f,p){
+    var w=cv.width,h=cv.height;
+    var x=(f.x+f.drift*p)*w, y=(f.y-Math.sin(Math.PI*p)*f.rise)*h, sz=f.size*dpr;
+    ctx.save(); ctx.translate(x,y); ctx.rotate(Math.cos(Math.PI*p)*0.5);
+    ctx.globalAlpha=Math.min(1,Math.sin(Math.PI*p)*2.2);
+    ctx.fillStyle='rgba(84,122,140,.92)';
+    ctx.beginPath(); ctx.ellipse(0,0,sz,sz*0.42,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-sz*0.95,0); ctx.lineTo(-sz*1.6,-sz*0.42); ctx.lineTo(-sz*1.6,sz*0.42);
+    ctx.closePath(); ctx.fill();
+    ctx.globalAlpha*=0.5; ctx.fillStyle='rgba(255,255,255,.85)';
+    ctx.beginPath(); ctx.ellipse(sz*0.25,-sz*0.1,sz*0.42,sz*0.16,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  function drawRipple(r,p){
+    var w=cv.width,h=cv.height;
+    ctx.save(); ctx.globalAlpha=(1-p)*0.5;
+    ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=1.6*dpr;
+    for(var k=0;k<2;k++){
+      var rad=(8+p*54+k*16)*dpr;
+      ctx.beginPath(); ctx.ellipse(r.x*w,r.y*h,rad,rad*0.3,0,0,Math.PI*2); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function tick(now){
+    raf=0; var dt=last?Math.min(now-last,48):16; last=now;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ripples=ripples.filter(function(r){ r.t+=dt; var p=r.t/r.dur; if(p>=1) return false; drawRipple(r,p); return true; });
+    fish=fish.filter(function(f){
+      f.t+=dt; var tt=f.t-f.delay; if(tt<0) return true;
+      var p=tt/f.dur;
+      if(p>=1){ ripples.push({x:f.x+f.drift,y:f.y,t:0,dur:700}); return false; }
+      drawFish(f,p); return true;
+    });
+    if(fish.length||ripples.length) raf=requestAnimationFrame(tick); else last=0;
+  }
+  scene.addEventListener('click',function(e){
+    var r=scene.getBoundingClientRect();
+    spawn((e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height);
+  });
+})()
+
+/* Hero: split the opening lines into characters and bring them in staggered */
+;(function(){
+  var targets=document.querySelectorAll('[data-chars]');
+  if(!targets.length) return;
+  var k=0;
+  [].forEach.call(targets,function(el){
+    var text=el.textContent;
+    el.textContent='';
+    for(var i=0;i<text.length;i++){
+      var sp=document.createElement('span');
+      sp.className='ch'; sp.textContent=text[i];
+      el.appendChild(sp);
+      (function(node,delay){
+        setTimeout(function(){ node.classList.add('is-in'); }, delay);
+      })(sp, 90 + (k++)*18);
+    }
+  });
+})()
+
+;(function(){
+  var el=document.getElementById('clock');if(!el)return
+  function tick(){
+    el.textContent=new Date().toLocaleTimeString('en-US',
+      {timeZone:'Asia/Kolkata',hour:'numeric',minute:'2-digit',hour12:true})
+  }
+  tick();setInterval(tick,1000)
+})()
+</script>
+
+
+<script>
+/* The loader reports what has actually arrived. It watches every image and
+   the fonts, eases the number towards that fraction so it never jitters,
+   and stands down on window load. A hard 6s stop means a slow asset can
+   never trap anyone behind it. */
+;(function(){
+  var ldr=document.getElementById('ldr'), out=document.getElementById('ldrCount');
+  if(!ldr||!out) return;
+  var shown=0, done=false;
+
+  function ready(){
+    var imgs=[].slice.call(document.images).filter(function(i){return !i.closest('.ldr')});
+    var total=imgs.length+1, got=imgs.filter(function(i){return i.complete}).length;
+    if(document.fonts && document.fonts.status==='loaded') got++;
+    return total ? got/total : 1;
+  }
+  function finish(){
+    if(done) return; done=true;
+    var t=setInterval(function(){
+      shown=Math.min(100, shown+4);
+      out.textContent=shown;
+      if(shown>=100){ clearInterval(t); ldr.classList.add('is-done');
+        setTimeout(function(){ ldr.style.display='none'; }, 800); }
+    }, 16);
+  }
+  var tick=setInterval(function(){
+    if(done) return;
+    var target=Math.min(97, Math.round(ready()*97));
+    if(target>shown) shown+=Math.max(1, Math.ceil((target-shown)/8));
+    out.textContent=Math.min(shown,97);
+  }, 40);
+
+  addEventListener('load', function(){ clearInterval(tick); finish(); });
+  setTimeout(function(){ clearInterval(tick); finish(); }, 6000);
+  if(document.readyState==='complete'){ clearInterval(tick); finish(); }
+})();
+</script>
+
+<!-- Rasterises the screen you are leaving, for the theme-change wave.
+     Deferred, so it never touches first paint; if it fails to load the
+     toggle simply switches without the animation. -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>

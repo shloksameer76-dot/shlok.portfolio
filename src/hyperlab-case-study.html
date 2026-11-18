@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyperlab — Physical intelligence · Shlok Shetye</title>
+<meta name="description" content="Case study on Hyperlab: a reporting framework that turns device metrics into a Physical Intelligence summary students and coaches can read.">
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500&display=swap" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500&display=swap">
+</noscript>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:clip;scroll-behavior:smooth}
+body{background:#fff;color:#1e1e1e;font-family:'Geist','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::-webkit-scrollbar{display:none}
+a{color:inherit;text-decoration:none}
+img{display:block}
+
+/* NAV */
+.nav{position:fixed;inset:0 0 auto 0;z-index:400;height:44px;display:flex;align-items:center;padding:0 24px;gap:12px;transition:background .2s,border-color .2s;border-bottom:1px solid transparent}
+.nav.solid{background:#fff;border-bottom-color:#e8e8e6}
+.nav__home{font-size:13px;color:rgba(255,255,255,.55);transition:color .15s;letter-spacing:-.3px}
+.nav.solid .nav__home{color:#999}
+.nav__sep{font-size:13px;color:rgba(255,255,255,.25);letter-spacing:-.3px}
+.nav.solid .nav__sep{color:#ccc}
+.nav__cur{font-size:13px;color:rgba(255,255,255,.9);letter-spacing:-.3px}
+.nav.solid .nav__cur{color:#1e1e1e}
+.nav__home:hover{color:#fff}
+.nav.solid .nav__home:hover{color:#1e1e1e}
+
+/* HERO */
+.hero{background:#000;position:relative;overflow:hidden;display:block}
+.hero__bg{display:block;width:100%;height:auto;position:relative}
+.hero__content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,2.71vw,39px);text-align:center;width:clamp(300px,42.65vw,615px);padding:0 16px}
+.hero__year{font-size:clamp(12px,1.39vw,20px);font-weight:500;color:#fff;letter-spacing:-1px;line-height:1.15}
+.hero__icon{height:clamp(36px,4.85vw,70px);width:auto}
+.hero__title{font-size:clamp(13px,1.39vw,20px);color:#fff;letter-spacing:-1px;line-height:1.15;font-weight:500}
+.hero__wordmark{height:clamp(50px,8.33vw,120px);width:auto}
+
+/* INFO BAR */
+.info{background:#fff;border-bottom:1px solid #ebe8e4;padding:0 clamp(24px,6.4vw,109px)}
+.info__inner{max-width:1440px;margin:0 auto;display:flex;align-items:stretch;height:103px}
+.info__col{display:flex;flex-direction:column;justify-content:center;gap:7px;padding-right:56px}
+.info__div{width:1.5px;background:#ebe8e4;flex-shrink:0;margin-right:56px}
+.info__label{font-size:13px;font-weight:500;color:rgba(30,30,30,.5);letter-spacing:-.35px}
+.info__val{font-size:15px;font-weight:500;color:#1e1e1e;letter-spacing:-.55px;line-height:1.3}
+
+/* INTRO */
+.intro{background:#fff;padding:clamp(64px,6.4vw,110px) clamp(24px,6.4vw,109px)}
+.intro__inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:clamp(110px,16vw,230px) 1fr;gap:clamp(48px,7vw,120px);align-items:start}
+@media(max-width:680px){.intro__inner{grid-template-columns:1fr;gap:32px}}
+.intro__logo{display:flex;align-items:center;gap:9px;padding-top:6px}
+.intro__icon{height:clamp(26px,2.4vw,38px);width:auto}
+.intro__wm{height:clamp(17px,1.7vw,26px);width:auto}
+.intro__headline{font-weight:500;font-size:clamp(20px,3vw,50px);color:#1e1e1e;letter-spacing:-1.5px;line-height:1.06;margin-bottom:clamp(18px,2vw,30px)}
+.intro__sub{font-size:clamp(13px,1.1vw,17px);font-weight:400;color:rgba(30,30,30,.55);letter-spacing:-.45px;line-height:1.6;margin-bottom:clamp(24px,2.4vw,38px)}
+.btn-dark{background:#141414;border-radius:60px;padding:clamp(11px,.95vw,15px) clamp(18px,1.6vw,26px);font-family:'Geist',sans-serif;font-weight:600;font-size:clamp(13px,.9vw,15px);color:#fff;letter-spacing:-.45px;white-space:nowrap;transition:opacity .15s;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px}
+.btn-dark:hover{opacity:.78}
+
+/* FEATURE IMAGE */
+.feature-img{width:100%;display:block;line-height:0}
+.feature-img img{width:100%;height:clamp(320px,44vw,720px);object-fit:cover;display:block}
+
+/* DOMAIN TAGS */
+.domain-tags{width:100%;display:block;line-height:0;border-top:1px solid #f0f0f0}
+.domain-tags img{width:100%;max-width:1440px;display:block;margin:0 auto}
+
+/* REFRAME */
+.reframe{background:#fff;padding:clamp(40px,4.1vw,60px) clamp(24px,2.8vw,40px);border-top:1px solid #f0f0f0}
+.reframe__inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:clamp(200px,31.5vw,453px) 1fr;gap:clamp(32px,11.5vw,165px);align-items:start}
+@media(max-width:700px){.reframe__inner{grid-template-columns:1fr;gap:28px}}
+.reframe__label{font-size:clamp(12px,1.1vw,16px);font-weight:400;color:#bfbfbf;letter-spacing:-.48px;margin-bottom:clamp(10px,2.2vw,31px)}
+.reframe__ask{font-size:clamp(14px,1.39vw,20px);font-weight:400;color:#000;letter-spacing:-.6px;line-height:1.5}
+.reframe__right-label{font-size:clamp(12px,1.1vw,16px);font-weight:500;color:#000;letter-spacing:-.48px;margin-bottom:clamp(10px,2.2vw,31px)}
+.reframe__headline{font-size:clamp(22px,2.92vw,42px);font-weight:400;color:#000;letter-spacing:-1.26px;line-height:1.07;margin-bottom:clamp(20px,2.8vw,40px)}
+.reframe__body{font-size:clamp(13px,1.39vw,20px);font-weight:400;color:rgba(30,30,30,.6);letter-spacing:-.6px;line-height:1.55}
+.reframe__body p{margin-bottom:1em}
+.reframe__body p:last-child{margin-bottom:0}
+
+/* SPARK PHONE */
+.spark{background:#fff;border-top:1px solid #f0f0f0;overflow:hidden}
+.spark__inner{max-width:1440px;margin:0 auto;position:relative;height:1100px}
+.spark__phone-wrap{position:absolute;left:50%;transform:translateX(-50%);top:81px;width:834px;height:616px;overflow:hidden}
+.spark__phone-wrap img{position:absolute;top:-6.64%;left:0;width:99.89%;height:183.51%;display:block}
+.spark__ui{position:absolute;left:309px;top:161px;height:69px;background:rgba(243,243,243,.2);backdrop-filter:blur(12px);border-radius:7px;display:flex;align-items:center;padding:0 8.5px}
+.spark__tab{display:flex;align-items:center;justify-content:center;width:85px;height:55px;border-radius:7px;font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:20px;text-transform:uppercase;color:#455a64;letter-spacing:.02em}
+.spark__tab--on{background:#3a3a3a;color:#fff;border-radius:15px}
+.spark__card{position:absolute;left:857px;top:263px;width:309px;height:217px;background:#fff;border-radius:3px;padding:20px 17px 12px}
+.spark__card-title{font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:11.812px;color:#9c9c9c;text-transform:uppercase;letter-spacing:.03em;margin-bottom:27px;white-space:nowrap}
+.spark__card-title strong{color:#3a3a3a;font-weight:400}
+.spark__card-chart{width:225px;height:96px;display:block;margin-left:38px;object-fit:contain}
+.spark__card-axis{display:flex;justify-content:space-between;padding-left:50px;margin-top:5px;font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:9.781px;color:#bdbdbd}
+.spark__label{position:absolute;left:50%;transform:translateX(-50%);top:725px;font-size:16px;font-weight:500;color:#000;letter-spacing:-.48px;white-space:nowrap}
+.spark__quote{position:absolute;left:50%;transform:translateX(-50%);top:762px;width:min(1134px,92%);font-size:clamp(24px,2.9vw,42px);font-weight:400;color:#000;letter-spacing:-1.26px;line-height:1.1;text-align:center}
+.spark__tags{position:absolute;left:50%;transform:translateX(-50%);top:955px;display:flex;flex-direction:column;gap:11px;align-items:center}
+.spark__tags-row{display:flex;gap:11px}
+.stag{border:1px solid #e9e9e9;border-radius:46px;height:44px;padding:0 14px;font-size:20px;color:#1e1e1e;font-family:'Helvetica Neue',Helvetica,sans-serif;font-weight:400;display:inline-flex;align-items:center;white-space:nowrap}
+
+/* SPARK MINI CARD (floating chart overlay on phone) */
+.spark__mini{position:absolute;left:168px;top:272px;width:390px;background:#fff;border-radius:10px;padding:12px;box-shadow:0 10px 40px rgba(0,0,0,.18)}
+
+/* SPARK TEXT + EXPLORING */
+.spark-explore{background:#fff;padding:clamp(60px,6.25vw,90px) clamp(24px,6.25vw,90px);border-top:1px solid #f0f0f0}
+.spark-explore__row{max-width:1440px;margin:0 auto clamp(56px,8.9vw,128px);display:grid;grid-template-columns:clamp(100px,11.5vw,166px) 1fr;gap:clamp(20px,4vw,58px);align-items:start}
+@media(max-width:680px){.spark-explore__row{grid-template-columns:1fr;gap:16px}}
+.spark-explore__lbl{font-size:clamp(12px,.95vw,14px);font-weight:500;color:rgba(30,30,30,.45);letter-spacing:-.35px}
+.spark-explore__body{font-size:clamp(13px,1.11vw,16px);font-weight:400;color:rgba(30,30,30,.6);letter-spacing:-.46px;line-height:1.6}
+.exploring__heading{font-weight:400;font-size:clamp(22px,2.78vw,40px);color:#000;letter-spacing:-1.2px;line-height:1.1;text-align:center;margin-bottom:clamp(36px,4vw,64px)}
+.exploring__grid{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1vw,15px)}
+@media(max-width:1100px){.exploring__grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.exploring__grid{grid-template-columns:1fr}}
+
+/* CHART PANELS */
+.cp{background:#fff;border:1px solid #e9e9e9;border-radius:13px;padding:13px;overflow:hidden}
+.cp__tabs{display:flex;align-items:center;gap:2px;margin-bottom:8px}
+.cp__tab{font-size:9px;font-family:'Helvetica Neue',Helvetica,sans-serif;color:#455a64;text-transform:uppercase;padding:3px 7px;border-radius:6px}
+.cp__tab--on{background:#3a3a3a;color:#fff}
+.cp__row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}
+.cp__view{font-size:8px;color:#9c9c9c;text-transform:uppercase;letter-spacing:.04em;font-family:'Helvetica Neue',Helvetica,sans-serif}
+.cp__score-lbl{font-size:7px;color:#9c9c9c;text-transform:uppercase;letter-spacing:.04em;font-family:'Helvetica Neue',Helvetica,sans-serif}
+.cp__score{font-size:19px;font-weight:700;color:#1e1e1e;letter-spacing:-1px;line-height:1;font-family:'Inter',sans-serif}
+.cp__date{font-size:8px;color:#9c9c9c;margin-bottom:5px;font-family:'Helvetica Neue',Helvetica,sans-serif}
+.cp__total{font-size:7px;font-weight:700;color:#1e1e1e;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;font-family:'Helvetica Neue',Helvetica,sans-serif}
+.cp__legend{display:flex;gap:8px;margin-bottom:9px}
+.cp__dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:1px}
+.cp__li{display:flex;align-items:flex-start;gap:4px;font-size:7px;color:#9c9c9c;font-family:'Helvetica Neue',Helvetica,sans-serif}
+.cp__bars{display:flex;align-items:flex-end;gap:3px;height:66px;margin-bottom:6px}
+.b{flex:1;border-radius:2px 2px 0 0;min-height:2px}
+.b-dk{background:#1e1e1e}
+.b-lt{background:#e4e4e4}
+.b-lm{background:#cfea7c}
+.b-ht{background:repeating-linear-gradient(45deg,#cfea7c 0,#cfea7c 2.5px,transparent 2.5px,transparent 6px)}
+.cp__axis{display:flex;justify-content:space-between;font-size:7px;color:#bdbdbd;margin-bottom:5px;font-family:'Helvetica Neue',Helvetica,sans-serif}
+.cp__stats{display:flex;flex-direction:column;gap:3px;border-top:1px solid #e9e9e9;padding-top:6px}
+.cp__stat{display:flex;align-items:center;justify-content:space-between;font-size:7px;color:#9c9c9c;gap:4px;font-family:'Helvetica Neue',Helvetica,sans-serif}
+.cp__stat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cp__stat-val{color:#1e1e1e;font-weight:500;flex-shrink:0}
+
+/* EXPLORING PANELS v2 */
+.cp2{background:#fff;border:1px solid #e9e9e9;border-radius:13px;padding:16px 14px 12px;display:flex;flex-direction:column;overflow:hidden}
+.cp2-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.cp2-left{display:flex;flex-direction:column;gap:7px}
+.cp2-vw{font-size:10.9px;font-family:'Helvetica Neue',Helvetica,sans-serif;color:#828282;text-transform:uppercase;line-height:1;display:block}
+.cp2-tabs{background:#f3f3f3;border-radius:2.7px;padding:2.7px 3.4px;display:flex;align-items:center}
+.cp2-tab{width:33.6px;height:26.9px;border-radius:2.9px;display:flex;align-items:center;justify-content:center;font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:9.4px;text-transform:uppercase;color:#455a64}
+.cp2-tab.on{background:#3a3a3a;color:#fff;border-radius:5.9px}
+.cp2-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.cp2-date{font-size:10px;font-family:'Helvetica Neue',Helvetica,sans-serif;color:#8d8d8d;letter-spacing:-.4px;white-space:nowrap}
+.cp2-sc{display:flex;align-items:flex-end;gap:2px}
+.cp2-sc-lbl{font-size:6.7px;font-family:'Helvetica Neue',Helvetica,sans-serif;color:#c1bebe;letter-spacing:-.6px;text-transform:uppercase}
+.cp2-sc-val{font-size:21px;font-family:'Helvetica Neue',Helvetica,sans-serif;color:#3a3a3a;letter-spacing:-.6px;line-height:.8}
+.cp2-lbl{font-size:11.7px;font-family:'Helvetica Neue',Helvetica,sans-serif;color:#9c9c9c;text-transform:uppercase;letter-spacing:-.84px;margin-bottom:8px}
+.cp2-lbl strong{color:#3a3a3a;font-weight:400}
+.cp2-legend{display:flex;gap:7px;align-items:center;margin-bottom:10px}
+.cp2-li{display:flex;align-items:center;gap:3.4px;font-size:10px;font-family:'Helvetica Neue',Helvetica,sans-serif;color:#bdbdbd;white-space:nowrap;text-transform:capitalize}
+.cp2-dot{width:8.4px;height:8.4px;border-radius:50%;flex-shrink:0;display:inline-block}
+.cp2-chart-img{width:100%;display:block;object-fit:contain;margin-bottom:6px}
+.cp2-ax{display:flex;justify-content:space-between;font-size:9.7px;font-family:'Helvetica Neue',Helvetica,sans-serif;color:#bdbdbd;margin-bottom:10px}
+.cp2-bars{display:flex;align-items:flex-end;gap:3px;height:90px;margin-bottom:6px}
+.cp2-b{flex:1;border-radius:2px 2px 0 0;min-height:2px}
+.cp2-b.dk{background:#3a3a3a}
+.cp2-b.lt{background:#e4e4e4}
+.cp2-b.lm{background:#cfea7c}
+.cp2-b.ht{background:repeating-linear-gradient(45deg,#cfea7c 0,#cfea7c 2.5px,transparent 2.5px,transparent 6px)}
+.cp2-stats{display:flex;flex-direction:column;gap:4px;margin-top:auto}
+.cp2-st{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:2px;font-size:10px;font-family:'Helvetica Neue',Helvetica,sans-serif;text-transform:capitalize;gap:4px}
+.cp2-st.lt{background:rgba(245,245,245,.96);color:#424242}
+.cp2-st.dk{background:#3a3a3a;color:#e9e9e9}
+.cp2-st-l{display:flex;align-items:center;gap:3.4px;flex:1;min-width:0}
+
+/* PROBLEM */
+.problem{background:#fff;padding:clamp(60px,7vw,120px) clamp(24px,6.4vw,109px);border-top:1px solid #f0f0f0}
+.problem__inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:clamp(180px,26vw,360px) 1fr;gap:clamp(40px,6vw,100px);align-items:start}
+@media(max-width:800px){.problem__inner{grid-template-columns:1fr}}
+.problem__left{font-size:clamp(13px,1.1vw,17px);font-weight:400;color:rgba(30,30,30,.55);letter-spacing:-.44px;line-height:1.55}
+.problem__label{font-size:clamp(12px,.95vw,16px);font-weight:500;color:rgba(30,30,30,.45);letter-spacing:-.4px;margin-bottom:clamp(14px,1.5vw,22px)}
+.problem__big{font-weight:400;font-size:clamp(21px,2.75vw,46px);color:#000;letter-spacing:-1.35px;line-height:1.07;margin-bottom:clamp(18px,1.8vw,28px)}
+.problem__body{font-size:clamp(13px,1.1vw,17px);font-weight:400;color:rgba(30,30,30,.55);letter-spacing:-.44px;line-height:1.55}
+
+/* DOMAIN SHOWCASE */
+.dshow{background:#fff;border-top:1px solid #f0f0f0;overflow:hidden;padding-top:clamp(48px,6.94vw,100px)}
+.dshow__label{text-align:center;font-size:clamp(12px,1.1vw,16px);font-weight:600;color:rgba(30,30,30,.45);letter-spacing:-.35px;margin-bottom:clamp(18px,2.6vw,38px);padding:0 24px}
+.dshow__stage{position:relative;width:clamp(240px,46.67vw,672px);margin:0 auto}
+.dshow__glow{position:absolute;top:-20%;left:-30%;width:160%;height:140%;object-fit:contain;filter:blur(40px);opacity:.65;transform:scaleY(-1);pointer-events:none}
+.dshow__device{display:block;width:100%;position:relative;z-index:1}
+.dshow__pills{position:relative;z-index:2;margin-top:clamp(-60px,-22.2vw,-320px);padding:0 clamp(20px,5.28vw,76px) clamp(48px,5.56vw,80px);display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2.85vw,41px)}
+.dshow__row{display:flex;align-items:center;justify-content:center;gap:clamp(8px,2.15vw,31px);flex-wrap:wrap}
+.dpill{height:clamp(42px,5.625vw,81px);border-radius:71px;display:inline-flex;align-items:center;padding:0 clamp(14px,2.5vw,36px);font-family:'Geist',sans-serif;font-weight:600;font-size:clamp(12px,1.68vw,24px);letter-spacing:-.97px;white-space:nowrap}
+.dpill--lime{background:#cfea7c;color:#242323}
+.dpill--dark{background:rgba(7,7,7,.2);color:#fafafa}
+.dpill--red{background:#e30051;color:#fafafa}
+
+/* MUSCLE STRENGTH */
+.muscle{background:#fff;border-top:1px solid #f0f0f0;overflow:hidden}
+.muscle__inner{max-width:1440px;margin:0 auto;position:relative;height:1140px}
+.muscle__hdr{position:absolute;left:41px;top:42px;display:flex;gap:265px;align-items:flex-start}
+.muscle__hdr-left{display:flex;flex-direction:column;width:min(461px,100%)}
+.muscle__lbl{font-size:16px;font-weight:400;color:#bfbfbf;letter-spacing:-.48px;line-height:normal;margin:0}
+.muscle__ttl{font-size:42px;font-weight:500;color:#292929;letter-spacing:-1.26px;line-height:1;margin:0}
+.muscle__desc{font-size:18px;font-weight:400;color:rgba(30,30,30,.6);letter-spacing:.09px;line-height:1.5;width:631px;flex-shrink:0;margin:0}
+.muscle__phone-img{position:absolute;left:509px;top:339px;width:445px;height:753px;object-fit:contain;display:block}
+.muscle__po{position:absolute;left:101px;top:426px;width:460px;display:flex;flex-direction:column;gap:3px}
+.muscle__po-ttl{font-family:'Inter',sans-serif;font-size:24px;font-weight:600;color:#787878;letter-spacing:-.72px;line-height:normal;margin:0}
+.muscle__po-body{font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#787878;letter-spacing:-.54px;line-height:1.45;width:445px;margin:0}
+.muscle__ds{position:absolute;left:min(950px,65%);top:765px;width:min(421px,30%);display:flex;flex-direction:column;gap:3px}
+.muscle__ds-ttl{font-family:'Inter',sans-serif;font-size:24px;font-weight:600;color:#787878;letter-spacing:-.72px;line-height:normal;margin:0}
+.muscle__ds-body{font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#787878;letter-spacing:-.54px;line-height:1.45;width:445px;margin:0}
+
+/* CLARITY */
+.clarity{background:#fff;border-top:1px solid #f0f0f0;overflow:hidden}
+.clarity__inner{max-width:1440px;margin:0 auto;position:relative;height:972px}
+.clarity__phone-wrap{position:absolute;left:370px;top:124px;width:648px;height:551px;overflow:hidden}
+.clarity__phone-wrap img{width:100%;display:block}
+.clarity__shadow{position:absolute;left:409px;top:607px;width:643px;height:136px;overflow:hidden;pointer-events:none}
+.clarity__shadow img{position:absolute;width:114.62%;height:169.12%;top:-34.56%;left:-7.31%;display:block}
+.clarity__tabs{position:absolute;left:223px;top:280px;width:338px;height:65px;background:rgba(242,242,242,.94);backdrop-filter:blur(12px);border-radius:7px;display:flex;align-items:center;padding:0 8.5px}
+.clarity__tab{display:flex;align-items:center;justify-content:center;width:85px;height:51px;border-radius:7px;font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:20px;text-transform:uppercase;color:#455a64;letter-spacing:.02em}
+.clarity__tab--on{background:#3a3a3a;color:#fff;border-radius:15px}
+.clarity__acard{position:absolute;left:855px;top:326px;width:253px;height:240px;border-radius:15px;overflow:hidden}
+.clarity__acard-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.clarity__acard-overlay{position:absolute;inset:0;background:linear-gradient(182deg,rgba(0,0,0,0) 27.8%,rgba(0,0,0,.08) 62.2%)}
+.clarity__acard-content{position:absolute;inset:0;padding:23px 16px;display:flex;flex-direction:column;justify-content:space-between}
+.clarity__acard-top{display:flex;align-items:center;gap:7px}
+.clarity__acard-dot{width:4px;height:4px;background:#fff;border-radius:50%;flex-shrink:0}
+.clarity__acard-lbl{font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:10px;color:#fff;letter-spacing:-.36px;text-transform:capitalize}
+.clarity__acard-bottom{display:flex;align-items:flex-end;gap:50px}
+.clarity__acard-score{font-family:'Space Grotesk','Inter',sans-serif;font-size:56px;font-weight:500;color:#b9e538;letter-spacing:-2.5px;line-height:1;text-transform:lowercase}
+.clarity__acard-meta{display:flex;flex-direction:column;gap:6px;padding-bottom:8px}
+.clarity__acard-metric{font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:10px;color:#fff;letter-spacing:-.36px;text-transform:capitalize}
+.clarity__acard-sub{font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:5px;color:#fff;letter-spacing:-.36px;text-transform:capitalize}
+.clarity__lbl{position:absolute;left:50%;transform:translateX(-50%);top:710px;font-size:26.667px;font-weight:500;color:#000;letter-spacing:-.8px;white-space:nowrap;text-align:center}
+.clarity__quote{position:absolute;left:50%;transform:translateX(-50%);top:748px;width:min(1134px,92%);font-size:clamp(24px,2.9vw,42px);font-weight:400;color:#000;letter-spacing:-1.26px;line-height:1.1;text-align:center}
+
+/* FINAL PAIR */
+.final-pair{background:#fff;padding:clamp(40px,5vw,86px) clamp(24px,6.4vw,109px);border-top:1px solid #f0f0f0}
+.final-pair__imgs{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,1.5vw,24px);margin-bottom:clamp(28px,2.8vw,48px)}
+.final-pair__imgs img{max-height:clamp(360px,48vw,800px);width:auto;border-radius:clamp(22px,2.6vw,44px);display:block}
+.final-pair__caption{font-weight:400;font-size:clamp(15px,1.55vw,26px);color:#000;text-align:center;letter-spacing:-.75px;line-height:1.4;max-width:1100px;margin:0 auto}
+
+/* BACK */
+.back{background:#f2f2f0;height:400px;display:flex;align-items:center;padding:0 clamp(24px,6.4vw,109px);border-top:1px solid #e8e8e6}
+.back a{font-size:14px;color:#888;display:inline-flex;align-items:center;gap:6px;transition:color .15s;letter-spacing:-.3px}
+.back a:hover{color:#1e1e1e}
+
+/* ── MOBILE FIXES ─────────────────────────────────── */
+
+/* Info bar */
+@media(max-width:540px){
+  .info__inner{height:auto;padding:20px 0;flex-wrap:wrap;gap:0}
+  .info__col{padding-right:0;padding:12px 0;flex-basis:100%;border-bottom:1px solid #ebe8e4}
+  .info__col:last-child{border-bottom:none}
+  .info__div{display:none}
+}
+
+/* Spark section — switch absolute layout to flow */
+@media(max-width:768px){
+  .spark__inner{height:auto;padding:40px 20px 60px;display:flex;flex-direction:column;align-items:center;gap:28px}
+  .spark__phone-wrap{position:relative;left:auto;transform:none;top:auto;width:100%;max-width:420px;height:auto;aspect-ratio:834/616}
+  .spark__phone-wrap img{position:relative;top:auto;left:auto;width:100%;height:auto}
+  .spark__ui{display:none}
+  .spark__card{display:none}
+  .spark__mini{display:none}
+  .spark__label{position:relative;left:auto;transform:none;top:auto;text-align:center;white-space:normal}
+  .spark__quote{position:relative;left:auto;transform:none;top:auto;width:100%;font-size:clamp(20px,5.5vw,32px);line-height:1.3}
+  .spark__tags{position:relative;left:auto;transform:none;top:auto}
+  .stag{font-size:clamp(12px,3.5vw,16px);height:34px;padding:0 12px}
+}
+
+/* Muscle section — switch absolute layout to flow */
+@media(max-width:768px){
+  .muscle__inner{height:auto;padding:40px 20px;display:flex;flex-direction:column;gap:28px}
+  .muscle__hdr{position:relative;left:auto;top:auto;gap:16px;flex-direction:column}
+  .muscle__hdr-left{width:100%}
+  .muscle__lbl{font-size:14px}
+  .muscle__ttl{font-size:clamp(26px,6.5vw,42px)}
+  .muscle__desc{width:100%;font-size:clamp(14px,3.5vw,18px);flex-shrink:1}
+  .muscle__phone-img{position:relative;left:auto;top:auto;width:100%;max-width:280px;height:auto;margin:0 auto}
+  .muscle__po{position:relative;left:auto;top:auto;width:100%}
+  .muscle__po-ttl{font-size:18px}
+  .muscle__po-body{width:100%;font-size:14px}
+  .muscle__ds{position:relative;left:auto;top:auto;width:100%}
+  .muscle__ds-ttl{font-size:18px}
+  .muscle__ds-body{width:100%;font-size:14px}
+}
+
+/* Clarity section — switch absolute layout to flow */
+@media(max-width:768px){
+  .clarity__inner{height:auto;padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:28px}
+  .clarity__phone-wrap{position:relative;left:auto;top:auto;width:100%;max-width:500px;height:auto}
+  .clarity__shadow{display:none}
+  .clarity__tabs{display:none}
+  .clarity__acard{display:none}
+  .clarity__lbl{position:relative;left:auto;transform:none;top:auto;text-align:center;white-space:normal;font-size:clamp(16px,4vw,24px)}
+  .clarity__quote{position:relative;left:auto;transform:none;top:auto;width:100%;font-size:clamp(20px,5.5vw,32px);line-height:1.3}
+}
+  #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 999; cursor: pointer; }
+  #lightbox.active { display: flex; }
+  #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+  #lightbox-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 32px; cursor: pointer; font-weight: 300; }
+</style>
+<link rel="stylesheet" href="system/case-fit.css">
+
+<style>
+/* ── Next project ─────────────────────────────────────────────
+   One foot for every case study. These pages do not share a layout:
+   four use the Thine template, four are older and have their own.
+   So this block carries its own values rather than inheriting any,
+   and renders identically on all eight. */
+.nextp{
+  box-sizing:border-box; width:100%; max-width:635px;
+  margin:0 auto; padding:0 0 110px;
+  font-family:'Switzer','Inter',system-ui,-apple-system,sans-serif;
+}
+.nextp *{box-sizing:border-box}
+.nextp__rule{height:1px; background:#e0e0dd; margin:0 0 34px}
+.nextp__link{
+  display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+  text-decoration:none; color:inherit; padding:6px 0;
+  transition:opacity .2s ease;
+}
+.nextp__link:hover{opacity:.5}
+.nextp__label{
+  font-family:'Inter',system-ui,sans-serif; font-weight:500;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:#868686; flex:0 0 auto;
+}
+.nextp__name{
+  font-weight:500; font-size:28px; letter-spacing:-.02em; line-height:1.2;
+  color:#191919; text-align:right;
+}
+.nextp__name span{display:inline-block; margin-left:10px}
+.nextp__all{
+  display:inline-block; margin-top:26px;
+  font-size:15px; letter-spacing:-.01em; color:#868686;
+  text-decoration:none; transition:color .2s ease;
+}
+.nextp__all:hover{color:#191919}
+@media (max-width:680px){
+  .nextp{padding:0 20px 80px}
+  .nextp__link{flex-direction:column; align-items:flex-start; gap:8px}
+  .nextp__name{font-size:22px; text-align:left}
+}
+</style>
+
+<link rel="canonical" href="https://shlokshetye.vercel.app/hyperlab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shlok Shetye">
+<meta property="og:title" content="Hyperlab — Shlok Shetye">
+<meta property="og:description" content="Case study on Hyperlab: a reporting framework that turns device metrics into a Physical Intelligence summary students and coaches can read.">
+<meta property="og:url" content="https://shlokshetye.vercel.app/hyperlab">
+<meta property="og:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shlok Shetye, product designer. Designing for a future, still taking shape.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hyperlab — Shlok Shetye">
+<meta name="twitter:description" content="Case study on Hyperlab: a reporting framework that turns device metrics into a Physical Intelligence summary students and coaches can read.">
+<meta name="twitter:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a class="nav__home" href="/work">Home</a>
+  <span class="nav__sep">/</span>
+  <a class="nav__home" href="/work#work-sec">Work</a>
+  <span class="nav__sep">/</span>
+  <span class="nav__cur">Hyperlab</span>
+  <span style="flex:1"></span>
+  <a class="nav__home" href="/work#work-sec">Work</a>
+  <a class="nav__home" href="shlok-portfolio/labs.html">Labs</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <img fetchpriority="high" class="hero__bg" src="system/sdp/Frame 2134285846.jpg" alt="Hyperlab training scene">
+  <div class="hero__content">
+    <img src="system/sdp/hyperlab logo.png" loading="lazy" decoding="async" alt="Hyperlab" style="height:clamp(120px,18vw,270px);width:auto">
+  </div>
+</section>
+
+<!-- INFO BAR -->
+<div class="info">
+  <div class="info__inner">
+    <div class="info__col">
+      <span class="info__label">Client</span>
+      <span class="info__val">Hyperlab</span>
+    </div>
+    <div class="info__div"></div>
+    <div class="info__col">
+      <span class="info__label">Role</span>
+      <span class="info__val">Product flow and concept UI</span>
+    </div>
+    <div class="info__div"></div>
+    <div class="info__col">
+      <span class="info__label">Timeline</span>
+      <span class="info__val">3 months</span>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro">
+  <div class="intro__inner">
+    <div class="intro__logo">
+      <img class="intro__icon" src="system/hyperlab/42ea7220-7b43-4ff4-928f-e4db8bda4cf1.svg" alt="Hyperlab logo" loading="lazy">
+      <img class="intro__wm" src="system/hyperlab/bac81ae7-e8df-4128-baef-54f51601936e.svg" alt="Hyperlab" loading="lazy">
+    </div>
+    <div>
+      <h1 class="intro__headline">A physical intelligent laser-equipped interactive training companion that turns any space into a data-driven performance lab, powering the future of athletic training.</h1>
+      <p class="intro__sub">Hyperlab is building a full-stack Physical Intelligence platform that combines purpose-built hardware, computer vision, and a data-driven reporting layer to measure, understand, and improve human performance. Across schools and sports academies, students complete a series of scientifically benchmarked physical tests using Hyperlab's device ecosystem — Surge M47, ATOMEL Helio, Axis, and Pulse. Each device captures high-fidelity metrics such as rep depth, reaction time, HR recovery, acceleration curves, and balance stability.</p>
+      <a class="btn-dark" href="https://www.hyperlab.life/" target="_blank" rel="noopener">Visit Website</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE IMAGE -->
+<div class="feature-img">
+  <img src="system/hyperlab/e9f1cac1-5e25-41be-b1da-4f3177cf309c.jpg" loading="lazy" decoding="async" alt="Hyperlab team">
+</div>
+
+<!-- DOMAIN TAGS -->
+<section class="domain-tags">
+  <img src="../OneDrive/Documents/Frame 2134285827.png" alt="Hyperlab FitKit device" onerror="this.parentElement.style.display='none'">
+</section>
+
+<!-- REFRAME THE PROBLEM -->
+<section class="reframe">
+  <div class="reframe__inner">
+    <div>
+      <p class="reframe__label">The Ask</p>
+      <p class="reframe__ask">Hyperlab approached us to modernize the platform's visual language and deliver a cleaner, more polished interface.</p>
+    </div>
+    <div>
+      <p class="reframe__right-label">Reframing the Problem</p>
+      <p class="reframe__headline">Discovery revealed a deeper gap: despite sophisticated hardware and protocols, Hyperlab lacked a reporting layer to interpret its data.</p>
+      <div class="reframe__body">
+        <p>Users couldn't understand scores, abilities, or progress — and future features couldn't scale without a clear interpretation model.</p>
+        <p>Through focused stakeholder sessions, we demonstrated why simple, trustworthy, and well-structured data representation was essential. By showing how complex insights could be distilled into a clear, intuitive flow, we aligned the team around a new direction.</p>
+        <p><strong>The mandate shifted from a visual refresh to creating Hyperlab's reporting framework</strong> — a foundational layer that would define how the platform communicates performance and drives the next generation of the product.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPARK PHONE -->
+<section class="spark">
+  <div class="spark__inner">
+    <div class="spark__phone-wrap">
+      <img class="spark__phone" src="system/hyperlab/cc5aa22d-d178-4d8f-918d-103a3d300b13.png" alt="Hyperlab app" loading="lazy">
+    </div>
+    <div class="spark__ui">
+      <span class="spark__tab spark__tab--on">D</span>
+      <span class="spark__tab">W</span>
+      <span class="spark__tab">M</span>
+      <span class="spark__tab">6M</span>
+    </div>
+    <div class="spark__card">
+      <p class="spark__card-title">TOTAL TIME (ONE SET): <strong>3 MIN</strong></p>
+      <img class="spark__card-chart" src="system/hyperlab/cd24c892-9715-407f-8b17-88742541347b.svg" alt="Total time one set chart" loading="lazy">
+      <div class="spark__card-axis"><span>0s</span><span>5s</span><span>10s</span><span>15s</span><span>20s</span><span>25s</span><span>30s</span><span>35s</span></div>
+    </div>
+    <p class="spark__label">Spark That Started It</p>
+    <p class="spark__quote">Real-world field test data into clear, trustworthy, and actionable insights—easy for students to understand, reliable for coaches, and scalable for institutions.</p>
+    <div class="spark__tags">
+      <div class="spark__tags-row">
+        <span class="stag">Muscle Strength</span>
+        <span class="stag">Explosive Power</span>
+        <span class="stag">Sprint Speed</span>
+      </div>
+      <div class="spark__tags-row">
+        <span class="stag">Skill Coordination</span>
+        <span class="stag">Agility</span>
+        <span class="stag">Cardio Stamina</span>
+      </div>
+      <div class="spark__tags-row">
+        <span class="stag">Balance</span>
+        <span class="stag">Decision Quickness</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPARK TEXT + EXPLORING -->
+<section class="spark-explore">
+  <div class="spark-explore__row">
+    <span class="spark-explore__lbl">Spark That Started It</span>
+    <p class="spark-explore__body">The goal of the Reports module is to translate this rich biomechanical data into clear, trustworthy, and actionable insights that students can understand, coaches can rely on, and institutions can scale across hundreds of learners.</p>
+  </div>
+  <p class="exploring__heading">Exploring how to turn<br>raw data into visuals</p>
+  <div class="exploring__grid">
+    <img src="../OneDrive/Documents/Frame 2134285597.png" alt="Exploring visualisation approaches" style="grid-column:1/-1;width:100%;display:block;border-radius:13px" onerror="this.parentElement.style.display='none'">
+  </div>
+  <div style="display:none">
+
+    <!-- Panel 1: dark bars, weekly, 26 tests -->
+    <div class="cp2">
+      <div class="cp2-hd">
+        <div class="cp2-left">
+          <span class="cp2-vw">View: Weekly</span>
+          <div class="cp2-tabs"><div class="cp2-tab on">D</div><div class="cp2-tab">W</div><div class="cp2-tab">M</div><div class="cp2-tab">6M</div></div>
+        </div>
+        <div class="cp2-right">
+          <span class="cp2-date">13 Jun - 20 Jun '25 ›</span>
+          <div class="cp2-sc"><span class="cp2-sc-lbl">Avg. Score:</span><span class="cp2-sc-val">4.7</span></div>
+        </div>
+      </div>
+      <p class="cp2-lbl">TOTAL TESTS TAKEN: <strong>26</strong></p>
+      <div class="cp2-legend">
+        <div class="cp2-li"><span class="cp2-dot" style="background:#3a3a3a"></span>Completed</div>
+        <div class="cp2-li"><span class="cp2-dot" style="background:#e4e4e4"></span>Incomplete</div>
+      </div>
+      <img class="cp2-chart-img" src="system/hyperlab/1d7cc4a4-906f-4407-9c00-e9ca99363414.svg" alt="Weekly chart of completed and incomplete Hyperlab tests" loading="lazy">
+      <div class="cp2-ax"><span>10</span><span>17</span><span>24</span><span>31</span><span>3</span></div>
+      <div class="cp2-stats">
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#3a3a3a"></span>Avg. Ascent Time per push-up</div><span>2.2s</span></div>
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#cfea7c"></span>Avg. Descent Time per push-up</div><span>2.6s</span></div>
+        <div class="cp2-st dk"><div class="cp2-st-l"><span class="cp2-dot" style="background:#fff"></span>Avg. Rest Time between push-up</div><span>3s</span></div>
+      </div>
+    </div>
+
+    <!-- Panel 2: tooltip highlight bar, weekly -->
+    <div class="cp2">
+      <div class="cp2-hd">
+        <div class="cp2-left">
+          <span class="cp2-vw">View: Weekly</span>
+          <div class="cp2-tabs"><div class="cp2-tab on">D</div><div class="cp2-tab">W</div><div class="cp2-tab">M</div><div class="cp2-tab">6M</div></div>
+        </div>
+        <div class="cp2-right">
+          <span class="cp2-date">13 Jun - 20 Jun '25 ›</span>
+          <div class="cp2-sc"><span class="cp2-sc-lbl">Avg. Score:</span><span class="cp2-sc-val">4.7</span></div>
+        </div>
+      </div>
+      <img class="cp2-chart-img" src="system/hyperlab/47540759-1c30-4b0e-b391-74f46eb9d253.svg" alt="Weekly Hyperlab score chart by day" loading="lazy">
+      <div class="cp2-ax"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="cp2-stats">
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#3a3a3a"></span>Avg. Ascent Time per push-up</div><span>2.2s</span></div>
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#cfea7c"></span>Avg. Descent Time per push-up</div><span>2.6s</span></div>
+        <div class="cp2-st dk"><div class="cp2-st-l"><span class="cp2-dot" style="background:#fff"></span>Avg. Rest Time between push-up</div><span>3s</span></div>
+      </div>
+    </div>
+
+    <!-- Panel 3: alternating dark + hatch bars -->
+    <div class="cp2">
+      <div class="cp2-hd">
+        <div class="cp2-left">
+          <span class="cp2-vw">View: Weekly</span>
+          <div class="cp2-tabs"><div class="cp2-tab on">D</div><div class="cp2-tab">W</div><div class="cp2-tab">M</div><div class="cp2-tab">6M</div></div>
+        </div>
+        <div class="cp2-right">
+          <span class="cp2-date">13 Jun - 20 Jun '25 ›</span>
+          <div class="cp2-sc"><span class="cp2-sc-lbl">Avg. Score:</span><span class="cp2-sc-val">4.7</span></div>
+        </div>
+      </div>
+      <p class="cp2-lbl">TOTAL TESTS TAKEN: <strong>26</strong></p>
+      <div class="cp2-legend">
+        <div class="cp2-li"><span class="cp2-dot" style="background:#3a3a3a"></span>Completed</div>
+        <div class="cp2-li"><span class="cp2-dot" style="background:repeating-linear-gradient(45deg,#cfea7c 0,#cfea7c 2px,transparent 2px,transparent 5px)"></span>Incomplete</div>
+      </div>
+      <div class="cp2-bars">
+        <div class="cp2-b dk" style="height:66%"></div><div class="cp2-b ht" style="height:72%"></div><div class="cp2-b dk" style="height:82%"></div><div class="cp2-b ht" style="height:56%"></div><div class="cp2-b dk" style="height:88%"></div><div class="cp2-b ht" style="height:62%"></div><div class="cp2-b dk" style="height:74%"></div>
+      </div>
+      <div class="cp2-ax"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="cp2-stats">
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#3a3a3a"></span>Avg. Ascent Time per push-up</div><span>2.2s</span></div>
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#cfea7c"></span>Avg. Descent Time per push-up</div><span>2.6s</span></div>
+        <div class="cp2-st dk"><div class="cp2-st-l"><span class="cp2-dot" style="background:#fff"></span>Avg. Rest Time between push-up</div><span>3s</span></div>
+      </div>
+    </div>
+
+    <!-- Panel 4: alternating hatch + dark bars -->
+    <div class="cp2">
+      <div class="cp2-hd">
+        <div class="cp2-left">
+          <span class="cp2-vw">View: Weekly</span>
+          <div class="cp2-tabs"><div class="cp2-tab on">D</div><div class="cp2-tab">W</div><div class="cp2-tab">M</div><div class="cp2-tab">6M</div></div>
+        </div>
+        <div class="cp2-right">
+          <span class="cp2-date">13 Jun - 20 Jun '25 ›</span>
+          <div class="cp2-sc"><span class="cp2-sc-lbl">Avg. Score:</span><span class="cp2-sc-val">4.7</span></div>
+        </div>
+      </div>
+      <p class="cp2-lbl">TOTAL TESTS TAKEN: <strong>26</strong></p>
+      <div class="cp2-legend">
+        <div class="cp2-li"><span class="cp2-dot" style="background:#3a3a3a"></span>Completed</div>
+        <div class="cp2-li"><span class="cp2-dot" style="background:#e4e4e4"></span>Incomplete</div>
+      </div>
+      <div class="cp2-bars">
+        <div class="cp2-b ht" style="height:70%"></div><div class="cp2-b dk" style="height:84%"></div><div class="cp2-b ht" style="height:46%"></div><div class="cp2-b dk" style="height:92%"></div><div class="cp2-b ht" style="height:60%"></div><div class="cp2-b dk" style="height:76%"></div><div class="cp2-b ht" style="height:52%"></div>
+      </div>
+      <div class="cp2-ax"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="cp2-stats">
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#3a3a3a"></span>Avg. Ascent Time per push-up</div><span>2.2s</span></div>
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#cfea7c"></span>Avg. Descent Time per push-up</div><span>2.6s</span></div>
+        <div class="cp2-st dk"><div class="cp2-st-l"><span class="cp2-dot" style="background:#fff"></span>Avg. Rest Time between push-up</div><span>3s</span></div>
+      </div>
+    </div>
+
+    <!-- Panel 5: gantt/timeline, total time -->
+    <div class="cp2">
+      <div class="cp2-hd">
+        <div class="cp2-left">
+          <span class="cp2-vw">View: Daily</span>
+          <div class="cp2-tabs"><div class="cp2-tab on">D</div><div class="cp2-tab">W</div><div class="cp2-tab">M</div><div class="cp2-tab">6M</div></div>
+        </div>
+      </div>
+      <p class="cp2-lbl">TOTAL TIME (ONE SET): <strong>3 MIN</strong></p>
+      <img class="cp2-chart-img" src="system/hyperlab/41007d26-6206-44dd-8aeb-dec83b3bf11a.svg" alt="Daily chart of time spent on one Hyperlab set" loading="lazy">
+      <div class="cp2-ax"><span>0s</span><span>5s</span><span>10s</span><span>15s</span><span>20s</span><span>25s</span><span>30s</span></div>
+      <div class="cp2-stats">
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#3a3a3a"></span>Avg. Ascent Time per push-up</div><span>2.2s</span></div>
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#cfea7c"></span>Avg. Descent Time per push-up</div><span>2.6s</span></div>
+        <div class="cp2-st dk"><div class="cp2-st-l"><span class="cp2-dot" style="background:#fff"></span>Avg. Rest Time between push-up</div><span>3s</span></div>
+      </div>
+    </div>
+
+    <!-- Panel 6: lime bars, avg push-up time monthly -->
+    <div class="cp2">
+      <div class="cp2-hd">
+        <div class="cp2-left">
+          <span class="cp2-vw">View: Monthly</span>
+          <div class="cp2-tabs"><div class="cp2-tab on">D</div><div class="cp2-tab">W</div><div class="cp2-tab">M</div><div class="cp2-tab">6M</div></div>
+        </div>
+      </div>
+      <p class="cp2-lbl">AVG. PUSH-UP TIME (PER SET): <strong style="color:#e30051">3min 08s</strong></p>
+      <div class="cp2-bars" style="gap:2px;height:90px">
+        <div class="cp2-b lm" style="height:38%"></div><div class="cp2-b lm" style="height:55%"></div><div class="cp2-b lm" style="height:42%"></div><div class="cp2-b lm" style="height:68%"></div><div class="cp2-b lm" style="height:35%"></div><div class="cp2-b lm" style="height:72%"></div><div class="cp2-b lm" style="height:48%"></div><div class="cp2-b lm" style="height:60%"></div><div class="cp2-b lm" style="height:82%"></div><div class="cp2-b lm" style="height:52%"></div><div class="cp2-b lm" style="height:44%"></div><div class="cp2-b lm" style="height:76%"></div><div class="cp2-b lm" style="height:58%"></div><div class="cp2-b lm" style="height:65%"></div><div class="cp2-b lm" style="height:40%"></div><div class="cp2-b lm" style="height:88%"></div><div class="cp2-b lm" style="height:50%"></div><div class="cp2-b lm" style="height:70%"></div><div class="cp2-b lm" style="height:45%"></div><div class="cp2-b lm" style="height:62%"></div>
+      </div>
+      <div class="cp2-ax" style="justify-content:space-around"><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span></div>
+      <div class="cp2-stats">
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#3a3a3a"></span>Avg. Ascent Time per push-up</div><span>2.2s</span></div>
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#cfea7c"></span>Avg. Descent Time per push-up</div><span>2.6s</span></div>
+        <div class="cp2-st dk"><div class="cp2-st-l"><span class="cp2-dot" style="background:#fff"></span>Avg. Rest Time between push-up</div><span>3s</span></div>
+      </div>
+    </div>
+
+    <!-- Panel 7: wide dark bars, 5 tests -->
+    <div class="cp2">
+      <div class="cp2-hd">
+        <div class="cp2-left">
+          <span class="cp2-vw">View: Weekly</span>
+          <div class="cp2-tabs"><div class="cp2-tab on">D</div><div class="cp2-tab">W</div><div class="cp2-tab">M</div><div class="cp2-tab">6M</div></div>
+        </div>
+        <div class="cp2-right">
+          <span class="cp2-date">13 Jun - 20 Jun '25 ›</span>
+          <div class="cp2-sc"><span class="cp2-sc-lbl">Avg. Score:</span><span class="cp2-sc-val">4.7</span></div>
+        </div>
+      </div>
+      <p class="cp2-lbl">TOTAL TESTS TAKEN: <strong>05</strong></p>
+      <div class="cp2-legend">
+        <div class="cp2-li"><span class="cp2-dot" style="background:#3a3a3a"></span>Completed</div>
+        <div class="cp2-li"><span class="cp2-dot" style="background:#e4e4e4"></span>Incomplete</div>
+      </div>
+      <img class="cp2-chart-img" src="system/hyperlab/778989b1-eec2-46a3-b042-7e5b1dfdfa2f.svg" alt="Monthly chart of average push-up time" loading="lazy">
+      <div class="cp2-ax" style="justify-content:space-around"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span></div>
+      <div class="cp2-stats">
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#3a3a3a"></span>Avg. Ascent Time per push-up</div><span>2.2s</span></div>
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#cfea7c"></span>Avg. Descent Time per push-up</div><span>2.6s</span></div>
+        <div class="cp2-st dk"><div class="cp2-st-l"><span class="cp2-dot" style="background:#fff"></span>Avg. Rest Time between push-up</div><span>3s</span></div>
+      </div>
+    </div>
+
+    <!-- Panel 8: alternating hatch + dark, 8 reps -->
+    <div class="cp2">
+      <div class="cp2-hd">
+        <div class="cp2-left">
+          <span class="cp2-vw">View: Weekly</span>
+          <div class="cp2-tabs"><div class="cp2-tab on">D</div><div class="cp2-tab">W</div><div class="cp2-tab">M</div><div class="cp2-tab">6M</div></div>
+        </div>
+        <div class="cp2-right">
+          <span class="cp2-date">13 Jun - 20 Jun '25 ›</span>
+          <div class="cp2-sc"><span class="cp2-sc-lbl">Avg. Score:</span><span class="cp2-sc-val">4.7</span></div>
+        </div>
+      </div>
+      <div class="cp2-legend">
+        <div class="cp2-li"><span class="cp2-dot" style="background:#3a3a3a"></span>Completed</div>
+        <div class="cp2-li"><span class="cp2-dot" style="background:repeating-linear-gradient(45deg,#cfea7c 0,#cfea7c 2px,transparent 2px,transparent 5px)"></span>Incomplete</div>
+      </div>
+      <img class="cp2-chart-img" src="system/hyperlab/aa51dd63-6bcd-4b63-8edb-a74adfaef329.svg" alt="Weekly Hyperlab test chart" loading="lazy">
+      <div class="cp2-ax"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+      <div class="cp2-stats">
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#3a3a3a"></span>Avg. Ascent Time per push-up</div><span>2.2s</span></div>
+        <div class="cp2-st lt"><div class="cp2-st-l"><span class="cp2-dot" style="background:#cfea7c"></span>Avg. Descent Time per push-up</div><span>2.6s</span></div>
+        <div class="cp2-st dk"><div class="cp2-st-l"><span class="cp2-dot" style="background:#fff"></span>Avg. Rest Time between push-up</div><span>3s</span></div>
+      </div>
+    </div>
+
+  </div></div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="problem__inner">
+    <p class="problem__left">Hyperlab approached us to modernize the platform's visual language and deliver a cleaner, more polished interface.</p>
+    <div>
+      <p class="problem__label">Reframing the Problem</p>
+      <p class="problem__big">Discovery revealed a deeper gap: despite sophisticated hardware and protocols, Hyperlab lacked a reporting layer to interpret its data.</p>
+      <p class="problem__body">Users couldn't understand scores, abilities, or progress — and future features couldn't scale without a clear interpretation model. Through focused stakeholder sessions, we demonstrated why simple, trustworthy, and well-structured data representation was essential for Hyperlab's growth.<br><br>The mandate shifted from a visual refresh to creating Hyperlab's reporting framework — a foundational layer that would define how the platform communicates performance and drives the next generation of the product.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DOMAIN SHOWCASE -->
+<section class="dshow">
+  <p class="dshow__label">Key domain tags of reports</p>
+  <div class="dshow__stage" style="width:clamp(480px,93.34vw,1344px)">
+    <img class="dshow__device" src="system/hyperlab/39fbd662-62b2-44e8-a019-751ddbd15133.png" alt="Hyperlab device" loading="lazy">
+  </div>
+  <div class="dshow__pills">
+    <div class="dshow__row">
+      <span class="dpill dpill--lime">Skill Coordination</span>
+      <span class="dpill dpill--dark">Agility</span>
+      <span class="dpill dpill--red">Muscle Strength</span>
+      <span class="dpill dpill--dark">Sprint Speed</span>
+      <span class="dpill dpill--lime">Skill Coordination</span>
+    </div>
+    <div class="dshow__row">
+      <span class="dpill dpill--dark">Cardio Stamina</span>
+      <span class="dpill dpill--lime">Explosive Power</span>
+      <span class="dpill dpill--dark">Decision Quickness</span>
+      <span class="dpill dpill--lime">Balance</span>
+    </div>
+  </div>
+</section>
+
+<!-- MUSCLE STRENGTH -->
+<section class="muscle">
+  <div class="muscle__inner">
+    <div class="muscle__hdr">
+      <div class="muscle__hdr-left">
+        <p class="muscle__lbl">/Domain Specific report</p>
+        <h2 class="muscle__ttl">Muscle Strength Report</h2>
+      </div>
+      <p class="muscle__desc">The Muscle Strength Report page consolidates all key strength data into a clear, insight-driven snapshot. It features the Muscle Strength Analysis graph to visualise ascent–descent patterns and test rhythm, a simplified Push-Up Score for quick performance interpretation, and Average Push-Up Time insights that reveal pacing, control, and fatigue trends — creating a structured, intuitive view that helps students and coaches quickly understand overall strength performance.</p>
+    </div>
+    <img class="muscle__phone-img" src="system/hyperlab/91f411e7-71b6-4b49-a407-f53bd8e16ecf.png" alt="Muscle Strength Report" loading="lazy">
+    <div class="muscle__po">
+      <p class="muscle__po-ttl">Performance Overview</p>
+      <p class="muscle__po-body">The flow starts with a Performance Overview that introduces Hyperlab's first top-level Physical Intelligence summary, creating an immediate, high-value insight that helps users understand overall performance before exploring deeper details.</p>
+    </div>
+    <div class="muscle__ds">
+      <p class="muscle__ds-ttl">Domain Strength</p>
+      <p class="muscle__ds-body">The Domain Strength section standardises the eight core abilities into a consistent performance fingerprint. Domain Deep Dives explain what each ability measures, and how it changes across tests.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLARITY -->
+<section class="clarity">
+  <div class="clarity__inner">
+    <div class="clarity__phone-wrap">
+      <img src="system/hyperlab/b3427613-911b-4094-a4bb-295b60d14223.png" loading="lazy" decoding="async" alt="Hyperlab app performance view">
+    </div>
+    <div class="clarity__shadow">
+      <img src="system/hyperlab/b4bd612a-1133-4c47-b6ac-9de9f33e1654.svg" loading="lazy" decoding="async" alt="Drop shadow under the phone">
+    </div>
+    <div class="clarity__tabs">
+      <div class="clarity__tab clarity__tab--on">D</div>
+      <div class="clarity__tab">W</div>
+      <div class="clarity__tab">M</div>
+      <div class="clarity__tab">6M</div>
+    </div>
+    <div class="clarity__acard">
+      <img class="clarity__acard-bg" src="system/hyperlab/006d0459-ee5d-4124-82b3-096075231246.jpg" alt="Photograph behind the Agility score card" loading="lazy">
+      <div class="clarity__acard-overlay"></div>
+      <div class="clarity__acard-content">
+        <div class="clarity__acard-top">
+          <span class="clarity__acard-dot"></span>
+          <span class="clarity__acard-lbl">Agility</span>
+        </div>
+        <div class="clarity__acard-bottom">
+          <span class="clarity__acard-score">4.6</span>
+          <div class="clarity__acard-meta">
+            <span class="clarity__acard-metric">muscle strength</span>
+            <span class="clarity__acard-sub">muscle strength</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="clarity__lbl">Clarity Without Compromise</p>
+    <p class="clarity__quote">Raw metrics transformed into intuitive visuals that retain precision while revealing deeper performance insights.</p>
+  </div>
+</section>
+
+<!-- FINAL SECTION -->
+<section style="background:#fff;padding:clamp(60px,6vw,100px) clamp(24px,6vw,120px);border-top:1px solid #f0f0f0">
+  <div style="max-width:1440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:clamp(32px,3vw,48px)">
+    <img src="system/sdp/Frame 2134285835.png" loading="lazy" decoding="async" alt="Hyperlab muscle strength and trend analysis screens" style="width:100%;max-width:1170px;height:auto;display:block">
+    <p style="font-family:'Geist','Inter',sans-serif;font-size:clamp(14px,1.25vw,18px);font-weight:400;color:#1e1e1e;letter-spacing:-.54px;line-height:1.5;text-align:center;max-width:520px">The project was less about a new UI language, and more about finding the real gap and pushing toward what we believed was the right direction.</p>
+  </div>
+</section>
+
+<!-- BACK -->
+<div class="back" style="flex-direction:column;align-items:stretch;justify-content:center;gap:0;height:auto;padding-top:0;padding-bottom:0">
+  <div style="border-top:1px solid #e8e8e6">
+    <a href="/dbs" style="display:flex;justify-content:space-between;align-items:center;padding:40px 0;text-decoration:none;transition:opacity .2s ease" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">
+      <div>
+        <div style="font-family:'Geist','Inter',sans-serif;font-size:12px;font-weight:500;color:rgba(30,30,30,.4);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">Next project</div>
+        <div style="font-family:'Geist','Inter',sans-serif;font-size:22px;font-weight:500;color:#1c1c1c;letter-spacing:-.8px;line-height:1">DBS Bank — Next-gen banking</div>
+      </div>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="15.5" stroke="#e0e0dd"/><path d="M13 11l5 5-5 5" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <div style="padding:32px 0;border-top:1px solid #e8e8e6">
+    <a href="/work">← Back to work</a>
+  </div>
+</div>
+
+<script>
+var nav=document.getElementById('nav')
+window.addEventListener('scroll',function(){
+  nav.classList.toggle('solid',window.scrollY>window.innerHeight-80)
+},{passive:true})
+</script>
+<div id="lightbox"><span id="lightbox-close">&times;</span><img id="lightbox-img" src="" alt=""></div><script src="system/case-fix.js"></script>
+
+<div class="nextp">
+  <div class="nextp__rule"></div>
+  <a class="nextp__link" href="/fynd">
+    <span class="nextp__label">Next project</span>
+    <span class="nextp__name">Fynd<span>&rarr;</span></span>
+  </a>
+  <a class="nextp__all" href="/work">All projects</a>
+</div>
+</body>
+</html>

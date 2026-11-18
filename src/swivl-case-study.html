@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swivl Tech — Field service · Shlok Shetye</title>
+<meta name="description" content="Case study on Swivl Tech: a design system, a UX operating model, and a Task and Job Scheduler for field-service teams.">
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+</noscript>
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:clip;scroll-behavior:smooth}
+body{background:#fff;color:#1e1e1e;font-family:'Geist','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::-webkit-scrollbar{display:none}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* ── Nav ─────────────────────────── */
+.nav{position:fixed;inset:0 0 auto 0;z-index:400;height:44px;display:flex;align-items:center;padding:0 24px;gap:12px;transition:background .2s,border-color .2s;border-bottom:1px solid transparent}
+.nav.solid{background:#fff;border-bottom-color:#e8e8e6}
+.nav__link{font-size:13px;color:rgba(255,255,255,.65);transition:color .15s}
+.nav__link:hover{color:#fff}
+.nav.solid .nav__link{color:#999}
+.nav.solid .nav__link:hover{color:#1e1e1e}
+.nav__sep{font-size:13px;color:rgba(255,255,255,.3)}
+.nav.solid .nav__sep{color:#ddd}
+.nav__cur{font-size:13px;color:rgba(255,255,255,.9)}
+.nav.solid .nav__cur{color:#1e1e1e}
+
+/* ── Brand colour ─────────────────── */
+:root{--teal:#186c86}
+
+/* ── Hero ────────────────────────── */
+.hero{min-height:100vh;background:var(--teal);display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;padding-bottom:0}
+@media(max-width:680px){.hero{min-height:80vh}}
+.hero__dashboard{width:min(1284px,89.2vw);margin:0 auto;display:block;position:relative;z-index:2;box-shadow:27px 4px 35px rgba(0,0,0,.25);border-radius:8px 8px 0 0;overflow:hidden;margin-top:80px}
+.hero__dashboard img{width:100%;display:block}
+
+/* ── Info bar ────────────────────── */
+.info{background:#fff;border-bottom:1px solid #ebe8e4;padding:0 clamp(24px,3.3vw,48px)}
+.info__inner{display:flex;align-items:stretch;height:100px;gap:0;max-width:1440px;margin:0 auto}
+.info__col{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 clamp(24px,4.2vw,60px) 0 0;min-width:0}
+.info__col:first-child{padding-left:0}
+.info__div{width:2px;background:#ebe8e4;flex-shrink:0;margin:0 clamp(24px,4.2vw,60px) 0 0}
+.info__label{font-size:13px;font-weight:500;color:rgba(30,30,30,.6);letter-spacing:-.39px}
+.info__val{font-size:14px;font-weight:500;color:#1e1e1e;letter-spacing:-.56px;line-height:1.45}
+@media(max-width:640px){.info__inner{flex-direction:column;height:auto;padding:20px 0;gap:16px}.info__div{display:none}}
+
+/* ── Intro ───────────────────────── */
+.intro{background:#fff;padding:clamp(60px,5.6vw,80px) clamp(24px,3.3vw,48px) clamp(60px,5.6vw,80px)}
+.intro__inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.05fr);gap:clamp(60px,18.3vw,263px);align-items:start}
+@media(max-width:760px){.intro__inner{grid-template-columns:1fr;gap:32px}}
+.swivl-logo{display:flex;align-items:center;gap:0}
+.swivl-logo__icon{width:35px;height:35px;object-fit:contain}
+.swivl-logo__sw{font-family:'Inter',sans-serif;font-weight:600;font-size:42px;color:#106984;letter-spacing:-2px;line-height:1;text-transform:lowercase}
+.swivl-logo__dot{width:7px;height:7px;background:#106984;border-radius:50%;margin-bottom:4px;flex-shrink:0}
+.swivl-logo__vl{font-family:'Inter',sans-serif;font-weight:600;font-size:42px;color:#106984;letter-spacing:-2px;line-height:1;text-transform:lowercase}
+.intro__headline{font-family:'Geist',sans-serif;font-weight:500;font-size:clamp(22px,2.9vw,42px);color:#1e1e1e;letter-spacing:-1.68px;line-height:1.1;margin-bottom:clamp(16px,1.7vw,24px)}
+.intro__sub{font-size:clamp(14px,1.25vw,18px);font-weight:500;color:rgba(30,30,30,.6);letter-spacing:-.54px;line-height:1.35;margin-bottom:clamp(24px,2.2vw,32px)}
+.btn-teal{display:inline-flex;align-items:center;gap:8px;background:var(--teal);border-radius:50px;padding:16px 24px;font-family:'Geist',sans-serif;font-weight:600;font-size:17px;color:#fafafa;letter-spacing:-.68px;border:none;cursor:pointer;transition:opacity .15s;text-decoration:none}
+.btn-teal:hover{opacity:.85}
+
+/* ── Impact ──────────────────────── */
+.impact{background:#fff;padding:clamp(40px,5vw,72px) clamp(24px,3.3vw,48px);border-top:1px solid #f0f0f0}
+.impact__inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5.6vw,80px);align-items:center}
+@media(max-width:760px){.impact__inner{grid-template-columns:1fr}}
+.impact__phone{position:relative;max-width:340px}
+.impact__phone img{width:100%;border-radius:24px}
+.impact__metric{position:absolute;background:#fff;border-radius:6px;padding:14px 18px;box-shadow:0 2px 20px rgba(0,0,0,.08);filter:blur(0)}
+.impact__metric--tl{top:18%;left:-8%}
+.impact__metric--br{bottom:25%;right:-8%}
+.metric__label{font-size:12px;font-weight:600;color:#000;margin-bottom:4px}
+.metric__val{font-size:28px;font-weight:500;color:#000;letter-spacing:-1.4px;line-height:1}
+.metric__badge{display:inline-block;background:#ddffea;color:#318c61;font-size:12px;font-weight:600;border-radius:20px;padding:2px 10px;margin-top:6px}
+.impact__text{}
+.impact__tag{font-size:16px;font-weight:500;color:#000;letter-spacing:-.48px;margin-bottom:16px}
+.impact__headline{font-family:'Geist',sans-serif;font-weight:400;font-size:clamp(20px,2.8vw,40px);color:#000;letter-spacing:-1.2px;line-height:1.125}
+
+/* ── Two-col text ────────────────── */
+.twocol{background:#fff;padding:clamp(60px,6vw,86px) clamp(24px,3.3vw,48px);border-top:1px solid #f0f0f0}
+.twocol__inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,72px);align-items:start}
+@media(max-width:760px){.twocol__inner{grid-template-columns:1fr;gap:32px}}
+.twocol__label{font-size:16px;font-weight:400;color:#bfbfbf;letter-spacing:-.48px;margin-bottom:16px}
+.twocol__label--dark{color:#000}
+.twocol__body{font-size:clamp(14px,1.25vw,20px);font-weight:400;color:#1e1e1e;letter-spacing:-.6px;line-height:1.5}
+.twocol__big{font-family:'Geist',sans-serif;font-weight:400;font-size:clamp(22px,2.9vw,42px);color:#000;letter-spacing:-1.26px;line-height:1.1}
+
+/* ── Full-width text ─────────────── */
+.fulltext{background:#fff;padding:clamp(48px,5vw,72px) clamp(24px,3.3vw,48px);border-top:1px solid #f0f0f0}
+.fulltext__inner{max-width:1440px;margin:0 auto}
+.fulltext__label{font-size:16px;font-weight:400;color:#bfbfbf;letter-spacing:-.48px;margin-bottom:16px;display:block}
+.fulltext__body{font-size:clamp(14px,1.25vw,20px);color:#1e1e1e;letter-spacing:-.6px;line-height:1.5;max-width:660px}
+
+/* ── UX Maturity ─────────────────── */
+.maturity{background:#fff;padding:clamp(48px,5vw,72px) clamp(24px,3.3vw,48px);border-top:1px solid #f0f0f0}
+.maturity__inner{max-width:1440px;margin:0 auto}
+.maturity__frame{border-radius:9px;overflow:hidden;background:#fff;border:1px solid #f0f0f0}
+.maturity__frame img{width:100%;display:block}
+
+/* ── Challenges diagram ──────────── */
+.challenges{background:#fff;padding:clamp(48px,5vw,72px) clamp(24px,3.3vw,48px);border-top:1px solid #f0f0f0}
+.challenges__inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,72px);align-items:start}
+@media(max-width:760px){.challenges__inner{grid-template-columns:1fr;gap:32px}}
+.challenges__diagram{position:relative;border-radius:4px;overflow:hidden}
+.challenges__diagram img{width:100%;display:block}
+
+/* ── Strategy ────────────────────── */
+.strategy{background:#fff;padding:clamp(48px,5vw,72px) clamp(24px,3.3vw,48px);border-top:1px solid #f0f0f0}
+.strategy__inner{max-width:1440px;margin:0 auto}
+.strategy__intro{font-size:clamp(14px,1.25vw,20px);color:#000;letter-spacing:-.6px;line-height:1.5;max-width:991px;margin-bottom:clamp(40px,5vw,72px)}
+.strategy__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,3vw,44px);max-width:1100px}
+@media(max-width:760px){.strategy__grid{grid-template-columns:1fr;gap:24px}}
+.strategy__col{}
+.strategy__col-label{font-size:16px;font-weight:500;color:#000;letter-spacing:-.48px;margin-bottom:16px;border-bottom:1px solid #e8e8e6;padding-bottom:12px}
+.strategy__col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.strategy__col li{font-size:clamp(13px,1vw,18px);color:#1e1e1e;letter-spacing:-.54px;line-height:1.4;padding-left:16px;position:relative}
+.strategy__col li::before{content:'—';position:absolute;left:0;color:#aaa}
+
+/* ── Feature image section ───────── */
+.feature{background:#fff;padding:clamp(40px,5vw,72px) clamp(24px,3.3vw,48px);border-top:1px solid #f0f0f0}
+.feature__inner{max-width:1440px;margin:0 auto}
+.feature__title{font-family:'Inter',sans-serif;font-size:clamp(18px,1.67vw,24px);font-weight:400;color:#000;text-align:center;letter-spacing:-.72px;margin-bottom:12px}
+.feature__caption{font-family:'Inter',sans-serif;font-size:clamp(14px,1.25vw,20px);font-weight:400;color:#000;text-align:center;letter-spacing:-.6px;line-height:1.5;max-width:1200px;margin:0 auto clamp(32px,3vw,48px)}
+.feature__img{border-radius:8px;overflow:hidden;box-shadow:0 4px 40px rgba(0,0,0,.08)}
+.feature__img img{width:100%;display:block}
+
+/* ── Back ────────────────────────── */
+.back{background:#f2f2f0;padding:48px clamp(24px,3.3vw,48px);border-top:1px solid #e8e8e6}
+.back a{font-size:14px;color:#888;display:inline-flex;align-items:center;gap:6px;transition:color .15s}
+.back a:hover{color:#1e1e1e}
+
+/* ── Mobile fixes ─────────────────── */
+@media(max-width:760px){
+  /* Impact — clip metric badges on mobile so they don't overflow viewport */
+  .impact__phone{max-width:100%;margin:0 auto}
+  .impact__metric--tl{left:4%;top:12%}
+  .impact__metric--br{right:4%;bottom:18%}
+  .impact__metric{padding:10px 14px}
+}
+@media(max-width:480px){
+  /* Hide metric badges entirely on very small screens */
+  .impact__metric{display:none}
+}
+  #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 999; cursor: pointer; }
+  #lightbox.active { display: flex; }
+  #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+  #lightbox-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 32px; cursor: pointer; font-weight: 300; }
+</style>
+<link rel="stylesheet" href="system/case-fit.css">
+
+<style>
+/* ── Next project ─────────────────────────────────────────────
+   One foot for every case study. These pages do not share a layout:
+   four use the Thine template, four are older and have their own.
+   So this block carries its own values rather than inheriting any,
+   and renders identically on all eight. */
+.nextp{
+  box-sizing:border-box; width:100%; max-width:635px;
+  margin:0 auto; padding:0 0 110px;
+  font-family:'Switzer','Inter',system-ui,-apple-system,sans-serif;
+}
+.nextp *{box-sizing:border-box}
+.nextp__rule{height:1px; background:#e0e0dd; margin:0 0 34px}
+.nextp__link{
+  display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+  text-decoration:none; color:inherit; padding:6px 0;
+  transition:opacity .2s ease;
+}
+.nextp__link:hover{opacity:.5}
+.nextp__label{
+  font-family:'Inter',system-ui,sans-serif; font-weight:500;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:#868686; flex:0 0 auto;
+}
+.nextp__name{
+  font-weight:500; font-size:28px; letter-spacing:-.02em; line-height:1.2;
+  color:#191919; text-align:right;
+}
+.nextp__name span{display:inline-block; margin-left:10px}
+.nextp__all{
+  display:inline-block; margin-top:26px;
+  font-size:15px; letter-spacing:-.01em; color:#868686;
+  text-decoration:none; transition:color .2s ease;
+}
+.nextp__all:hover{color:#191919}
+@media (max-width:680px){
+  .nextp{padding:0 20px 80px}
+  .nextp__link{flex-direction:column; align-items:flex-start; gap:8px}
+  .nextp__name{font-size:22px; text-align:left}
+}
+</style>
+
+<link rel="canonical" href="https://shlokshetye.vercel.app/swivl">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shlok Shetye">
+<meta property="og:title" content="Swivl Tech — Shlok Shetye">
+<meta property="og:description" content="Case study on Swivl Tech: a design system, a UX operating model, and a Task and Job Scheduler for field-service teams.">
+<meta property="og:url" content="https://shlokshetye.vercel.app/swivl">
+<meta property="og:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shlok Shetye, product designer. Designing for a future, still taking shape.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Swivl Tech — Shlok Shetye">
+<meta name="twitter:description" content="Case study on Swivl Tech: a design system, a UX operating model, and a Task and Job Scheduler for field-service teams.">
+<meta name="twitter:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a class="nav__link" href="/work">Home</a>
+  <span class="nav__sep">/</span>
+  <a class="nav__link" href="/work#work-sec">Work</a>
+  <span class="nav__sep">/</span>
+  <span class="nav__cur">Swivl Tech</span>
+  <span style="flex:1"></span>
+  <a class="nav__link" href="/work#work-sec">Work</a>
+  <a class="nav__link" href="shlok-portfolio/labs.html">Labs</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__dashboard">
+    <img fetchpriority="high" src="system/swivl/a079cf4b-3b81-40cc-9308-78a6eb4f0c34.png" decoding="async" alt="Swivl desktop dashboard">
+  </div>
+</section>
+
+<!-- INFO BAR -->
+<div class="info">
+  <div class="info__inner">
+    <div class="info__col">
+      <span class="info__label">Client</span>
+      <span class="info__val">Swivl Tech</span>
+    </div>
+    <div class="info__div"></div>
+    <div class="info__col" style="flex:1">
+      <span class="info__label">Role</span>
+      <span class="info__val">At Swivl Tech, I simplified field-service operations as a Product Designer, contributing to the first scalable design system, leading UX for the Task & Job Scheduler, and working with a senior designer to improve how design scaled.</span>
+    </div>
+    <div class="info__div"></div>
+    <div class="info__col">
+      <span class="info__label">Timeline</span>
+      <span class="info__val">8 months</span>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro">
+  <div class="intro__inner">
+    <div>
+      <div class="swivl-logo" style="margin-bottom:clamp(32px,3vw,48px)">
+        <img class="swivl-logo__icon" src="system/swivl/41f1bc7f-691d-4052-940c-4a93884135d6.png" alt="Swivl mark" loading="lazy">
+        <span class="swivl-logo__sw">sw</span>
+        <span class="swivl-logo__dot"></span>
+        <span class="swivl-logo__vl">vl</span>
+      </div>
+    </div>
+    <div>
+      <h1 class="intro__headline">Swivl Tech is a US-based SaaS platform for field-service professionals — plumbers, electricians, HVAC technicians, and small contractor teams — to manage jobs, CRMs, invoices, and finances in one workflow.</h1>
+      <p class="intro__sub">Swivl Tech is a modern SaaS platform reimagining how field-service businesses operate. It brings jobs, scheduling, payments, and workflows into one powerful, intuitive system — replacing chaos with clarity. Built for technicians on the move, Swivl helps teams work faster, stay in control, and scale effortlessly in real-world conditions.</p>
+      <a class="btn-teal" href="https://app.swivl.tech/dashboard" target="_blank" rel="noopener">View App</a>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section class="impact">
+  <div class="impact__inner">
+    <div style="position:relative;padding:0 clamp(16px,3vw,48px)">
+      <img src="system/swivl/a9949233-9a65-4cb5-bbca-dc66fb3147c5.png" loading="lazy" decoding="async" alt="Swivl mobile interface" style="width:100%;max-width:380px;margin:0 auto;border-radius:20px;display:block">
+      <div class="impact__metric impact__metric--tl">
+        <div class="metric__label">Revenue</div>
+        <div class="metric__val">$55,100</div>
+        <div class="metric__badge">10%</div>
+      </div>
+      <div class="impact__metric impact__metric--br">
+        <div class="metric__label">Revenue</div>
+        <div class="metric__val">$55,100</div>
+        <div class="metric__badge">10%</div>
+      </div>
+    </div>
+    <div class="impact__text">
+      <p class="impact__tag">Impact and Success</p>
+      <p class="impact__headline">We streamlined core operations, reducing job friction by 36%. A new Task & Job Scheduler fixed unassigned tasks, duplicates, and coordination gaps — lowering scheduling errors by 34%. We also built Swivl's first scalable design system and UX operating model, boosting team efficiency by 28%.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REFRAMING -->
+<section class="twocol">
+  <div class="twocol__inner">
+    <div>
+      <p class="twocol__label">The Ask</p>
+      <p class="twocol__body">Swivl initially asked us to create a foundational design system and resolve friction within their existing product. On the surface, this seemed like a UI consolidation exercise — aligning components, visuals, and workflows. However, deeper exploration showed that the challenge extended beyond interface polish.</p>
+    </div>
+    <div>
+      <p class="twocol__label twocol__label--dark" style="text-align:center">Reframing the Problem</p>
+      <p class="twocol__big">The Swivl engagement revealed systemic UX gaps, and shifted the focus from a design system to a scalable operating model: workflows, ownership, and delivery foundations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- UX ENABLEMENT TEXT -->
+<section class="fulltext">
+  <div class="fulltext__inner" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,72px)">
+    <div>
+      <span class="fulltext__label">UX Enablement: Strategy, Methods, and Why It Mattered</span>
+      <p class="fulltext__body">To address Swivl's early-stage challenges, we executed a structured UX Enablement exercise designed to diagnose how design operated inside the organization — not just how the product behaved. This allowed us to uncover systemic inefficiencies and propose a strategy that supported both team maturity and product scalability.</p>
+    </div>
+    <div>
+      <p class="fulltext__body" style="color:rgba(30,30,30,.6)">Swivl initially approached us to build a design system. The UX Enablement analysis revealed deeper structural gaps: unclear ownership, inconsistent decision-making, siloed designers, late engineering involvement, and no shared patterns or rituals. These issues limited quality and made delivery unpredictable. By identifying these systemic blockers early, we shifted the engagement toward foundational workflows, role clarity, and a scalable UX operating model.</p>
+    </div>
+  </div>
+</section>
+
+<!-- UX MATURITY DIAGRAM -->
+<section class="maturity">
+  <div class="maturity__inner">
+    <p style="font-size:16px;font-weight:400;color:#bfbfbf;letter-spacing:-.48px;margin-bottom:24px">a. Stages Of UX Maturity</p>
+    <div class="maturity__frame">
+      <img src="image-frame.png" alt="UX Maturity Stages diagram">
+    </div>
+  </div>
+</section>
+
+<!-- FRAMING CORE CHALLENGES -->
+<section class="challenges">
+  <div class="challenges__inner">
+    <div>
+      <span style="font-size:16px;font-weight:400;color:#bfbfbf;letter-spacing:-.48px;display:block;margin-bottom:16px">Framing the Core Challenges</span>
+      <p style="font-size:clamp(14px,1.25vw,20px);color:#1e1e1e;letter-spacing:-.6px;line-height:1.5">The challenges span three areas — People, Process, and System — revealing gaps in design leadership and skills, siloed workflows, and an unstructured design system that create inefficiencies and inconsistent output. Because each issue differs in impact and complexity, we prioritise them using leverage — a measure of how strongly solving an issue improves quality and delivery, and how feasible it is to act on.</p>
+    </div>
+    <div class="challenges__diagram">
+      <img src="challenges-frame.png" alt="Core Challenges diagram — People, Process, Systems">
+    </div>
+  </div>
+</section>
+
+<!-- PROPOSED STRATEGY -->
+<section class="strategy">
+  <div class="strategy__inner">
+    <span style="font-size:16px;font-weight:400;color:#bfbfbf;letter-spacing:-.48px;display:block;margin-bottom:16px">Proposed Strategy</span>
+    <p class="strategy__intro">Swivl's challenges span People, Process, and System gaps — specifically weak design leadership, skill gaps, siloed workflows, and an unstructured design system. By prioritising interventions through leverage, we focus first on People challenges, which cascade into stronger processes and systems. This forms the basis for a phased improvement roadmap.</p>
+    <div class="strategy__grid">
+      <div class="strategy__col">
+        <p class="strategy__col-label">Immediate Actions (0–3 Months)</p>
+        <ul>
+          <li>Introduce a structured design workflow across research → ideation → wireframes → prototypes → testing → handoff</li>
+          <li>Define clear Designer vs PM responsibilities using a RACI matrix</li>
+          <li>Improve design–engineering collaboration through async channels</li>
+          <li>Conduct quick internal or lightweight user testing to identify early usability issues</li>
+          <li>Build a centralized design system to eliminate inconsistencies</li>
+        </ul>
+      </div>
+      <div class="strategy__col">
+        <p class="strategy__col-label">Mid-Term Plan (3–6 Months)</p>
+        <ul>
+          <li>Hire or assign a Senior Design Lead to set direction and unify design quality</li>
+          <li>Standardize handoffs with detailed rationale, edge cases, and interaction flows</li>
+          <li>Establish iterative feedback loops through structured reviews and retrospectives</li>
+          <li>Align design KPIs with business metrics and run regular cross-team strategy syncs</li>
+        </ul>
+      </div>
+      <div class="strategy__col">
+        <p class="strategy__col-label">Long-Term Plan (6–12 Months & Beyond)</p>
+        <ul>
+          <li>Scale the team with specialized roles — UX researchers, UI designers, interaction designers</li>
+          <li>Strengthen UX culture through critiques, workshops, and cross-functional collaboration</li>
+          <li>Expand the design system into a fully coded component library for engineering reuse and platform-wide consistency</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TASK SCHEDULER -->
+<section class="feature">
+  <div class="feature__inner">
+    <p class="feature__title">Task Scheduler</p>
+    <p class="feature__caption">Built around how users naturally think about work — by time and commitments. The calendar-centric layout makes workload, job duration, and priorities immediately visible, reducing scheduling errors. AI enhances reliability by supporting smarter task placement while preserving manual control.</p>
+    <div class="feature__img">
+      <img src="system/swivl/34f77220-9b2c-4874-9fe7-8014ade0e529.png" loading="lazy" decoding="async" alt="Task Scheduler UI">
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="feature">
+  <div class="feature__inner">
+    <p class="feature__title">Dashboard</p>
+    <p class="feature__caption">This dashboard is designed to make sense of complexity. It brings together the most relevant information and next steps in one place, so users don't have to jump between screens or figure out what to do next.</p>
+    <div class="feature__img" style="border-radius:35px 35px 0 0;box-shadow:27px 4px 35px rgba(0,0,0,.25)">
+      <img src="system/swivl/a079cf4b-3b81-40cc-9308-78a6eb4f0c34.png" loading="lazy" decoding="async" alt="Swivl Dashboard UI">
+    </div>
+  </div>
+</section>
+
+<!-- JOBS + AI -->
+<section class="feature">
+  <div class="feature__inner">
+    <p class="feature__title">Jobs + AI Assistant</p>
+    <p class="feature__caption">This view reframes job management from manual setup to assisted execution. The AI agent pulls relevant customer and job context automatically, reducing setup friction while keeping users in full control of edits and approvals.</p>
+    <div class="feature__img">
+      <img src="system/swivl/5b6e5849-fbfe-481c-9d6d-61a251acb9cb.jpg" loading="lazy" decoding="async" alt="Jobs + AI Assistant UI">
+    </div>
+  </div>
+</section>
+
+<!-- AI ESTIMATOR -->
+<section class="feature">
+  <div class="feature__inner">
+    <p class="feature__title">AI Estimator</p>
+    <p class="feature__caption">Designed to convert vague job intent into structured estimates with minimal user effort. The experience progressively captures only critical inputs while surfacing cost confidence in real time, helping users move from uncertainty to action faster.</p>
+    <div class="feature__img">
+      <img src="system/swivl/248d2b0c-5677-43ca-8912-ce4e9d001917.png" loading="lazy" decoding="async" alt="AI Estimator UI">
+    </div>
+  </div>
+</section>
+
+<!-- BACK -->
+<div class="back">
+  <div style="border-top:1px solid #e8e8e6;margin-bottom:0">
+    <a href="/fynd" style="display:flex;justify-content:space-between;align-items:center;padding:40px 0;text-decoration:none;transition:background .2s ease" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">
+      <div>
+        <div style="font-family:'Geist','Inter',sans-serif;font-size:12px;font-weight:500;color:rgba(30,30,30,.4);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">Next project</div>
+        <div style="font-family:'Geist','Inter',sans-serif;font-size:22px;font-weight:500;color:#1c1c1c;letter-spacing:-.8px;line-height:1">Fynd — Event navigation</div>
+      </div>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="15.5" stroke="#e0e0dd"/><path d="M13 11l5 5-5 5" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <a href="/work">← Back to work</a>
+</div>
+
+<script>
+var nav = document.getElementById('nav')
+window.addEventListener('scroll', function(){
+  nav.classList.toggle('solid', window.scrollY > window.innerHeight - 80)
+}, {passive:true})
+</script>
+<div id="lightbox"><span id="lightbox-close">&times;</span><img id="lightbox-img" src="" alt=""></div><script src="system/case-fix.js"></script>
+
+<div class="nextp">
+  <div class="nextp__rule"></div>
+  <a class="nextp__link" href="/hyperlab">
+    <span class="nextp__label">Next project</span>
+    <span class="nextp__name">Hyperlab<span>&rarr;</span></span>
+  </a>
+  <a class="nextp__all" href="/work">All projects</a>
+</div>
+</body>
+</html>

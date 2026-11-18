@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DBS Bank — Future of Banking Interaction · Shlok Shetye</title>
+<meta name="description" content="Case study for DBS Bank: an AI-first banking experience that moves from transactions to intent, and from feature menus to a daily control center.">
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@500,400&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@500,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+</noscript>
+  <style>
+/* ── Reset ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:clip;scroll-behavior:smooth}
+body{background:#fff;color:#1e1e1e;font-family:'Geist','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+::-webkit-scrollbar{display:none}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* ── Navbar ─────────────────────────────────────── */
+.nav{position:fixed;inset:0 0 auto 0;z-index:400;height:44px;background:#fff;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid #e0e0dd}
+.nav__left{flex:1;display:flex;align-items:center}
+.nav__name{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:500;font-size:16px;color:#191919;letter-spacing:-.02em;transition:opacity .12s ease}
+.nav__name:hover{opacity:.38}
+.nav__right{flex:1;display:flex;align-items:center;justify-content:space-between}
+.nav__clock{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:500;font-size:16px;color:#191919;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.nav__link{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:400;font-size:16px;color:#191919;letter-spacing:-.02em;transition:opacity .12s ease}
+.nav__link:hover{opacity:.38}
+.nav__back{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:400;font-size:16px;color:#191919;letter-spacing:-.02em;display:flex;align-items:center;gap:6px;transition:opacity .12s ease}
+.nav__back:hover{opacity:.38}
+@media(max-width:480px){.nav__clock{display:none}.nav__right{justify-content:flex-end;gap:20px}}
+
+/* ── Reveal ─────────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(10px);transition:opacity .75s cubic-bezier(.25,.46,.45,.94),transform .75s cubic-bezier(.25,.46,.45,.94);will-change:opacity,transform}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── Hero ────────────────────────────────────────── */
+.hero{padding-top:44px;width:100%}
+.hero__img{width:100%;aspect-ratio:16/8;overflow:hidden;background:#f5f4f2}
+.hero__img img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ── Info bar ────────────────────────────────────── */
+.info-bar{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;padding:20px;border-bottom:1px solid #ebe8e4}
+.info-block{padding:0 20px}
+.info-block:first-child{padding-left:0}
+.info-label{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:13px;color:rgba(30,30,30,.6);letter-spacing:-.39px;line-height:1.3;margin-bottom:8px}
+.info-value{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:16px;color:#1e1e1e;letter-spacing:-.64px;line-height:1.4}
+.info-divider{width:1px;background:#ebe8e4;align-self:stretch}
+@media(max-width:680px){.info-bar{grid-template-columns:1fr;gap:20px}.info-divider{display:none}}
+
+/* ── Hero content ────────────────────────────────── */
+.hero-content{display:grid;grid-template-columns:200px 1fr;gap:80px;padding:60px 20px 80px;align-items:start}
+@media(max-width:900px){.hero-content{grid-template-columns:1fr;gap:40px}}
+.hero-logo{padding-top:4px}
+.hero-logo img{height:22px;width:auto}
+.hero-text{}
+.hero-headline{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:26px;color:#1c1c1c;letter-spacing:-1.2px;line-height:1.2;margin-bottom:20px;max-width:700px}
+.hero-sub{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:16px;color:rgba(30,30,30,.6);letter-spacing:-.45px;line-height:1.27;max-width:574px;margin-bottom:32px}
+.hero-btn{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 20px;background:#fe0003;border-radius:42px;font-family:'Geist','Inter',sans-serif;font-weight:600;font-size:14px;color:#fafafa;letter-spacing:-.57px;cursor:pointer;transition:opacity .15s ease}
+.hero-btn:hover{opacity:.85}
+.hero-btn svg{width:17px;height:17px}
+
+/* ── Section ─────────────────────────────────────── */
+.sec{padding:80px clamp(20px,6vw,120px);border-top:1px solid #ebe8e4}
+.sec-sm{padding:60px clamp(20px,6vw,120px);border-top:1px solid #ebe8e4}
+.sec__inner{max-width:1200px;margin:0 auto}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;max-width:1200px;margin:0 auto}
+
+/* ── Context ─────────────────────────────────────── */
+.context-text{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:26px;color:#1c1c1c;letter-spacing:-1.05px;line-height:1.32;text-align:center;max-width:1000px;margin:0 auto}
+.context-label{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:13px;color:#1c1c1c;letter-spacing:-.4px;text-align:center;margin-bottom:12px}
+
+/* ── Two col ─────────────────────────────────────── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+@media(max-width:760px){.two-col{grid-template-columns:1fr;gap:40px;max-width:100%}}
+.col-label{font-family:'Geist','Inter',sans-serif;font-weight:400;font-size:13px;color:#bfbfbf;letter-spacing:-.4px;margin-bottom:10px}
+.col-body{font-family:'Geist','Inter',sans-serif;font-weight:400;font-size:17px;color:#1c1c1c;letter-spacing:-.5px;line-height:1.5}
+.col-heading{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:35px;color:#1c1c1c;letter-spacing:-1.05px;line-height:1.1;margin-bottom:20px}
+.col-sub{font-family:'Geist','Inter',sans-serif;font-weight:400;font-size:17px;color:rgba(30,30,30,.6);letter-spacing:-.5px;line-height:1.5;margin-top:14px}
+
+/* ── Challenge ───────────────────────────────────── */
+.challenge-text{font-family:'Geist','Inter',sans-serif;font-weight:400;font-size:35px;color:#1c1c1c;letter-spacing:-1.05px;line-height:1.07;max-width:940px;margin:0 auto;text-align:center}
+.challenge-label{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:13px;color:#1c1c1c;letter-spacing:-.4px;text-align:center;margin-bottom:14px}
+
+/* ── Shifts ──────────────────────────────────────── */
+.shifts-grid{display:grid;grid-template-columns:240px 1fr;gap:80px;align-items:start}
+@media(max-width:760px){.shifts-grid{grid-template-columns:1fr;gap:20px}}
+.shifts-label{font-family:'Geist','Inter',sans-serif;font-weight:400;font-size:17px;color:#1c1c1c;letter-spacing:-.5px}
+.shifts-body{font-family:'Geist','Inter',sans-serif;font-weight:400;font-size:24px;color:#1c1c1c;letter-spacing:-.72px;line-height:1.5}
+.shifts-body p{margin-bottom:20px}
+.shifts-body p:last-child{margin-bottom:0}
+.shift-title{font-weight:500}
+
+/* ── Feature section ─────────────────────────────── */
+#solution{scroll-margin-top:60px}
+.feat-header{margin-bottom:60px}
+.feat-sub{font-family:'Geist','Inter',sans-serif;font-weight:400;font-size:16px;color:#bfbfbf;letter-spacing:-.48px;margin-bottom:6px}
+.feat-title{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:42px;color:#292929;letter-spacing:-1.68px;line-height:1.05}
+.feat-desc{font-family:'Geist','Inter',sans-serif;font-weight:400;font-size:20px;color:rgba(30,30,30,.6);letter-spacing:-.6px;line-height:1.45;max-width:880px;margin-top:24px}
+
+/* ── Phones ──────────────────────────────────────── */
+.phones-wrap{max-width:min(50%,700px);margin:0 auto 48px}
+@media(max-width:760px){.phones-wrap{max-width:100%}}
+
+.phones-1{width:100%;overflow:hidden;border-radius:4px}
+.phones-1 img{width:100%;max-height:520px;object-fit:cover}
+
+.phones-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.phones-2{grid-template-columns:1fr}}
+.phones-2 img{width:100%;border-radius:4px;object-fit:cover}
+
+.phones-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:760px){.phones-3{grid-template-columns:1fr}}
+.phones-3 img{width:100%;border-radius:4px;object-fit:cover}
+
+/* ── Feature text below phones ───────────────────── */
+.feat-below{text-align:center;max-width:900px;margin:0 auto}
+.feat-below-title{font-family:'Geist','Inter',sans-serif;font-weight:600;font-size:20px;color:#1e1e1e;letter-spacing:-.6px;margin-bottom:12px}
+.feat-below-body{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:22px;color:#1e1e1e;letter-spacing:-.66px;line-height:1.4}
+
+/* ── Feat left ───────────────────────────────────── */
+.feat-left{max-width:900px}
+.feat-left-title{font-family:'Geist','Inter',sans-serif;font-weight:600;font-size:20px;color:#1e1e1e;letter-spacing:-.6px;margin-bottom:12px}
+.feat-left-body{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:22px;color:#1e1e1e;letter-spacing:-.66px;line-height:1.4}
+
+/* ── Mobile fixes ────────────────────────────────── */
+@media(max-width:600px){
+  .challenge-text{font-size:clamp(20px,5.5vw,28px);padding:0 4px}
+  .col-heading{font-size:clamp(18px,5vw,26px)}
+  .shifts-body{font-size:clamp(16px,4.5vw,22px)}
+  .sec{padding:40px 16px}
+  .sec-sm{padding:40px 16px}
+  .feat-left-title{font-size:17px}
+  .feat-left-body{font-size:clamp(15px,4vw,18px)}
+  .feat-below-title{font-size:17px}
+  .feat-below-body{font-size:clamp(14px,3.8vw,17px)}
+}
+  #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 999; cursor: pointer; }
+  #lightbox.active { display: flex; }
+  #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+  #lightbox-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 32px; cursor: pointer; font-weight: 300; }
+</style>
+<link rel="stylesheet" href="system/case-fit.css">
+
+<style>
+/* ── Next project ─────────────────────────────────────────────
+   One foot for every case study. These pages do not share a layout:
+   four use the Thine template, four are older and have their own.
+   So this block carries its own values rather than inheriting any,
+   and renders identically on all eight. */
+.nextp{
+  box-sizing:border-box; width:100%; max-width:635px;
+  margin:0 auto; padding:0 0 110px;
+  font-family:'Switzer','Inter',system-ui,-apple-system,sans-serif;
+}
+.nextp *{box-sizing:border-box}
+.nextp__rule{height:1px; background:#e0e0dd; margin:0 0 34px}
+.nextp__link{
+  display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+  text-decoration:none; color:inherit; padding:6px 0;
+  transition:opacity .2s ease;
+}
+.nextp__link:hover{opacity:.5}
+.nextp__label{
+  font-family:'Inter',system-ui,sans-serif; font-weight:500;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:#868686; flex:0 0 auto;
+}
+.nextp__name{
+  font-weight:500; font-size:28px; letter-spacing:-.02em; line-height:1.2;
+  color:#191919; text-align:right;
+}
+.nextp__name span{display:inline-block; margin-left:10px}
+.nextp__all{
+  display:inline-block; margin-top:26px;
+  font-size:15px; letter-spacing:-.01em; color:#868686;
+  text-decoration:none; transition:color .2s ease;
+}
+.nextp__all:hover{color:#191919}
+@media (max-width:680px){
+  .nextp{padding:0 20px 80px}
+  .nextp__link{flex-direction:column; align-items:flex-start; gap:8px}
+  .nextp__name{font-size:22px; text-align:left}
+}
+</style>
+
+<link rel="canonical" href="https://shlokshetye.vercel.app/dbs">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shlok Shetye">
+<meta property="og:title" content="DBS Bank — Shlok Shetye">
+<meta property="og:description" content="Case study for DBS Bank: an AI-first banking experience that moves from transactions to intent, and from feature menus to a daily control center.">
+<meta property="og:url" content="https://shlokshetye.vercel.app/dbs">
+<meta property="og:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shlok Shetye, product designer. Designing for a future, still taking shape.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DBS Bank — Shlok Shetye">
+<meta name="twitter:description" content="Case study for DBS Bank: an AI-first banking experience that moves from transactions to intent, and from feature menus to a daily control center.">
+<meta name="twitter:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════ -->
+<header class="nav">
+  <div class="nav__left">
+    <a class="nav__back" href="/work">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="#191919" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Shlok Shetye
+    </a>
+  </div>
+  <div class="nav__right">
+    <span class="nav__clock" id="clock">00:00:00 IST</span>
+    <a class="nav__link" href="/work#work-sec">Work</a>
+    <a class="nav__link" href="shlok-portfolio/labs.html">Labs</a>
+  </div>
+</header>
+
+
+<!-- ═══════════════════════════════════════════
+     HERO IMAGE
+═══════════════════════════════════════════ -->
+<div class="hero reveal">
+  <div class="hero__img">
+    <img fetchpriority="high" src="system/dbs/c5f2ec61-454a-4bd4-b2d2-71cb14d48cf6.png" decoding="async" alt="DBS Bank AI Super App">
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     INFO BAR
+═══════════════════════════════════════════ -->
+<div class="info-bar reveal">
+  <div class="info-block">
+    <div class="info-label">Client</div>
+    <div class="info-value">DBS Bank</div>
+  </div>
+  <div class="info-divider"></div>
+  <div class="info-block">
+    <div class="info-label">Role</div>
+    <div class="info-value">End-to-end Product Design</div>
+  </div>
+  <div class="info-divider"></div>
+  <div class="info-block">
+    <div class="info-label">Timeline</div>
+    <div class="info-value">2025</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     HERO CONTENT
+═══════════════════════════════════════════ -->
+<div class="hero-content reveal">
+  <div class="hero-logo">
+    <img src="dbs-logo.png" alt="DBS Bank" style="height:28px;width:auto;object-fit:contain">
+  </div>
+  <div class="hero-text">
+    <p class="hero-headline">An AI-first super app disrupting the paradigm of banking, reimagining finance as a lifestyle-centric companion that anticipates intent, embeds into routines, and delivers continuous, context-aware guidance.</p>
+    <p class="hero-sub">By rethinking the banking interaction paradigm through a proactive, AI-led experience layer — moving from transaction-centric screens to intent-driven, context-aware engagement that integrates finance seamlessly into everyday life.</p>
+    <a class="hero-btn" href="#solution">
+      View the solution
+      <svg viewBox="0 0 17 17" fill="none"><path d="M3.5 8.5H13.5M13.5 8.5L9 4M13.5 8.5L9 13" stroke="#fafafa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     USER & MARKET CONTEXT
+═══════════════════════════════════════════ -->
+<div class="sec reveal">
+  <div class="context-label">User &amp; Market Context</div>
+  <p class="context-text">Banking today is largely optimized for transactional efficiency, while users manage their finances alongside work, health, shopping, and long-term life decisions. This fragmentation forces users to switch between multiple tools to stay in control. The primary users are digitally mature professionals and small business owners who expect intelligent guidance, not manual tracking. For them, the gap is not access to features, but the lack of a system that understands context, anticipates needs, and supports daily decision-making.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     THE ASK / PRODUCT FRAMING
+═══════════════════════════════════════════ -->
+<div class="sec-sm reveal">
+  <div class="two-col">
+    <div>
+      <div class="col-label">The Ask</div>
+      <p class="col-body">Design a next-generation banking experience that meaningfully increases daily active usage by going beyond transactions and positioning the bank as an intelligent, everyday companion.</p>
+    </div>
+    <div>
+      <div class="col-label">Product Framing</div>
+      <p class="col-heading">The opportunity was to rearchitect banking apps beyond transactional utilities, introducing a new interaction paradigm for continuous, intent-driven engagement beyond traditional finance.</p>
+      <p class="col-sub">By shifting banking from episodic, task-based usage to a proactive interaction layer, the experience embeds finance into daily routines — leveraging AI to surface timely, relevant guidance across financial and lifestyle contexts.</p>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ═══════════════════════════════════════════
+     STRATEGIC INTERACTION SHIFTS
+═══════════════════════════════════════════ -->
+<div class="sec reveal">
+  <div class="shifts-grid">
+    <div class="shifts-label">Strategic Interaction Shifts</div>
+    <div class="shifts-body">
+      <p>The experience was designed around three fundamental shifts in how users engage with banking:</p>
+      <p><span class="shift-title">1. Transaction-Centric → Intent-Oriented</span><br>Users think in goals and routines, not balances. The AI layer interprets contextual signals to surface relevant actions without requiring explicit search or navigation.</p>
+      <p><span class="shift-title">2. Event-Triggered → Continuous Engagement</span><br>The product moves beyond isolated financial moments to engage users across daily touchpoints, establishing habit loops that drive consistent usage.</p>
+      <p><span class="shift-title">3. Feature Navigation → Adaptive Interaction Layer</span><br>The homepage evolves into a conversational, dynamic interface that prioritizes what matters in the moment — reducing cognitive load and enabling fluid, human-centered interactions.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     THE SUPER APP — HEADER
+═══════════════════════════════════════════ -->
+<div id="solution" class="sec reveal">
+  <div class="feat-header">
+    <div class="feat-sub">The Intelligent Daily Control Center</div>
+    <div class="feat-title">The Super App for Everyday Life</div>
+    <p class="feat-desc">A unified, AI-driven daily overview that brings together finance and health insights, business transactions, insurance status, wealth performance, relevant shopping and health-related offers, and upcoming decisions like car loans, auto insurance, and investment planning. By consolidating these signals into a single, contextual entry point, the experience helps users start their day with clarity — surfacing what needs attention, what requires action, and what opportunities lie ahead, without navigating multiple products or screens.</p>
+  </div>
+  <div class="phones-wrap" style="max-width:min(75%,1050px)">
+    <div class="phones-1">
+      <img src="system/dbs/dbs-superapp-overview.png" loading="lazy" decoding="async" alt="DBS Super App Overview">
+    </div>
+  </div>
+  <div class="feat-below">
+    <div class="feat-below-title">Reframing the challenge</div>
+    <p class="feat-below-body">The challenge was to leverage AI as the primary interaction layer to drive higher DAU and user acquisition, shifting banking from low-frequency, transaction-led usage to a habit-forming, intent-driven engagement model that scales across user segments.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     FINANCE & HEALTH INSIGHTS
+═══════════════════════════════════════════ -->
+<div class="sec reveal">
+  <div class="phones-wrap" style="max-width:min(75%,1050px)">
+    <div class="phones-1">
+      <img src="system/dbs/dbs-finance-health.png" loading="lazy" decoding="async" alt="Finance &amp; Health Insights">
+    </div>
+  </div>
+  <div class="feat-below">
+    <div class="feat-below-title">Finance &amp; Health Insights</div>
+    <p class="feat-below-body">Designed to help users start the day with clarity, this experience connects financial signals with health context in a single view. By intelligently surfacing balances, spending patterns, upcoming obligations, and relevant health cues, it reduces cognitive load and enables more grounded, day-to-day decisions.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     BUSINESS TRANSACTIONS & INSURANCE
+═══════════════════════════════════════════ -->
+<div class="sec reveal">
+  <div class="phones-wrap">
+    <div class="phones-3">
+      <img src="system/dbs/0ccf33df-258d-4eb4-b7f8-17a5dfecac9f.png" loading="lazy" decoding="async" alt="Business Transactions" style="aspect-ratio:9/19;object-fit:cover">
+      <img src="system/dbs/9397e8ec-22bd-42ed-9ebe-b6fe8d62ff01.png" loading="lazy" decoding="async" alt="Revenue Insights" style="aspect-ratio:9/19;object-fit:cover">
+      <img src="system/dbs/490807d4-63de-41b8-b695-f5522b1c3853.png" loading="lazy" decoding="async" alt="Insurance Status" style="aspect-ratio:9/19;object-fit:cover">
+    </div>
+  </div>
+  <div class="feat-below">
+    <div class="feat-below-title">Business Transactions &amp; Insurance Insights</div>
+    <p class="feat-below-body">Built to minimize operational risk and manual effort, this layer proactively manages business payments, revenue insights, investment opportunities, and insurance status. Critical actions and alerts are surfaced at the right moment, helping users stay ahead of deadlines, optimize capital, and maintain coverage with confidence.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SMART WEALTH MANAGEMENT
+═══════════════════════════════════════════ -->
+<div class="sec reveal">
+  <div class="feat-left" style="margin-bottom:60px">
+    <div class="feat-left-title">Smart Wealth Management</div>
+    <p class="feat-left-body">Focused on long-term growth without constant monitoring, the system translates complex portfolio data into clear, timely guidance. By tracking performance, liquidity, and market signals, it recommends when to invest, rebalance, or hold — making wealth management more intuitive and less reactive.</p>
+  </div>
+  <div class="phones-wrap">
+    <div class="phones-2">
+      <img src="system/dbs/7c87829a-25b4-491d-bc6c-67c0c1d185f0.png" loading="lazy" decoding="async" alt="Portfolio Overview" style="aspect-ratio:9/16;object-fit:cover">
+      <img src="system/dbs/dfa179d4-bf95-4079-b5bd-cf76377345f2.png" loading="lazy" decoding="async" alt="Investment Recommendations" style="aspect-ratio:9/16;object-fit:cover">
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SHOPPING & HEALTH-RELATED OFFERS
+═══════════════════════════════════════════ -->
+<div class="sec reveal">
+  <div class="phones-wrap">
+    <div class="phones-3">
+      <img src="system/dbs/cc7230ac-6652-422e-93f0-6f37b3ef5f3a.png" loading="lazy" decoding="async" alt="Shopping Offers" style="aspect-ratio:9/19;object-fit:cover">
+      <img src="system/dbs/7c351b9c-03af-4e59-b52c-eb1b09b2a970.png" loading="lazy" decoding="async" alt="Health Offers" style="aspect-ratio:9/19;object-fit:cover">
+      <img src="system/dbs/9fd3369c-c91a-4c1b-818f-1f2915411d23.png" loading="lazy" decoding="async" alt="Contextual Offers" style="aspect-ratio:9/19;object-fit:cover">
+    </div>
+  </div>
+  <div class="feat-below">
+    <div class="feat-below-title">Shopping &amp; Health-Related Offers</div>
+    <p class="feat-below-body">This experience delivers relevance over volume. By combining spending behavior, lifestyle patterns, and health context, it surfaces offers only when they align with real user needs — turning promotions into value-adding recommendations rather than interruptions.</p>
+  </div>
+</div>
+
+
+
+
+<!-- ═══════════════════════════════════════════
+     NEXT PROJECT + FOOTER
+═══════════════════════════════════════════ -->
+<div style="border-top:1px solid #ebe8e4">
+  <!-- Next project -->
+  <a href="/swivl" style="display:flex;justify-content:space-between;align-items:center;padding:40px 20px;text-decoration:none;transition:background .2s ease" onmouseover="this.style.background='#f9f9f7'" onmouseout="this.style.background='transparent'">
+    <div>
+      <div style="font-family:'Geist','Inter',sans-serif;font-size:12px;font-weight:500;color:rgba(30,30,30,.4);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">Next project</div>
+      <div style="font-family:'Geist','Inter',sans-serif;font-size:22px;font-weight:500;color:#1c1c1c;letter-spacing:-.8px;line-height:1">Swivl Tech</div>
+    </div>
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="15.5" stroke="#e0e0dd"/><path d="M13 11l5 5-5 5" stroke="#1c1c1c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+  <!-- Footer -->
+  <div style="padding:20px;border-top:1px solid #ebe8e4;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-family:'Geist','Inter',sans-serif;font-size:13px;color:rgba(30,30,30,.4);letter-spacing:-.3px">© 2025 Shlok Shetye</span>
+    <a href="/work" style="font-family:'Geist','Inter',sans-serif;font-size:13px;color:rgba(30,30,30,.6);letter-spacing:-.3px;display:flex;align-items:center;gap:5px;transition:opacity .12s ease" onmouseover="this.style.opacity='.38'" onmouseout="this.style.opacity='1'">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to portfolio
+    </a>
+  </div>
+</div>
+
+
+<script>
+// ── IST Clock ─────────────────────────────────────
+(function tick(){
+  const now = new Date();
+  const ist = new Date(now.toLocaleString('en-US', {timeZone:'Asia/Kolkata'}));
+  const h = String(ist.getHours()).padStart(2,'0');
+  const m = String(ist.getMinutes()).padStart(2,'0');
+  const s = String(ist.getSeconds()).padStart(2,'0');
+  const el = document.getElementById('clock');
+  if(el) el.textContent = h+':'+m+':'+s+' IST';
+  setTimeout(tick, 1000);
+})();
+
+// ── Scroll reveal ─────────────────────────────────
+const ZONE = 220;
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, {rootMargin: `0px 0px -${ZONE}px 0px`});
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Hero load animation ────────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelector('.hero').classList.add('visible');
+  }, 80);
+  setTimeout(() => {
+    document.querySelectorAll('.info-bar, .hero-content').forEach(el => el.classList.add('visible'));
+  }, 200);
+});
+</script>
+<div id="lightbox"><span id="lightbox-close">&times;</span><img id="lightbox-img" src="" alt=""></div><script src="system/case-fix.js"></script>
+
+<div class="nextp">
+  <div class="nextp__rule"></div>
+  <a class="nextp__link" href="/swivl">
+    <span class="nextp__label">Next project</span>
+    <span class="nextp__name">Swivl Tech<span>&rarr;</span></span>
+  </a>
+  <a class="nextp__all" href="/work">All projects</a>
+</div>
+</body>
+</html>

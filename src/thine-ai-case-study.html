@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thine · Personal Intelligence · Shlok Shetye</title>
+<meta name="description" content="Case study on Thine, a privacy-first personal intelligence. The design choice was fewer screens, and one message when it matters.">
+  
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@500,400&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@500,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap">
+</noscript>
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html {overflow-x:clip; scroll-behavior: smooth; }
+  ::-webkit-scrollbar { width: 0; }
+
+  :root {
+    --f-sw: 'Switzer', 'Inter', system-ui, sans-serif;
+    --f-in: 'Inter', system-ui, sans-serif;
+    --c-heading: #404040;
+    --c-body:    #868686;
+    --c-dark:    #191919;
+    --nav-h:     44px;
+    --border:    #e0e0dd;
+    --bg:        #fff;
+    --ink:       #191919;
+  }
+
+  body {
+    font-family: var(--f-sw);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 400;
+    height: var(--nav-h);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav__left { flex: 1; display: flex; align-items: center; }
+  .nav__name {
+    font-family: var(--f-sw);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    transition: opacity .12s ease;
+  }
+  .nav__name:hover { opacity: .38; }
+  .nav__right { flex: 1; display: flex; align-items: center; justify-content: space-between; }
+  .nav__clock {
+    font-family: var(--f-sw);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .nav__link {
+    font-family: var(--f-sw);
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: opacity .12s ease;
+  }
+  .nav__link:hover { opacity: .38; }
+
+  .wrap {
+    width: 635px;
+    margin: 0 auto;
+    padding: calc(var(--nav-h) + 60px) 0 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  .hero { display: flex; flex-direction: column; gap: 32px; }
+
+  .hero__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .hero__tag {
+    font-family: var(--f-sw);
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--c-body);
+    letter-spacing: -0.01em;
+  }
+
+  .hero__year {
+    font-family: var(--f-sw);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--c-heading);
+    letter-spacing: -0.05em;
+  }
+
+  .hero__title {
+    font-family: var(--f-sw);
+    font-weight: 500;
+    font-size: 48px;
+    color: var(--c-dark);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .hero__subtitle {
+    font-family: var(--f-sw);
+    font-weight: 400;
+    font-size: 20px;
+    color: var(--c-body);
+    letter-spacing: -0.01em;
+    line-height: 32px;
+    max-width: 520px;
+  }
+
+  .img-placeholder {
+    width: 100%;
+    background: #d5d5d5;
+    border-radius: 8px;
+  }
+  .img-placeholder--full  { height: 480px; }
+  .img-placeholder--half  { height: 320px; }
+
+  .meta-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .meta-item { display: flex; flex-direction: column; gap: 6px; }
+
+  .meta-item__label {
+    font-family: var(--f-in);
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--c-body);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .meta-item__value {
+    font-family: var(--f-sw);
+    font-weight: 400;
+    font-size: 15px;
+    color: var(--c-heading);
+    letter-spacing: -0.01em;
+    line-height: 22px;
+  }
+
+  .section { display: flex; flex-direction: column; gap: 24px; }
+
+  .section__label {
+    font-family: var(--f-in);
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--c-body);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .section__title {
+    font-family: var(--f-sw);
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--c-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .section__body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .section__body p {
+    font-family: var(--f-sw);
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--c-body);
+    letter-spacing: -0.01em;
+    line-height: 30px;
+  }
+
+  .section__body strong {
+    font-weight: 500;
+    color: var(--c-heading);
+  }
+
+  .contact { display: flex; flex-direction: column; gap: 32px; }
+
+  .contact__title {
+    font-family: var(--f-in);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--c-dark);
+  }
+
+  .contact__links { display: flex; gap: 32px; align-items: center; flex-wrap: wrap; }
+
+  .contact__links a {
+    font-family: var(--f-sw);
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--c-heading);
+    letter-spacing: -0.0125em;
+    text-decoration: none;
+    transition: opacity .12s;
+  }
+  .contact__links a:hover { opacity: .45; }
+
+
+  /* ── Click to play ───────────────────────────────────────────
+     The long films fetch nothing until they are asked for. The poster
+     stands in and the control over it says plainly that this is a film
+     and how long it runs. Short loops still play themselves; only the
+     long ones wait. The disc borrows the loader's blue so the two read
+     as the same hand. */
+  .filmbox { position: relative; }
+  .filmbox video { display: block; }
+  .filmbox__play {
+    position: absolute; inset: 0; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+    border: 0; padding: 0; cursor: pointer; background: transparent;
+    font-family: 'Switzer', 'Inter', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .filmbox__play[hidden] { display: none; }
+  /* a soft bloom lifts the control off whatever frame sits behind it */
+  .filmbox__play::before {
+    content: ""; position: absolute; left: 50%; top: 50%;
+    width: 320px; height: 320px; transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(241,241,241,.72) 0%, rgba(241,241,241,.34) 46%, transparent 72%);
+    pointer-events: none;
+  }
+  .filmbox__disc {
+    position: relative;
+    width: 84px; height: 84px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(255,255,255,.72);
+    border: 1px solid rgba(255,255,255,.92);
+    box-shadow: inset 0 1px 5px rgba(255,255,255,.7),
+                inset 0 -5px 6px rgba(255,255,255,.85),
+                0 14px 40px rgba(2,85,132,.20),
+                0 2px 8px rgba(2,85,132,.10);
+    backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+    transition: transform .42s cubic-bezier(.22,1,.36,1),
+                box-shadow .42s cubic-bezier(.22,1,.36,1);
+  }
+  .filmbox__disc svg { width: 25px; height: 25px; margin-left: 4px; display: block; color: #025584; }
+  /* a ring that breathes, so a still frame does not look like a dead image */
+  .filmbox__disc::after {
+    content: ""; position: absolute; inset: -1px; border-radius: 50%;
+    border: 1px solid rgba(2,85,132,.28);
+    animation: filmpulse 2.8s cubic-bezier(.22,1,.36,1) infinite;
+  }
+  @keyframes filmpulse {
+    0%   { transform: scale(1);    opacity: .55 }
+    70%  { transform: scale(1.34); opacity: 0 }
+    100% { transform: scale(1.34); opacity: 0 }
+  }
+  .filmbox__play:hover .filmbox__disc {
+    transform: scale(1.07);
+    box-shadow: inset 0 1px 5px rgba(255,255,255,.7),
+                inset 0 -5px 6px rgba(255,255,255,.85),
+                0 18px 48px rgba(2,85,132,.26),
+                0 2px 8px rgba(2,85,132,.12);
+  }
+  .filmbox__play:active .filmbox__disc { transform: scale(.96); }
+  .filmbox__label {
+    position: relative;
+    font-size: 12.5px; font-weight: 500; letter-spacing: .02em;
+    text-transform: uppercase;
+    color: #025584;
+    padding: 8px 15px; border-radius: 999px;
+    background: rgba(255,255,255,.72);
+    border: 1px solid rgba(255,255,255,.9);
+    box-shadow: 0 6px 20px rgba(2,85,132,.12);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+  @media (max-width: 680px) {
+    .filmbox__disc { width: 66px; height: 66px; }
+    .filmbox__disc svg { width: 20px; height: 20px; }
+    .filmbox__label { font-size: 11px; padding: 7px 12px; }
+    .filmbox__play::before { width: 220px; height: 220px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .filmbox__disc::after { animation: none; opacity: .4 }
+    .filmbox__disc { transition: none }
+  }
+
+  #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 999; cursor: pointer; }
+  #lightbox.active { display: flex; }
+  #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+  #lightbox-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 32px; cursor: pointer; font-weight: 300; }
+
+  @media(max-width:680px){
+    .wrap { width: 100%; padding: calc(var(--nav-h) + 40px) 20px 80px; gap: 60px; }
+    .meta-row { grid-template-columns: 1fr; }
+    .hero__title { font-size: 32px; }
+    .section__title { font-size: 20px; }
+    .section__body p { font-size: 16px; }
+  }
+
+  .pill-wrap{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:500;border-radius:999px;box-shadow:0 3px 14px 0 #BFBFBF}
+  .pill-wrap:active{transform:translateX(-50%) scale(.97)}
+  .pill-glow{position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;background:radial-gradient(circle,rgba(220,230,218,1) 0%,rgba(220,230,218,0.4) 45%,transparent 72%);filter:blur(14px);animation:pill-drift 6s ease-in-out infinite;pointer-events:none;z-index:0}
+  @keyframes pill-drift{0%{transform:translate(0px,0px)}10%{transform:translate(32px,-4px)}22%{transform:translate(18px,8px)}35%{transform:translate(-10px,6px)}48%{transform:translate(-34px,-2px)}60%{transform:translate(-22px,-10px)}72%{transform:translate(8px,-12px)}85%{transform:translate(28px,4px)}100%{transform:translate(0px,0px)}}
+  .pill-clip{position:relative;z-index:1;display:inline-flex;border-radius:999px;overflow:hidden;contain:paint;padding:1.5px;background:#E3E3E3}
+  .pill-frame{position:absolute;inset:-100%;background:conic-gradient(from 0deg,transparent 0deg,transparent 330deg,rgba(190,205,188,0.45) 346deg,rgba(220,230,218,0.85) 354deg,rgba(255,255,255,1) 358deg,rgba(220,230,218,0.85) 360deg,transparent 360deg);animation:pill-comet 2.2s linear infinite;pointer-events:none}
+  @keyframes pill-comet{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .pill{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#fff;border:none;padding:11.5px 36.5px;cursor:pointer;text-decoration:none;font-family:'Switzer','Inter',system-ui,sans-serif;font-size:16px;font-weight:500;letter-spacing:.025em;white-space:nowrap;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .pill-label{display:block;color:#5E6D70;-webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,0.5) 0%,#000 22%,#000 78%,rgba(0,0,0,0.5) 100%);mask-image:linear-gradient(90deg,rgba(0,0,0,0.5) 0%,#000 22%,#000 78%,rgba(0,0,0,0.5) 100%)}
+  @media(max-width:480px){.pill-wrap{bottom:18px}.pill{font-size:14px;padding:10px 28px}}
+    /* ── Read more ──────────────────────────────────────────────
+     Long sections open at a readable height and keep the rest
+     behind a control. The clipped text does not simply stop: it
+     blurs and fades into the page, so the cut reads as "there is
+     more" rather than as a broken edge. */
+  .section__body.is-clamped {
+    position: relative;
+    max-height: var(--clamp, 232px);
+    overflow: hidden;
+  }
+  .section__body.is-clamped::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 132px;
+    pointer-events: none;
+    background: linear-gradient(to bottom,
+      rgba(255,255,255,0) 0%, rgba(255,255,255,.72) 52%, #fff 100%);
+    -webkit-backdrop-filter: blur(3.5px);
+            backdrop-filter: blur(3.5px);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 58%);
+            mask-image: linear-gradient(to bottom, transparent 0%, #000 58%);
+  }
+  .section__body.is-open { max-height: none; }
+  .section__body.is-open::after { display: none; }
+
+  .readmore {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: -4px;
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--f-sw);
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--c-dark);
+    transition: opacity .14s;
+  }
+  .readmore:hover { opacity: .5; }
+  .readmore__chev {
+    width: 7px; height: 7px;
+    border-right: 1.3px solid currentColor;
+    border-bottom: 1.3px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform .26s cubic-bezier(.25,1,.5,1);
+  }
+  .readmore.is-open .readmore__chev { transform: translateY(1px) rotate(-135deg); }
+  @media (prefers-reduced-motion: reduce) {
+    .readmore__chev { transition: none; }
+  }
+
+
+
+</style>
+<link rel="stylesheet" href="system/case-fit.css">
+
+<style>
+/* ── Next project ─────────────────────────────────────────────
+   One foot for every case study. These pages do not share a layout:
+   four use the Thine template, four are older and have their own.
+   So this block carries its own values rather than inheriting any,
+   and renders identically on all eight. */
+.nextp{
+  box-sizing:border-box; width:100%; max-width:635px;
+  margin:0 auto; padding:0 0 110px;
+  font-family:'Switzer','Inter',system-ui,-apple-system,sans-serif;
+}
+.nextp *{box-sizing:border-box}
+.nextp__rule{height:1px; background:#e0e0dd; margin:0 0 34px}
+.nextp__link{
+  display:flex; align-items:baseline; justify-content:space-between; gap:24px;
+  text-decoration:none; color:inherit; padding:6px 0;
+  transition:opacity .2s ease;
+}
+.nextp__link:hover{opacity:.5}
+.nextp__label{
+  font-family:'Inter',system-ui,sans-serif; font-weight:500;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:#868686; flex:0 0 auto;
+}
+.nextp__name{
+  font-weight:500; font-size:28px; letter-spacing:-.02em; line-height:1.2;
+  color:#191919; text-align:right;
+}
+.nextp__name span{display:inline-block; margin-left:10px}
+.nextp__all{
+  display:inline-block; margin-top:26px;
+  font-size:15px; letter-spacing:-.01em; color:#868686;
+  text-decoration:none; transition:color .2s ease;
+}
+.nextp__all:hover{color:#191919}
+@media (max-width:680px){
+  .nextp{padding:0 20px 80px}
+  .nextp__link{flex-direction:column; align-items:flex-start; gap:8px}
+  .nextp__name{font-size:22px; text-align:left}
+}
+</style>
+
+<link rel="canonical" href="https://shlokshetye.vercel.app/beta">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shlok Shetye">
+<meta property="og:title" content="Thine Beta — Shlok Shetye">
+<meta property="og:description" content="Case study on Thine, a privacy-first personal intelligence. The design choice was fewer screens, and one message when it matters.">
+<meta property="og:url" content="https://shlokshetye.vercel.app/beta">
+<meta property="og:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shlok Shetye, product designer. Designing for a future, still taking shape.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Thine Beta — Shlok Shetye">
+<meta name="twitter:description" content="Case study on Thine, a privacy-first personal intelligence. The design choice was fewer screens, and one message when it matters.">
+<meta name="twitter:image" content="https://shlokshetye.vercel.app/system/share/og.jpg">
+</head>
+<body>
+
+<div id="lightbox"><span id="lightbox-close">&times;</span><img id="lightbox-img" src="" alt=""></div>
+
+<header class="nav">
+  <div class="nav__left">
+    <a class="nav__name" href="/work">Shlok Shetye</a>
+  </div>
+  <div class="nav__right">
+    <span class="nav__clock" id="clock">00:00:00 IST</span>
+    <a class="nav__link" href="/work#work-sec">Work</a>
+    <a class="nav__link" href="shlok-portfolio/labs.html">Labs</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero__meta">
+      <span class="hero__tag">Thine</span>
+      <span class="hero__year">/ 2026</span>
+    </div>
+    <h1 class="hero__title">Co-founder to your life</h1>
+    <p class="hero__subtitle">Privacy-first intelligence that lives alongside you, holding the context you can't fit in a prompt, and surfacing answers to the questions you can't quite articulate.</p>
+  </div>
+
+  <div class="img-placeholder img-placeholder--full" style="background:#191919">
+    <img fetchpriority="high" decoding="async" src="system/thine-ai/hero-cover.png" alt="Thine, Co-founder to your life" style="width:100%;height:100%;object-fit:cover;border-radius:8px;display:block">
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-item__label">Role</div>
+      <div class="meta-item__value">Product Designer</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">Year</div>
+      <div class="meta-item__value">2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-item__label">Category</div>
+      <div class="meta-item__value">AI · Personal Intelligence</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section__label">00 / 04 The product</div>
+    <h2 class="section__title">What Is Thine</h2>
+    <div class="section__body">
+      <p>General-purpose AI is built to answer questions you already know how to ask. Do this. Write that. Perform these steps.</p>
+      <p>It can't answer "Am I becoming who I wanted to be?" Not because it isn't smart enough, but because that answer doesn't live in a single prompt. It's scattered across conversations with mentors three years ago, one-on-ones with coworkers, a 2 AM moment of doubt, something someone said last week that hasn't quite landed.</p>
+      <p>Thine is built for that gap. A <strong>privacy-first personal intelligence</strong> that lives alongside you across work and life, holding the context most tools throw away, and surfacing it back when it matters, not only when you remember to ask.</p>
+      <p>Not a chatbot you prompt. <strong>A co-founder to your life.</strong></p>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:center;background:#eef6fa;border-radius:8px;padding:32px 0">
+    <video preload="none" style="width:auto;height:620px;aspect-ratio:1290/2796;border-radius:24px;display:block" muted loop playsinline controls poster="system/thine-ai/poster/onboarding.webp">
+      <source src="system/thine-ai/onboarding.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div style="background:#f5f5f5;border-radius:8px;overflow:hidden">
+    <div class="filmbox"><video data-manual preload="none" style="width:100%;height:auto;aspect-ratio:1920/1080;display:block" muted loop playsinline controls poster="system/thine-ai/poster/thine4k.webp">
+      <source src="system/thine-ai/thine4k.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video><button class="filmbox__play" type="button" aria-label="Play the film, 1 min 42 sec"><span class="filmbox__disc" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6L19 12z"/></svg></span><span class="filmbox__label">Play film · 1 min 42 sec</span></button></div>
+  </div>
+
+  <div class="section">
+    <div class="section__label">01 / 04 What it does</div>
+    <h2 class="section__title">What It Actually Does</h2>
+    <div class="section__body">
+      <p><strong>Holds the whole story.</strong> Thine doesn't reset with every conversation. It carries context across meetings, messages, and moments the way a real co-founder would.</p>
+      <p><strong>Synthesizes scattered context.</strong> Mid-meeting, ask "what are all the ways we've described this product?" It pulls six months of fragmented conversations into one clear answer.</p>
+      <p><strong>Notices patterns you'd miss.</strong> "Three people mentioned the same problem this week." "You've mentioned calling your mom four times." The connection you couldn't quite see.</p>
+      <p><strong>Knows where to start.</strong> Before 10 AM, it already knows what loops are open with your team, what was said in hallway conversations that never made it to a doc, what you forgot to follow up on.</p>
+      <p><strong>Privacy-first by architecture.</strong> The intelligence lives with you, not as a data pipeline feeding a third party. Privacy isn't a settings toggle. It's the starting premise.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section__label">02 / 04 The hard call</div>
+    <h2 class="section__title">Everything It Could Show vs. What It Should</h2>
+    <div class="section__body">
+      <p>Every one of those capabilities could become a screen. A memory log. A synthesis panel. A pattern dashboard. A privacy settings page with every toggle exposed.</p>
+      <p>Most teams would ship that as-is, proof of everything happening on your behalf.</p>
+      <p>It's also exactly what would make Thine feel like a tool again.</p>
+      <p>The moment "co-founder" becomes something you check, configure, and manage, it's stopped being a co-founder. It's just another app competing for your attention.</p>
+      <p>So the harder discipline isn't building capability. It's deciding when Thine stays silent. Most of what it holds never surfaces as a screen. It surfaces instead as a single message at the right moment: <em>"Three people mentioned the same problem this week."</em> Not a dashboard you'd have to visit to find that out.</p>
+      <p><strong>Fewer surfaces, better timing</strong>, over feature completeness. What reaches you is only what's relevant, only when it's relevant. The full depth of what Thine knows stays underneath.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section__label">03 / 04 In the day</div>
+    <h2 class="section__title">Where It Shows Up</h2>
+    <div class="section__body">
+      <p><strong>At work.</strong> Thine holds the product context usually split across engineering, design, and sales pulling in different directions. When someone asks "what's the vision, again?" it hands you the synthesized answer.</p>
+      <p><strong>In relationships.</strong> It remembers the things you meant to follow up on. The call to your mom you've mentioned four times. The date idea you never landed on. The promise you made that slipped your mind.</p>
+      <p><strong>In the moments that don't fit a prompt.</strong> "Am I building something real?" Thine doesn't answer for you. It surfaces the pattern of your own life back to you, so you can answer it yourself.</p>
+    </div>
+  </div>
+
+  <div style="height:480px;display:flex;justify-content:center;background:#fff;border-radius:8px;overflow:hidden">
+    <video preload="none" style="height:100%;width:auto;display:block" muted loop playsinline controls poster="system/thine-ai/poster/meeting-mode.webp">
+      <source src="system/thine-ai/meeting-mode.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div style="height:480px;display:flex;justify-content:center;background:#f5f5f5;border-radius:8px;overflow:hidden">
+    <video preload="none" style="height:100%;width:auto;display:block" muted loop playsinline controls poster="system/thine-ai/poster/letter.webp">
+      <source src="system/thine-ai/letter.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="section">
+    <div class="section__label">04 / 04 The difference</div>
+    <h2 class="section__title">Why This Is Different</h2>
+    <div class="section__body">
+      <p>Most AI optimizes for task completion: faster answers, better outputs, less typing. Thine optimizes for something else: being present for the parts of life that don't arrive as a task.</p>
+      <p>It doesn't try to remember everything. It tries to be a partner for questions you live through but can't quite ask. The screen stays out of the way: not autocomplete for an inbox, and not a dashboard of everything it holds.</p>
+    </div>
+  </div>
+
+  <div style="background:#fff;border-radius:8px;overflow:hidden">
+    <div class="filmbox"><video data-manual preload="none" style="width:100%;height:auto;aspect-ratio:1280/676;display:block" muted loop playsinline controls poster="system/thine-ai/poster/thine2k.webp">
+      <source src="system/thine-ai/thine2k.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video><button class="filmbox__play" type="button" aria-label="Play the film, 1 min 30 sec"><span class="filmbox__disc" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6L19 12z"/></svg></span><span class="filmbox__label">Play film · 1 min 30 sec</span></button></div>
+  </div>
+
+  <div class="section">
+    <div class="section__label">05 / 04 For the Life You're Building</div>
+    <h2 class="section__title">Thine</h2>
+    <div class="section__body">
+      <p><em>Yours.</em> Not a dashboard you check. Most of what Thine holds never becomes a screen. What does is one card, for the story you're already living.</p>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:center">
+    <img loading="lazy" decoding="async" src="system/thine-ai/thine-mockup-home.png" alt="Thine, home screen" style="height:560px;width:auto;display:block">
+  </div>
+  <div class="section__body">
+    <p><strong>One thought, not a queue.</strong> The home screen doesn't open onto a dashboard of forty competing widgets. It opens onto a single card, today's meeting, already summarized and waiting for you. Thine decides what deserves your attention before you have to, so opening the app feels like being handed an answer instead of another list to triage.</p>
+  </div>
+
+  <div style="display:flex;justify-content:center">
+    <img loading="lazy" decoding="async" src="system/thine-ai/thine-mockup-listening.png" alt="Thine, Ambient Capture" style="height:560px;width:auto;display:block">
+  </div>
+  <div class="section__body">
+    <p><strong>Ambient Capture is the feature Thine is built around.</strong> One tap turns on passive listening, and every meeting or conversation becomes notes, summaries, and action items on its own, with no mid-call fumbling for a separate notes app. The permission screen itself is deliberately soft, an illustration and a single honest sentence rather than a wall of legal text.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">
+    <div style="height:480px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+      <img loading="lazy" decoding="async" src="system/thine-ai/thine-mockup-calendar.png" alt="Thine, calendar" style="height:100%;width:auto;object-fit:contain;display:block">
+    </div>
+    <div style="height:480px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+      <img loading="lazy" decoding="async" src="system/thine-ai/thine-mockup-connect.png" alt="Thine, connect your apps" style="height:100%;width:auto;object-fit:contain;display:block">
+    </div>
+  </div>
+  <div class="section__body">
+    <p><strong>Context doesn't live in one place, so Thine doesn't either.</strong> Daily Notes lays the day out chronologically: meetings, standups, the conversation that ran long. Integrations quietly pulls in Google Workspace, Slack, and Notion so nothing has to be copied over by hand. The calendar holds the memory; the integrations are what feed it.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">
+    <div style="height:480px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+      <img loading="lazy" decoding="async" src="system/thine-ai/thine-mockup-people.png" alt="Thine, people" style="height:100%;width:auto;object-fit:contain;display:block">
+    </div>
+    <div style="height:480px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+      <img loading="lazy" decoding="async" src="system/thine-ai/thine-mockup-settings.png" alt="Thine, settings" style="height:100%;width:auto;object-fit:contain;display:block">
+    </div>
+  </div>
+  <div class="section__body">
+    <p><strong>Every relationship gets its own card.</strong> People turns scattered mentions (a coworker's role, a brother who's also a flatmate, the marketing lead's meme habit) into a running profile Thine can draw on mid-conversation. Settings, by contrast, stays deliberately sparse: a handful of toggles for listening and permissions rather than a maze of configuration to get lost in.</p>
+  </div>
+</div>
+
+<!-- PILL CTA -->
+<div class="pill-wrap">
+  <div class="pill-glow"></div>
+  <div class="pill-clip">
+    <div class="pill-frame"></div>
+    <a class="pill" href="https://www.thine.com/" target="_blank" rel="noopener">
+      <span class="pill-label">View the app</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* Clock */
+;(function tick(){
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('en-IN',{
+      timeZone:'Asia/Kolkata',hour12:false,
+      hour:'2-digit',minute:'2-digit',second:'2-digit'
+    })+' IST'
+  setTimeout(tick,1000)
+})()
+
+/* Lightbox - Click to expand images */
+;(function(){
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxClose = document.getElementById('lightbox-close');
+
+  document.querySelectorAll('img').forEach(img => {
+    if(img.id !== 'lightbox-img' && !img.src.includes('arrow-')) {
+      img.style.cursor = 'pointer';
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightbox.classList.add('active');
+      });
+    }
+  });
+
+  lightbox.addEventListener('click', () => lightbox.classList.remove('active'));
+  lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); lightbox.classList.remove('active'); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') lightbox.classList.remove('active'); });
+})();
+
+/* Lazy video: only fetch + play when near viewport */
+;(function(){
+  var vids = document.querySelectorAll('video[preload="none"]:not([data-manual])');
+  if(!vids.length) return;
+  if(!('IntersectionObserver' in window)){
+    vids.forEach(function(v){ v.preload='auto'; v.play().catch(function(){}); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      var v = e.target;
+      if(e.isIntersecting){
+        if(v.preload === 'none'){ v.preload = 'auto'; v.load(); }
+        v.play().catch(function(){});
+      } else {
+        v.pause();
+      }
+    });
+  }, { rootMargin: '1400px 0px' });
+  vids.forEach(function(v){ io.observe(v); });
+})();
+
+/* Click to play: the long films fetch nothing until asked. The poster is
+   already there, so the page costs a still instead of several megabytes. */
+;(function(){
+  document.querySelectorAll('.filmbox').forEach(function(box){
+    var v = box.querySelector('video'), btn = box.querySelector('.filmbox__play');
+    if(!v || !btn) return;
+    btn.addEventListener('click', function(){
+      btn.hidden = true;
+      v.preload = 'auto';
+      v.load();
+      v.play().catch(function(){ btn.hidden = false; });
+    });
+    v.addEventListener('pause', function(){ if(v.currentTime === 0) btn.hidden = false; });
+  });
+})();
+</script>
+
+<script src="system/case-fix.js"></script>
+
+<div class="nextp">
+  <div class="nextp__rule"></div>
+  <a class="nextp__link" href="/merlin">
+    <span class="nextp__label">Next project</span>
+    <span class="nextp__name">Merlin AI<span>&rarr;</span></span>
+  </a>
+  <a class="nextp__all" href="/work">All projects</a>
+</div>
+<script>
+/* ── Read more ──────────────────────────────────────────────
+   Only sections that are actually long get a control. The
+   threshold is generous so a two-paragraph section is never
+   truncated for the sake of consistency. */
+;(function(){
+  var CLAMP = 232;      /* px of body shown while closed */
+  var SLACK = 110;      /* only clamp if it hides more than this */
+
+  document.querySelectorAll('.section__body').forEach(function(body){
+    if(body.scrollHeight <= CLAMP + SLACK) return;
+
+    body.classList.add('is-clamped');
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'readmore';
+    btn.setAttribute('aria-expanded','false');
+    btn.innerHTML = '<span class="readmore__txt">Read more</span>'
+                  + '<span class="readmore__chev" aria-hidden="true"></span>';
+
+    body.parentNode.insertBefore(btn, body.nextSibling);
+
+    btn.addEventListener('click', function(){
+      var open = !body.classList.contains('is-open');
+      body.classList.toggle('is-open', open);
+      btn.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.querySelector('.readmore__txt').textContent = open ? 'Read less' : 'Read more';
+      if(!open){
+        var top = body.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
