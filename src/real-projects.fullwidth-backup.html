@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shlok Shetye — Product Designer</title>
+
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+
+<link rel="preload" href="dbs-hero.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="hyperlab-hero2.png" as="image">
+
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@500,400&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/pp-neue-montreal" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@500,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/pp-neue-montreal">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap">
+</noscript>
+
+<style>
+@font-face{font-family:'PP Neue Montreal';src:local('PPNeueMontreal-Medium'),local('PP Neue Montreal Medium');font-weight:500;font-style:normal;font-display:swap}
+
+/* ── Reset ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:#f2f2f0;color:#0d0d0d;font-family:'Switzer','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;width:100%}
+::-webkit-scrollbar{display:none}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;width:100%;height:auto;display:block}
+
+/* ── Navbar ─────────────────────────────────────────── */
+.nav{position:fixed;inset:0 0 auto 0;z-index:400;height:44px;background:#f2f2f0;display:flex;align-items:center;padding:0 clamp(16px,4vw,120px);border-bottom:1px solid #e0e0dd}
+.nav__left{flex:1}
+.nav__name{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:500;font-size:16px;color:#191919;letter-spacing:-.02em;transition:opacity .12s}
+.nav__name:hover{opacity:.38}
+.nav__right{flex:1;display:flex;align-items:center;justify-content:space-between}
+.nav__clock{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:500;font-size:16px;color:#191919;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.nav__link{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:400;font-size:16px;color:#191919;letter-spacing:-.02em;transition:opacity .12s}
+.nav__link:hover{opacity:.38}
+@media(max-width:480px){.nav__clock{display:none}.nav__right{justify-content:flex-end;gap:20px}}
+
+/* ── Intro ──────────────────────────────────────────── */
+.intro{padding:calc(44px + 19vh) clamp(16px,4vw,120px) calc(20vh + 60px)}
+.intro__text{
+  font-family:'PP Neue Montreal','Neue Montreal','Inter',system-ui,sans-serif;
+  font-weight:500;font-size:clamp(21px,1.8vw,26px);line-height:1.35;
+  color:#0d0d0d;letter-spacing:-.01em;max-width:580px;
+  opacity:0;filter:blur(10px);transform:translateY(8px);
+  transition:opacity .75s cubic-bezier(.25,.46,.45,.94),filter .75s cubic-bezier(.25,.46,.45,.94),transform .75s cubic-bezier(.25,.46,.45,.94)
+}
+.intro__text.visible{opacity:1;filter:blur(0);transform:translateY(0)}
+
+/* ── Reveal ─────────────────────────────────────────── */
+.reveal{opacity:0;filter:blur(8px);transform:translateY(10px);transition:opacity .65s cubic-bezier(.25,.46,.45,.94),filter .65s,transform .65s}
+.reveal.is-visible{opacity:1;filter:blur(0);transform:translateY(0)}
+@media(max-width:680px){
+  .reveal,.reveal.is-visible{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}
+}
+
+/* ── Work section ──────────────────────────────────── */
+.work-sec{padding:0 clamp(16px,4vw,120px) clamp(48px,6vw,160px);background:#f2f2f0;width:100%}
+
+/* ── Project rows ──────────────────────────────────── */
+.fr{margin-bottom:clamp(14px,2.5vw,60px);width:100%}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.5vw,60px);margin-bottom:clamp(14px,2.5vw,60px)}
+@media(max-width:680px){.tg{grid-template-columns:1fr}}
+
+/* ── Project card ──────────────────────────────────── */
+.pc{cursor:pointer;width:100%;display:block}
+.pm-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px}
+.pm-left{min-width:0;flex:1}
+.pm-name{font-family:'Geist','Inter',sans-serif;font-weight:600;font-size:clamp(15px,1.4vw,20px);color:#1c1c1c;letter-spacing:-.02em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pm-sub{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:14px;color:rgba(0,0,0,.4);letter-spacing:-.01em;line-height:1.4;margin-top:2px}
+.pm-year{font-family:'Geist','Inter',sans-serif;font-weight:500;font-size:clamp(15px,1.4vw,20px);color:#1c1c1c;letter-spacing:-.02em;white-space:nowrap;flex-shrink:0}
+
+/* ── Image container ───────────────────────────────── */
+.pimg{overflow:hidden;border-radius:2px;width:100%;position:relative}
+.pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* ── Aspect ratio helpers ──────────────────────────── */
+.ar-16-7{padding-bottom:calc(7/16*100%)}
+.ar-16-9{padding-bottom:56.25%}
+.ar-4-5{padding-bottom:125%}
+.ar-1-1{padding-bottom:100%}
+@media(max-width:680px){
+  .ar-16-7,.ar-16-9,.ar-4-5,.ar-1-1{padding-bottom:75%}
+  .pimg img{object-fit:cover!important;object-position:center!important}
+  .pimg.pos-top img{object-position:center 65%!important}
+  .fr{margin-bottom:16px}
+  .tg{gap:16px;margin-bottom:16px}
+}
+
+/* ── Hover zoom ────────────────────────────────────── */
+.pimg img{transition:transform .55s cubic-bezier(.16,1,.3,1)}
+.pc:hover .pimg img{transform:scale(1.015)}
+
+/* ── Tags ──────────────────────────────────────────── */
+.tags{margin-top:10px}
+.tp{display:inline-flex;align-items:center;height:30px;padding:0 10px;border:1px solid #696868;border-radius:40px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:#696868;margin:0 4px 4px 0}
+
+/* ── LinkedIn section ──────────────────────────────── */
+.li-sec{background:#f2f2f0;padding:clamp(40px,7vh,80px) 0}
+.li-text{padding:0 clamp(16px,4vw,120px) clamp(24px,4vw,48px)}
+.li-label{font-family:'Inter',sans-serif;font-weight:500;font-size:14px;color:#424242;letter-spacing:-.3px;margin-bottom:10px}
+.li-body{font-family:'Inter',sans-serif;font-weight:500;font-size:clamp(16px,2.2vw,50px);color:#1c1c1c;letter-spacing:-.03em;line-height:1.2}
+/* marquee strip */
+.li-strip{overflow:hidden;-webkit-mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 12.5%,rgba(0,0,0,1) 87.5%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(to right,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 12.5%,rgba(0,0,0,1) 87.5%,rgba(0,0,0,0) 100%)}
+.li-track{display:flex;gap:12px;list-style:none;padding:0;margin:0;width:max-content;animation:li-scroll 28s linear infinite}
+.li-track:hover{animation-play-state:paused}
+@keyframes li-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.li-card{display:block;width:clamp(240px,27.8vw,400px);height:clamp(165px,19.1vw,275px);border-radius:16px;overflow:hidden;background:#e8e8e8;flex-shrink:0;cursor:pointer;text-decoration:none}
+.li-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.li-card:hover img{transform:scale(1.04)}
+
+/* ── About ─────────────────────────────────────────── */
+.about-sec{background:#f2f2f0;padding:clamp(40px,7vh,80px) clamp(16px,4vw,120px) clamp(48px,8vh,100px)}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,100px);align-items:start}
+.about-left{}
+.about-label{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:500;font-size:14px;color:#868686;letter-spacing:.05em;text-transform:uppercase;margin-bottom:clamp(14px,2vw,24px)}
+.about-h{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:500;font-size:clamp(20px,2.2vw,32px);color:#404040;letter-spacing:-.03em;line-height:1.2}
+.about-right{display:flex;flex-direction:column;gap:20px}
+.about-p{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:400;font-size:clamp(14px,1.2vw,18px);color:#868686;letter-spacing:-.01em;line-height:1.7}
+.about-link{display:inline-flex;align-items:center;gap:6px;font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:500;font-size:14px;color:#404040;letter-spacing:-.01em;text-decoration:none;transition:opacity .15s;margin-top:8px}
+.about-link:hover{opacity:.5}
+@media(max-width:900px){.about-inner{grid-template-columns:1fr;gap:28px}}
+
+
+/* ── Footer ─────────────────────────────────────────── */
+.footer{background:#f2f2f0;padding:clamp(40px,6vh,80px) clamp(16px,4vw,120px)}
+.footer-inner{width:100%;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.footer-name{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:400;font-size:16px;color:#404040;letter-spacing:-.0125em;line-height:1.6}
+.footer-label{font-family:'Inter',system-ui,sans-serif;font-weight:500;font-size:16px;color:#191919;line-height:1.5;margin-bottom:6px}
+.footer-links{display:flex;gap:32px;align-items:center;flex-wrap:wrap}
+.footer-link{font-family:'Switzer','Inter',system-ui,sans-serif;font-weight:400;font-size:16px;color:#404040;letter-spacing:-.0125em;line-height:1.6;transition:opacity .12s}
+.footer-link:hover{opacity:.45}
+
+/* ── Pill CTA ────────────────────────────────────────── */
+.pill-wrap{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:500;border-radius:999px;box-shadow:0 3px 14px 0 #BFBFBF}
+.pill-wrap:active{transform:translateX(-50%) scale(.97)}
+.pill-glow{position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border-radius:50%;background:radial-gradient(circle,rgba(220,230,218,1) 0%,rgba(220,230,218,0.4) 45%,transparent 72%);filter:blur(14px);animation:pill-drift 6s ease-in-out infinite;pointer-events:none;z-index:0}
+@keyframes pill-drift{0%{transform:translate(0px,0px)}10%{transform:translate(32px,-4px)}22%{transform:translate(18px,8px)}35%{transform:translate(-10px,6px)}48%{transform:translate(-34px,-2px)}60%{transform:translate(-22px,-10px)}72%{transform:translate(8px,-12px)}85%{transform:translate(28px,4px)}100%{transform:translate(0px,0px)}}
+.pill-clip{position:relative;z-index:1;display:inline-flex;border-radius:999px;overflow:hidden;padding:1.5px;background:#E3E3E3}
+.pill-frame{position:absolute;inset:-200%;background:conic-gradient(from 0deg,transparent 0deg,transparent 330deg,rgba(190,205,188,0.45) 346deg,rgba(220,230,218,0.85) 354deg,rgba(255,255,255,1) 358deg,rgba(220,230,218,0.85) 360deg,transparent 360deg);animation:pill-comet 2.2s linear infinite;pointer-events:none}
+@keyframes pill-comet{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.pill{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#fff;border:none;padding:11.5px 36.5px;cursor:pointer;text-decoration:none;font-family:'Switzer','Inter',system-ui,sans-serif;font-size:16px;font-weight:500;letter-spacing:.025em;white-space:nowrap;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.pill-label{display:block;color:#5E6D70;-webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,0.5) 0%,#000 22%,#000 78%,rgba(0,0,0,0.5) 100%);mask-image:linear-gradient(90deg,rgba(0,0,0,0.5) 0%,#000 22%,#000 78%,rgba(0,0,0,0.5) 100%)}
+@media(max-width:480px){.pill-wrap{bottom:18px}.pill{font-size:14px;padding:10px 28px}}
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="nav">
+  <div class="nav__left">
+    <a class="nav__name" href="real-projects.html">Shlok Shetye</a>
+  </div>
+  <div class="nav__right">
+    <span class="nav__clock" id="clock">00:00:00 IST</span>
+    <a class="nav__link" href="#work-sec">Work</a>
+    <a class="nav__link" href="shlok-portfolio/labs.html">Labs</a>
+    <a class="nav__link" href="about.html">About</a>
+  </div>
+</header>
+
+<!-- INTRO -->
+<section class="intro">
+  <p class="intro__text">As a Product Designer, I combine radical product thinking with emerging technologies to craft experiences that push boundaries and shape the future delivering products that are impactful, intuitive, and ready to scale.</p>
+</section>
+
+<!-- WORK -->
+<section id="work-sec" class="work-sec">
+
+  <!-- Peer Robotics — full width -->
+  <div class="fr">
+    <a href="peer-robotics-case-study.html" class="pc reveal">
+      <div class="pm-row">
+        <div class="pm-left"><div class="pm-name">Peer Robotics</div><div class="pm-sub">Collaborative Mobile Robotics Control Platform</div></div>
+        <span class="pm-year">/ 2025</span>
+      </div>
+      <div class="pimg ar-16-7">
+        <img src="system/peer-robotics/hero.jpg" alt="Peer Robotics" decoding="async" style="object-position:85%">
+      </div>
+      <div class="tags"><span class="tp">Robotics</span><span class="tp">Manufacturing</span></div>
+    </a>
+  </div>
+
+  <!-- DBS + Merlin AI — two col -->
+  <div class="tg">
+    <a href="dbs-case-study.html" class="pc reveal">
+      <div class="pm-row">
+        <div class="pm-left"><div class="pm-name">DBS Bank</div><div class="pm-sub">Future of banking interaction</div></div>
+        <span class="pm-year">/ 2025</span>
+      </div>
+      <div class="pimg ar-1-1 pos-top" style="background:#0d0d0d">
+        <img src="dbs-hero.jpg" alt="DBS Bank" fetchpriority="high" decoding="async" style="object-fit:cover">
+      </div>
+      <div class="tags"><span class="tp">Fintech</span></div>
+    </a>
+    <a href="merlin-agent-case-study.html" class="pc reveal">
+      <div class="pm-row">
+        <div class="pm-left"><div class="pm-name">Merlin AI</div><div class="pm-sub">All Your AI Work, For Less</div></div>
+        <span class="pm-year">/ 2026</span>
+      </div>
+      <div class="pimg ar-1-1 pos-top" style="background:#d5d5d5">
+        <img src="" alt="Merlin AI" decoding="async" style="opacity:0">
+      </div>
+      <div class="tags"><span class="tp">AI</span><span class="tp">Productivity</span></div>
+    </a>
+  </div>
+
+  <!-- Thine — full width -->
+  <div class="fr">
+    <a href="thine-ai-case-study.html" class="pc reveal">
+      <div class="pm-row">
+        <div class="pm-left"><div class="pm-name">Thine</div><div class="pm-sub">Co-founder to your life</div></div>
+        <span class="pm-year">/ 2026</span>
+      </div>
+      <div class="pimg ar-16-7">
+        <img src="system/thine-ai/hero.jpg" alt="Thine" decoding="async">
+      </div>
+      <div class="tags"><span class="tp">AI</span><span class="tp">Personal Intelligence</span></div>
+    </a>
+  </div>
+
+  <!-- Swivl + Fynd — two col -->
+  <div class="tg">
+    <a href="swivl-case-study.html" class="pc reveal">
+      <div class="pm-row">
+        <div class="pm-left"><div class="pm-name">Swivl Tech</div><div class="pm-sub">B2B on field workers</div></div>
+        <span class="pm-year">/ 2025</span>
+      </div>
+      <div class="pimg ar-4-5 pos-top">
+        <img src="system/fynd/Frame 2134285838.png" alt="Swivl Tech" loading="lazy" decoding="async" style="object-position:center">
+      </div>
+      <div class="tags"><span class="tp">SaaS</span><span class="tp">Strategy</span></div>
+    </a>
+    <a href="fynd-case-study.html" class="pc reveal">
+      <div class="pm-row">
+        <div class="pm-left"><div class="pm-name">Fynd</div><div class="pm-sub">Augmented reality navigation</div></div>
+        <span class="pm-year">/ 2024</span>
+      </div>
+      <div class="pimg ar-1-1 pos-top">
+        <img src="system/fynd/Frame 2134285652.png" alt="Fynd" loading="lazy" decoding="async" style="object-fit:cover;object-position:center">
+      </div>
+      <div class="tags"><span class="tp">Navigation</span></div>
+    </a>
+  </div>
+
+  <!-- Hyperlab — full width -->
+  <div class="fr">
+    <a href="hyperlab-case-study.html" class="pc reveal">
+      <div class="pm-row">
+        <div class="pm-left"><div class="pm-name">Hyperlab</div><div class="pm-sub">Sportech for athletes</div></div>
+        <span class="pm-year">/ 2025</span>
+      </div>
+      <div class="pimg ar-16-9" style="background:#d5d6da">
+        <img src="hyperlab-hero2.png" alt="Hyperlab" decoding="async" style="object-fit:contain">
+      </div>
+      <div class="tags"><span class="tp">Healthcare</span><span class="tp">Sportech</span></div>
+    </a>
+  </div>
+
+</section>
+
+<!-- LINKEDIN -->
+<section class="li-sec reveal">
+  <div class="li-text">
+    <div class="li-label">LinkedIn as a thinking space</div>
+    <p class="li-body">LinkedIn functions as a space for structured thinking. I use it to articulate design decisions, challenge assumptions, and document real learnings from ongoing projects not finished opinions. Writing in public strengthens my clarity of thought, design intent, and accountability.</p>
+  </div>
+  <div class="li-strip">
+    <ul class="li-track">
+      <li><a class="li-card" href="https://www.linkedin.com/posts/shlok-shetye-a8b24920a_techtrends-uxdesign-zeroui-activity-7202960036455714816-T4uz?utm_source=share&utm_medium=member_desktop&rcm=ACoAADUSvssBNFhHia_XSM1s_T3g78vG0ETvx6g" target="_blank" rel="noopener"><img src="linkedin-post-1.png" alt="LinkedIn post 1" loading="lazy" decoding="async"></a></li>
+      <li><a class="li-card" href="https://www.linkedin.com/posts/shlok-shetye-a8b24920a_linkedinjourney-contentcreation-growthmindset-activity-7277178454159077376-hwb3?utm_source=share&utm_medium=member_desktop&rcm=ACoAADUSvssBNFhHia_XSM1s_T3g78vG0ETvx6g" target="_blank" rel="noopener"><img src="linkedin-post-2.png" alt="LinkedIn post 2" loading="lazy" decoding="async"></a></li>
+      <li><a class="li-card" href="https://www.linkedin.com/posts/shlok-shetye-a8b24920a_are-we-too-busy-solving-problems-to-create-activity-7255279548475277312-CCUl?utm_source=share&utm_medium=member_desktop&rcm=ACoAADUSvssBNFhHia_XSM1s_T3g78vG0ETvx6g" target="_blank" rel="noopener"><img src="linkedin-post-3.png" alt="LinkedIn post 3" loading="lazy" decoding="async"></a></li>
+      <li><a class="li-card" href="https://www.linkedin.com/posts/shlok-shetye-a8b24920a_voicetechnology-uxdesign-industrialdesign-activity-7216031346274516993-KOdJ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADUSvssBNFhHia_XSM1s_T3g78vG0ETvx6g" target="_blank" rel="noopener"><img src="system/fynd/linkedin-post-4.jpg" alt="LinkedIn post 4" loading="lazy" decoding="async"></a></li>
+      <!-- duplicates for seamless loop -->
+      <li aria-hidden="true"><a class="li-card" tabindex="-1" href="https://www.linkedin.com/posts/shlok-shetye-a8b24920a_techtrends-uxdesign-zeroui-activity-7202960036455714816-T4uz?utm_source=share&utm_medium=member_desktop&rcm=ACoAADUSvssBNFhHia_XSM1s_T3g78vG0ETvx6g" target="_blank" rel="noopener"><img src="linkedin-post-1.png" alt="" loading="lazy" decoding="async"></a></li>
+      <li aria-hidden="true"><a class="li-card" tabindex="-1" href="https://www.linkedin.com/posts/shlok-shetye-a8b24920a_linkedinjourney-contentcreation-growthmindset-activity-7277178454159077376-hwb3?utm_source=share&utm_medium=member_desktop&rcm=ACoAADUSvssBNFhHia_XSM1s_T3g78vG0ETvx6g" target="_blank" rel="noopener"><img src="linkedin-post-2.png" alt="" loading="lazy" decoding="async"></a></li>
+      <li aria-hidden="true"><a class="li-card" tabindex="-1" href="https://www.linkedin.com/posts/shlok-shetye-a8b24920a_are-we-too-busy-solving-problems-to-create-activity-7255279548475277312-CCUl?utm_source=share&utm_medium=member_desktop&rcm=ACoAADUSvssBNFhHia_XSM1s_T3g78vG0ETvx6g" target="_blank" rel="noopener"><img src="linkedin-post-3.png" alt="" loading="lazy" decoding="async"></a></li>
+      <li aria-hidden="true"><a class="li-card" tabindex="-1" href="https://www.linkedin.com/posts/shlok-shetye-a8b24920a_voicetechnology-uxdesign-industrialdesign-activity-7216031346274516993-KOdJ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADUSvssBNFhHia_XSM1s_T3g78vG0ETvx6g" target="_blank" rel="noopener"><img src="system/fynd/linkedin-post-4.jpg" alt="" loading="lazy" decoding="async"></a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about-sec">
+  <div class="about-inner">
+    <div class="about-left">
+      <div class="about-label">About</div>
+      <h2 class="about-h reveal">Building the future where technology feels human.</h2>
+    </div>
+    <div class="about-right">
+      <p class="about-p reveal">Product Designer at the intersection of technology, AI, and product thinking — building systems that simplify complexity, align human needs with business outcomes, and hold up in real-world use.</p>
+      <p class="about-p reveal">Growing up in Thane and studying across Australia, Italy, and the UK shaped how I think about design and how people interact with technology across contexts.</p>
+      <p class="about-p reveal">My work goes beyond interfaces into systems and behaviour. I use emerging technologies and vibe-coded workflows to explore ideas quickly, treating prototypes as tools to think with, not just present.</p>
+      <p class="about-p reveal">I collaborate closely with cross-functional teams, contribute to product direction, and make decisions based on clarity and outcomes — especially in ambiguous situations.</p>
+      <p class="about-p reveal">I build independently too, using AI to explore directions faster and expand what's possible. What drives me is building products that challenge how things are done and evolve from static tools into adaptive, intelligent systems.</p>
+      <a class="about-link reveal" href="about.html">More about me →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="info" class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-label">Get in touch</div>
+      <div class="footer-name">Shlok Shetye.</div>
+    </div>
+    <div class="footer-links">
+      <a href="mailto:shlokshetye@gmail.com" class="footer-link">Email</a>
+      <a href="https://www.behance.net/Shl0kShetye" target="_blank" rel="noopener" class="footer-link">Behance</a>
+      <a href="https://www.linkedin.com/in/shlok-shetye-a8b24920a/" target="_blank" rel="noopener" class="footer-link">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<!-- PILL CTA -->
+<div class="pill-wrap">
+  <div class="pill-glow"></div>
+  <div class="pill-clip">
+    <div class="pill-frame"></div>
+    <a class="pill" href="shlok-portfolio/labs.html">
+      <span class="pill-label">Labs</span>
+    </a>
+  </div>
+</div>
+
+<script>
+window.addEventListener('load',function(){
+  setTimeout(function(){var t=document.querySelector('.intro__text');if(t)t.classList.add('visible')},120)
+})
+;(function(){
+  var el=document.getElementById('clock');if(!el)return
+  function tick(){el.textContent=new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})+' IST'}
+  tick();setInterval(tick,1000)
+})()
+;(function(){
+  var els=document.querySelectorAll('.reveal');if(!els.length)return
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}})
+  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'})
+  els.forEach(function(el){io.observe(el)})
+})()
+</script>
+</body>
+</html>

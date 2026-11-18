@@ -1,0 +1,152 @@
+/* ──────────────────────────────────────────────────────────────
+   Case studies: no photograph is ever cropped.
+
+   Every page had images forced into a box of the wrong shape with
+   object-fit:cover, which silently cuts the edges off the artwork.
+   Here the box gives way to the image instead of the other way round:
+   containers stop dictating an aspect, and images keep their own.
+
+   Loaded last on every case-study page, so it overrides the inline
+   styles those pages set on individual images.
+   ────────────────────────────────────────────────────────────── */
+
+/* content imagery keeps its whole frame */
+.wrap img,
+.sec img,
+.hero__img img,
+.feature-img img,
+.feature__img img,
+.phones-1 img,
+.phones-2 img,
+.phones-3 img,
+.mockup-row__imgs img,
+.img-placeholder img {
+  object-fit: contain !important;
+}
+
+/* containers that used to impose a shape now follow the photo */
+.hero__img,
+.feature-img,
+.img-placeholder,
+.img-placeholder--full {
+  aspect-ratio: auto !important;
+  overflow: visible !important;
+}
+
+.hero__img img,
+.feature-img img,
+.img-placeholder img {
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* phone mockups: height-matched rows, but never trimmed */
+.phones-1 img,
+.phones-2 img,
+.phones-3 img,
+.mockup-row__imgs img {
+  height: auto !important;
+  aspect-ratio: auto !important;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Reveal-on-scroll, inverted so the failure mode is "visible".
+
+   The pages originally hid every .reveal section outright and relied
+   on an IntersectionObserver to bring it back, so any hiccup left the
+   content invisible and its lazy images unfetched. Nothing is hidden
+   here unless case-fix.js has armed that specific element, which it
+   does one element at a time, immediately before observing it.
+   If the script is absent, blocked or throws, the page just shows.
+   ────────────────────────────────────────────────────────────── */
+.reveal { opacity: 1 !important; transform: none !important; }
+
+.reveal.armed:not(.visible) {
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+}
+.reveal.armed.visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal.armed:not(.visible) { opacity: 1 !important; transform: none !important; }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   No grey plates. A placeholder tint was showing through wherever
+   artwork did not fill the box it was given, and on Peer Robotics
+   it was visible as bare grey panels. The box now takes its size
+   from the artwork instead of imposing one.
+   ────────────────────────────────────────────────────────────── */
+.img-placeholder,
+.img-placeholder--full,
+.img-placeholder--half,
+.img-placeholder--short {
+  background: transparent !important;
+  height: auto !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+.img-placeholder img { width: 100% !important; height: auto !important; }
+
+/* images styled height:100%/width:auto collapse to zero width before
+   they load, which stops lazy loading ever firing. Give them a real
+   width so they occupy space and fetch immediately. */
+.wrap img[style*="width:auto"],
+.wrap img[style*="width: auto"] {
+  width: auto !important;
+  min-width: 1px;
+}
+
+/* full-bleed photographic backdrops are photographs too: contain them
+   rather than cropping their edges away */
+.hero__bg,
+.clarity__acard-bg {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Case-study chrome: the nav bar is replaced by a single back
+   control, aligned to the left edge where the page's own content
+   begins. Its horizontal position is measured at runtime by
+   case-fix.js, because each page centres its content differently.
+   ────────────────────────────────────────────────────────────── */
+.nav { display: none !important; }
+
+.case-back {
+  position: fixed;
+  top: 28px;
+  left: 24px;                      /* replaced once measured */
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px 9px 13px;
+  border-radius: 999px;
+  font: 500 14px/1 'Switzer', 'Inter', system-ui, -apple-system, sans-serif;
+  letter-spacing: -.01em;
+  color: #1a1a1a;
+  text-decoration: none;
+  background: rgba(255, 255, 255, .72);
+  border: 1px solid rgba(255, 255, 255, .9);
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, .667),
+              inset 0 -4px 4px rgba(255, 255, 255, .85),
+              0 6px 20px rgba(0, 0, 0, .06),
+              0 1px 3px rgba(0, 0, 0, .05);
+  backdrop-filter: blur(7.5px);
+  -webkit-backdrop-filter: blur(7.5px);
+  transition: transform .24s cubic-bezier(.25, 1, .5, 1);
+}
+.case-back:hover  { transform: scale(.975); }
+.case-back:active { transform: scale(.95); }
+.case-back svg    { width: 15px; height: 15px; display: block; }
+
+@media (max-width: 680px) {
+  .case-back { top: 16px; left: 16px !important; padding: 8px 14px 8px 11px; font-size: 13.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-back { transition: none; }
+}

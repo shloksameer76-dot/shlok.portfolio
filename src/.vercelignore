@@ -1,0 +1,15 @@
+.git
+.perf-backup
+*.bak
+
+# Merlin .mov originals: the .mp4 beside each is what the page uses.
+system/merlin-ai/merlin4.mov
+system/merlin-ai/demo.mov
+system/merlin-ai/trew.mov
+
+# QuickTime duplicates: every browser plays the H.264 .mp4 beside them, and
+# Safari was downloading these first because they were listed first. No page
+# references them any more; kept on disk, left out of the deploy.
+system/thine-ai/thine4k.mov
+system/thine-ai/meeting-mode.mov
+system/thine-ai/letter.mov

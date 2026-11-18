@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Labs — Shlok Shetye</title>
+<meta name="description" content="Labs by Shlok Shetye: experimental, vibe-coded software exploring how future products might behave.">
+
+  <!-- Switzer (nav) — Fontshare CDN -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@500,400&display=swap" rel="stylesheet" />
+
+  <!-- PP Neue Montreal (hero) — try CDN, local fallback defined below -->
+  <link href="https://fonts.cdnfonts.com/css/pp-neue-montreal" rel="stylesheet" />
+
+  <!-- Inter fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+  /* ── LOCAL FONT FALLBACK ───────────────────────────────────────
+     If PP Neue Montreal / Switzer are installed locally they load
+     instantly; otherwise CDN or Google Fonts kick in.
+  ─────────────────────────────────────────────────────────────── */
+  @font-face {
+    font-family: 'PP Neue Montreal';
+    src: local('PPNeueMontreal-Medium'), local('PP Neue Montreal Medium');
+    font-weight: 500; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Switzer';
+    src: local('Switzer-Medium'), local('Switzer Medium');
+    font-weight: 500; font-style: normal;
+  }
+
+  /* ── RESET ─────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  ::-webkit-scrollbar { width: 0; }
+
+  /* ── TOKENS ────────────────────────────────────────────────── */
+  :root {
+    --bg:        #f2f2f0;    /* Ivan's exact warm near-white */
+    --ink:       #0d0d0d;
+    --muted:     #999;
+    --border:    #e0e0dd;
+
+    --nav-h:     44px;
+    --bar-h:     32px;
+
+    /* font stacks */
+    --f-nav:  'Switzer', 'Inter', system-ui, sans-serif;
+    --f-hero: 'PP Neue Montreal', 'Neue Montreal', 'DM Sans', 'Inter', system-ui, sans-serif;
+    --f-ui:   'Switzer', 'Inter', system-ui, sans-serif;
+  }
+
+  /* ── BASE ──────────────────────────────────────────────────── */
+  body {
+    font-family: var(--f-ui);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     NAV  —  exact Ivan Ageev layout:
+     Left half (flex:1): name
+     Right half (flex:1, space-between): clock · link · link · link
+     → clock lands at exactly 50% of nav width
+     Font: Switzer 500, 26px, letter-spacing –0.02em / –0.03em
+  ═══════════════════════════════════════════════════════════ */
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 400;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* height controlled by nav__row on desktop; JS expands on mobile */
+    height: var(--nav-h);
+    transition: height 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Top row — same visual as before */
+  .nav__row {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: var(--nav-h);
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+    width: 100%;
+  }
+  /* When menu is open the border is part of the expanded panel, hide row border */
+  .nav.menu-open .nav__row { border-bottom-color: transparent; }
+
+  /* Left column — name */
+  .nav__left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  .nav__name {
+    font-family: var(--f-nav);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  /* Right column — clock + links spread with space-between */
+  .nav__right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav__clock {
+    font-family: var(--f-nav);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .nav__link {
+    font-family: var(--f-nav);
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: opacity .12s ease;
+  }
+  .nav__link:hover { opacity: .38; }
+
+  /* ═══════════════════════════════════════════════════════════
+     HERO  —  PP Neue Montreal Medium, 17px
+     Whitespace: 19vh above (matches Ivan's proportional gap)
+                 20vh below (pushes bar near viewport bottom)
+  ═══════════════════════════════════════════════════════════ */
+  .hero {
+    padding-top:    calc(var(--nav-h) + 19vh);
+    padding-bottom: calc(20vh + 60px);
+    padding-left:   20px;
+    padding-right:  20px;
+  }
+
+  .hero__text {
+    font-family:   var(--f-hero);
+    font-weight:   500;           /* Medium */
+    font-size:     24px;
+    line-height:   1.25;
+    color:         var(--ink);
+    letter-spacing: -0.01em;
+    max-width: 480px;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(8px);
+    transition: opacity 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                filter  0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .hero__text.visible {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     PROJECT BAR  —  sticky below fixed nav
+  ═══════════════════════════════════════════════════════════ */
+  .bar {
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 300;
+    height: var(--bar-h);
+    background: var(--bg);
+    border-top:    1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+  }
+
+  .bar__meta {
+    display: flex;
+    align-items: baseline;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .bar__meta.split { gap: 0; }
+  .bar__meta.split .bar__col { flex: 1; display: flex; align-items: baseline; }
+
+  .bar__name {
+    font-family: var(--f-ui);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .bar__sub {
+    font-family: var(--f-ui);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     VIEW TOGGLE ICONS  —  exact match to Image #10
+     Three filled-rectangle icons: 2-col | 2×2 | 3×3
+     Active = var(--ink), inactive = #c8c8c4
+  ═══════════════════════════════════════════════════════════ */
+  .bar__toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .tbtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 3px;
+    cursor: pointer;
+    color: #c8c8c4;      /* inactive: light gray */
+    transition: color .1s ease;
+    line-height: 1;
+  }
+  .tbtn.on  { color: var(--ink); }
+  .tbtn:hover:not(.on) { color: #888; }
+
+  /* ═══════════════════════════════════════════════════════════
+     CARD CONTAINERS
+  ═══════════════════════════════════════════════════════════ */
+  #cards {
+    padding: 2px 20px 0;
+  }
+
+  /* ── Uniform placeholder grid ─────────────────────────────
+     Column count driven by --cols custom property, set by sv() */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 2), minmax(0, 260px));
+    justify-content: center;
+    gap: 56px 32px;
+    padding: 40px 0 60px;
+  }
+
+  .grid-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .grid-card__frame {
+    width: 100%;
+    aspect-ratio: 9 / 19.5;
+    border-radius: 28px;
+    background: #111;
+    padding: 6px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+  }
+
+  .grid-card__screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 22px;
+    background:
+      linear-gradient(135deg, transparent 42%, rgba(255,255,255,.55) 50%, transparent 58%),
+      #ececea;
+  }
+
+  .grid-card__caption {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .grid-card__name {
+    font-family: var(--f-ui);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+
+  .grid-card__sub {
+    font-family: var(--f-ui);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+  }
+
+  .card-full {
+    width: 100%;
+    height: calc(100vh - var(--nav-h) - var(--bar-h));
+  }
+
+  /* 2-up split row (projects 2 & 3) */
+  .cards-split {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .card-split {
+    flex: 1;
+    min-width: 0;
+    height: calc(100vh - var(--nav-h) - var(--bar-h));
+  }
+  .card-split--sm {
+    flex: 1;
+    min-width: 0;
+    height: calc(0.75 * (100vh - var(--nav-h) - var(--bar-h)));
+  }
+
+  /* Split sub-bar showing two project metas side by side */
+  .sub-bar--split {
+    display: flex;
+    gap: 20px;
+  }
+  .sub-bar--split .bar__meta { flex: 1; }
+  .cards-double {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+  }
+  .card-half {
+    flex: 1;
+    min-width: 0;
+    height: calc(100vh - var(--nav-h) - var(--bar-h));
+  }
+
+  /* Grid (Ivan asymmetric 60/40) */
+  .cards-asym { display: flex; width: 100%; gap: 20px; }
+  .card-asym-l {
+    width: 60%;
+    flex-shrink: 0;
+    height: calc(100vh - var(--nav-h) - var(--bar-h));
+  }
+  .card-asym-r {
+    flex: 1;
+    height: calc(100vh - var(--nav-h) - var(--bar-h));
+  }
+
+  .sub-bar {
+    height: var(--bar-h);
+    background: var(--bg);
+    border-top:    1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    margin-top: 40px;
+  }
+
+  /* ── Depth AI card ─────────────────────────────────────── */
+  .depth-card {
+    width: 100%; height: 100%;
+    background: #0d0d0d url('/assets/labs/depth-thumb.png') center/cover no-repeat;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .depth-card__video {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity .3s ease;
+    pointer-events: none;
+  }
+  .depth-card:hover .depth-card__video {
+    opacity: 1;
+  }
+  .depth-logo { display: flex; align-items: center; gap: 18px; user-select: none; }
+  .depth-word {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: #868686;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .depth-word--lg { font-size: 62px; }
+  .depth-word--md { font-size: 34px; }
+  .depth-word--sm { font-size: 26px; }
+
+  /* ── Zero Health card ──────────────────────────────────── */
+  .zero-card {
+    width: 100%; height: 100%;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    position: relative;
+  }
+  .zero-card__phone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 245px;
+    height: 442px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .zero-card__phone img {
+    position: absolute;
+    top: -1.06%;
+    left: 0;
+    width: 97.44%;
+    height: 101.95%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Focus card ────────────────────────────────────────── */
+  .focus-card {
+    width: 100%; height: 100%;
+    background: #f9f9f9;
+    overflow: hidden;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .focus-card img,
+  .focus-card video {
+    position: absolute;
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    pointer-events: none;
+  }
+  .fc-timer {
+    font-family: 'Inter', sans-serif;
+    font-size: 52px; font-weight: 300;
+    color: #2a2a2a; letter-spacing: -0.02em; line-height: 1;
+  }
+  .fc-colon { opacity: .7; }
+  .fc-controls {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .fc-btn-reset {
+    background: #fff;
+    border-radius: 999px;
+    padding: 7px 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; color: #333;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.06);
+  }
+  .fc-toggle {
+    width: 44px; height: 24px;
+    background: #d8d6d4; border-radius: 999px;
+    position: relative;
+  }
+  .fc-toggle-knob {
+    position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  }
+  .fc-device {
+    width: 100%;
+    background: #2e2e2e;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.2);
+  }
+  .fc-screen {
+    background: #0a0a0a;
+    margin: 8px 8px 0;
+    border-radius: 12px 12px 0 0;
+    height: 200px;
+    position: relative;
+    display: flex; align-items: flex-end;
+    padding: 12px 14px;
+    justify-content: space-between;
+  }
+  .fc-brand {
+    position: absolute; top: 10px; right: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 8px; color: rgba(255,255,255,.2);
+    letter-spacing: 0.12em;
+  }
+  .fc-nodes {
+    display: flex; align-items: baseline; gap: 5px;
+  }
+  .fc-n {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px; font-weight: 300; color: rgba(255,255,255,.65);
+  }
+  .fc-nl {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; color: rgba(255,255,255,.3);
+  }
+  .fc-hint {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px; color: rgba(255,255,255,.25);
+    letter-spacing: 0.08em;
+  }
+  .fc-dock {
+    display: flex; align-items: center;
+    padding: 10px 14px; gap: 0;
+    justify-content: space-between;
+  }
+  .fc-auto {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px; color: rgba(255,255,255,.45);
+    letter-spacing: 0.06em; display: flex; align-items: center; gap: 5px;
+  }
+  .fc-dot, .fc-dot2 {
+    display: inline-block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,.35);
+  }
+  .fc-dot2 { background: rgba(255,255,255,.5); }
+  .fc-vol-icon, .fc-trash-icon {
+    font-size: 13px; color: rgba(255,255,255,.4);
+  }
+  .fc-pills {
+    display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+  }
+  .fc-pill {
+    background: #1f1f1f;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px; color: rgba(255,255,255,.6);
+  }
+  .fc-pill--on { background: #111; color: rgba(255,255,255,.9); }
+  .fc-mood {
+    width: 100%;
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; color: rgba(255,255,255,.25);
+  }
+
+  /* ── Zero Hero card (project 4) ───────────────────────── */
+  .zerohero-card {
+    width: 100%; height: 100%;
+    background: url('/assets/labs/zerohero.jpg') center / cover no-repeat;
+  }
+
+  /* ── Portfolio pill — animated confirm-button style ────── */
+  /* outer wrapper: fixed position + drop-shadow */
+  .pill-wrap {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    border-radius: 999px;
+    box-shadow: 0 3px 14px 0 #BFBFBF;
+  }
+  .pill-wrap:active { transform: translateX(-50%) scale(.97); }
+
+  /* external moving glow — drifts organically, NOT clipped */
+  .pill-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    margin: -40px 0 0 -40px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(220, 230, 218, 1) 0%,
+      rgba(220, 230, 218, 0.4) 45%,
+      transparent 72%
+    );
+    filter: blur(14px);
+    animation: pill-drift 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes pill-drift {
+    0%   { transform: translate(  0px,   0px); }
+    10%  { transform: translate( 32px,  -4px); }
+    22%  { transform: translate( 18px,   8px); }
+    35%  { transform: translate(-10px,   6px); }
+    48%  { transform: translate(-34px,  -2px); }
+    60%  { transform: translate(-22px, -10px); }
+    72%  { transform: translate(  8px, -12px); }
+    85%  { transform: translate( 28px,   4px); }
+    100% { transform: translate(  0px,   0px); }
+  }
+
+  /* clip layer — 1.5px padding creates the "border" zone where comet shows */
+  .pill-clip {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    border-radius: 999px;
+    overflow: hidden;
+    padding: 1.5px;
+    background: #E3E3E3; /* base border color, comet overwrites it */
+  }
+  /* comet: a sharp bright arc that traces the border ring */
+  .pill-frame {
+    position: absolute;
+    inset: -200%;
+    background: conic-gradient(
+      from 0deg,
+      transparent       0deg,
+      transparent     330deg,
+      rgba(190,205,188, 0.45) 346deg,
+      rgba(220,230,218, 0.85) 354deg,
+      rgba(255,255,255, 1   ) 358deg,
+      rgba(220,230,218, 0.85) 360deg,
+      transparent       360deg
+    );
+    animation: pill-comet 2.2s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes pill-comet {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  /* the actual anchor — sits on top, white bg hides center of comet */
+  .pill {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #fff;
+    border: none;
+    padding: 11.5px 36.5px; /* compensates for 1.5px clip padding */
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--f-nav);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: .025em;
+    white-space: nowrap;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* label: #5E6D70 with linear gradient mask */
+  .pill-label {
+    display: block;
+    color: #5E6D70;
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      rgba(0,0,0,0.5) 0%,
+      #000 22%,
+      #000 78%,
+      rgba(0,0,0,0.5) 100%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      rgba(0,0,0,0.5) 0%,
+      #000 22%,
+      #000 78%,
+      rgba(0,0,0,0.5) 100%
+    );
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     HAMBURGER BUTTON
+  ═══════════════════════════════════════════════════════════ */
+  .nav__burger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .burger__line {
+    display: block;
+    position: absolute;
+    left: 4px; right: 4px;
+    height: 1.5px;
+    background: var(--ink);
+    border-radius: 1px;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1),
+                top     0.35s cubic-bezier(0.4,0,0.2,1),
+                bottom  0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .burger__line--t { top: 9px; }
+  .burger__line--b { bottom: 9px; }
+  .nav__burger.open .burger__line--t { top: calc(50% - 0.75px); transform: rotate(45deg); }
+  .nav__burger.open .burger__line--b { bottom: calc(50% - 0.75px); transform: rotate(-45deg); }
+
+  /* ═══════════════════════════════════════════════════════════
+     MOBILE EXPANDED MENU PANEL
+  ═══════════════════════════════════════════════════════════ */
+  .nav__mob {
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex: 1 0 0;
+    padding: 24px 20px 48px;
+    gap: 2px;
+    border-top: 1px solid var(--border);
+  }
+  .nav__mob-link {
+    font-family:     var(--f-hero);
+    font-weight:     500;
+    font-size:       30px;
+    line-height:     1.2em;
+    letter-spacing:  -0.02em;
+    color:           var(--ink);
+    text-decoration: none;
+    padding:         7px 0;
+    opacity:         0;
+    transform:       translateY(10px);
+    transition:      opacity 0.38s ease, transform 0.38s ease, color 0.12s ease;
+  }
+  .nav__mob-link:hover { color: var(--muted); }
+  /* Stagger in when menu opens */
+  .nav.menu-open .nav__mob-link:nth-child(1) { opacity:1; transform:none; transition-delay:.07s; }
+  .nav.menu-open .nav__mob-link:nth-child(2) { opacity:1; transform:none; transition-delay:.13s; }
+  .nav.menu-open .nav__mob-link:nth-child(3) { opacity:1; transform:none; transition-delay:.19s; }
+
+  /* ═══════════════════════════════════════════════════════════
+     MOBILE  —  ≤ 640px
+  ═══════════════════════════════════════════════════════════ */
+  @media (max-width: 640px) {
+
+    /* Nav row */
+    .nav__row { padding: 0 14px; }
+    .nav__name { font-size: 14px; }
+    /* Hide desktop items, show burger */
+    .nav__clock { display: none; }
+    .nav__link  { display: none; }
+    .nav__burger { display: flex; align-items: center; justify-content: center; }
+    .nav__right { justify-content: flex-end; }
+    /* Show mobile panel */
+    .nav__mob { display: flex; }
+    /* Nav open → full screen */
+    .nav.menu-open { height: 100dvh; height: 100vh; }
+    /* Lock scroll when open */
+    body.nav-open { overflow: hidden; }
+
+    /* Hero */
+    .hero {
+      padding-top:    calc(var(--nav-h) + 8vh);
+      padding-bottom: calc(8vh + 32px);
+      padding-left:   14px;
+      padding-right:  14px;
+    }
+    .hero__text { font-size: 19px; max-width: 100%; }
+
+    /* Bar */
+    .bar { padding: 0 14px; }
+    .bar__toggle { display: none; }
+    .bar__name, .bar__sub { font-size: 13px; }
+
+    /* Cards wrapper */
+    #cards { padding: 2px 0 0; }
+
+    /* Placeholder grid — always single column on mobile */
+    .cards-grid { grid-template-columns: 1fr !important; gap: 40px 0; padding: 20px 14px 60px; }
+
+    /* Force every multi-column layout to stack */
+    .cards-split,
+    .cards-double,
+    .cards-asym { flex-direction: column; gap: 0; }
+
+    /* All card variants → full-width */
+    .card-full,
+    .card-split,
+    .card-split--sm,
+    .card-half,
+    .card-asym-l,
+    .card-asym-r {
+      width: 100%;
+      height: calc(65vh - var(--nav-h) - var(--bar-h));
+    }
+
+    /* Sub-bars — remove inline margin-top on mobile */
+    .sub-bar { padding: 0 14px; margin-top: 0 !important; }
+
+    /* Split sub-bar — stack metas vertically when cards stack */
+    .sub-bar--split {
+      flex-direction: column;
+      gap: 0;
+      height: auto !important;
+      padding: 0 14px;
+    }
+    .sub-bar--split .bar__meta {
+      height: var(--bar-h);
+      min-height: var(--bar-h);
+      align-items: center;
+    }
+    .sub-bar--split .bar__meta:first-child {
+      border-bottom: 1px solid var(--border);
+    }
+    .sub-bar--split .bar__col { flex: unset; }
+
+    /* Depth logo */
+    .depth-logo { gap: 10px; }
+    .depth-word--lg { font-size: 36px; }
+    .depth-word--md { font-size: 20px; }
+    .depth-word--sm { font-size: 15px; }
+
+    /* Depth card — show thumbnail by default on mobile (no hover) */
+    .depth-card__video { display: none; }
+
+    /* Zero Health phone — scale to fit mobile card height */
+    .zero-card__phone {
+      width: 155px;
+      height: 286px;
+    }
+
+    /* Focus card — slightly larger on mobile for readability */
+    .focus-card img,
+    .focus-card video {
+      width: 88%;
+      height: 88%;
+    }
+
+    /* Phone mockup SVG */
+    .phone-wrap { transform: translateY(0) scale(0.52); transform-origin: center center; }
+
+    /* Bar name/sub overflow protection */
+    .bar__name, .bar__sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Pill — mobile */
+    .pill-wrap { bottom: 18px; }
+    .pill { font-size: 14px; padding: 10px 28px; }
+  }
+
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────────────── -->
+<header class="nav" id="siteNav">
+
+  <!-- top row (always visible) -->
+  <div class="nav__row">
+    <div class="nav__left">
+      <span class="nav__name">Shlok Shetye</span>
+    </div>
+    <div class="nav__right">
+      <span class="nav__clock" id="clock">00:00:00 IST</span>
+      <a class="nav__link" href="about.html">About</a>
+      <a class="nav__link" href="https://shlok-portfolio-realprojects.vercel.app/real-projects" target="_blank" rel="noopener">Projects</a>
+      <a class="nav__link" href="process.html">Case Studies</a>
+      <!-- hamburger — mobile only -->
+      <button class="nav__burger" id="menuBtn" aria-label="Toggle menu">
+        <span class="burger__line burger__line--t"></span>
+        <span class="burger__line burger__line--b"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- expanded panel — mobile only -->
+  <div class="nav__mob">
+    <a class="nav__mob-link" href="about.html">About</a>
+    <a class="nav__mob-link" href="https://shlok-portfolio-realprojects.vercel.app/real-projects" target="_blank" rel="noopener">Projects</a>
+    <a class="nav__mob-link" href="process.html">Case Studies</a>
+  </div>
+
+</header>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<section id="about" class="hero">
+  <p class="hero__text">
+    Labs is an experimental space where I build vibe-coded software and explore future products at the intersection of technology, design, and product thinking.
+  </p>
+</section>
+
+<!-- ── PORTFOLIO ───────────────────────────────────────────── -->
+<section id="portfolio">
+
+  <!-- sticky bar -->
+  <div class="bar" id="bar">
+    <div id="barMeta" class="bar__meta"></div>
+    <div class="bar__toggle">
+
+      <!-- Icon 1: two tall rectangles (2-col) — matches Image #10 left icon -->
+      <button class="tbtn" id="btn-s" title="1 column" onclick="sv('s')">
+        <svg width="24" height="16" viewBox="0 0 22 15" fill="none">
+          <rect x="0"  y="0" width="9" height="15" rx="1.2" fill="currentColor"/>
+          <rect x="13" y="0" width="9" height="15" rx="1.2" fill="currentColor"/>
+        </svg>
+      </button>
+
+      <!-- Icon 2: 2×2 grid of rectangles — matches Image #10 middle icon -->
+      <button class="tbtn on" id="btn-d" title="2 columns" onclick="sv('d')">
+        <svg width="24" height="16" viewBox="0 0 22 15" fill="none">
+          <rect x="0"  y="0"   width="9" height="6.5" rx="1" fill="currentColor"/>
+          <rect x="13" y="0"   width="9" height="6.5" rx="1" fill="currentColor"/>
+          <rect x="0"  y="8.5" width="9" height="6.5" rx="1" fill="currentColor"/>
+          <rect x="13" y="8.5" width="9" height="6.5" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+
+      <!-- Icon 3: 3×3 grid of squares — matches Image #10 right icon (darkest) -->
+      <button class="tbtn" id="btn-g" title="3 columns" onclick="sv('g')">
+        <svg width="24" height="16" viewBox="0 0 22 15" fill="none">
+          <!-- row 1 -->
+          <rect x="0"   y="0"   width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+          <rect x="8.25" y="0"  width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+          <rect x="16.5" y="0"  width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+          <!-- row 2 -->
+          <rect x="0"   y="5.75" width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+          <rect x="8.25" y="5.75" width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+          <rect x="16.5" y="5.75" width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+          <!-- row 3 -->
+          <rect x="0"   y="11.5" width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+          <rect x="8.25" y="11.5" width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+          <rect x="16.5" y="11.5" width="5.5" height="3.5" rx="0.6" fill="currentColor"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <div id="cards"></div>
+</section>
+
+<!-- ── PILL ─────────────────────────────────────────────────── -->
+<div class="pill-wrap">
+  <div class="pill-glow"></div>
+  <div class="pill-clip">
+    <div class="pill-frame"></div>
+    <a class="pill" href="https://shlok-portfolio-realprojects.vercel.app/real-projects" target="_blank" rel="noopener">
+      <span class="pill-label">Projects</span>
+    </a>
+  </div>
+</div>
+
+<!-- ── DEPTH ICON TEMPLATES ────────────────────────────────── -->
+<template id="tI-lg">
+  <svg width="52" height="52" viewBox="0 0 54 54" fill="none">
+    <polygon points="27,2 48.65,14.5 48.65,39.5 27,52 5.35,39.5 5.35,14.5"
+      stroke="white" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <line x1="27" y1="27" x2="27"    y2="2"    stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="27" y1="27" x2="48.65" y2="39.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="27" y1="27" x2="5.35"  y2="39.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>
+</template>
+<template id="tI-md">
+  <svg width="32" height="32" viewBox="0 0 54 54" fill="none">
+    <polygon points="27,2 48.65,14.5 48.65,39.5 27,52 5.35,39.5 5.35,14.5"
+      stroke="white" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <line x1="27" y1="27" x2="27"    y2="2"    stroke="white" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="27" y1="27" x2="48.65" y2="39.5" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="27" y1="27" x2="5.35"  y2="39.5" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
+  </svg>
+</template>
+<template id="tI-sm">
+  <svg width="24" height="24" viewBox="0 0 54 54" fill="none">
+    <polygon points="27,2 48.65,14.5 48.65,39.5 27,52 5.35,39.5 5.35,14.5"
+      stroke="white" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+    <line x1="27" y1="27" x2="27"    y2="2"    stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <line x1="27" y1="27" x2="48.65" y2="39.5" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <line x1="27" y1="27" x2="5.35"  y2="39.5" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+</template>
+
+<!-- ── PHONE MOCKUP TEMPLATE ───────────────────────────────── -->
+<template id="tPhone">
+  <svg width="220" height="472" viewBox="0 0 220 472" fill="none"
+    style="filter:drop-shadow(0 24px 48px rgba(0,0,0,.55)) drop-shadow(0 6px 16px rgba(0,0,0,.35))">
+    <defs>
+      <clipPath id="zScrClip">
+        <rect x="6" y="6" width="208" height="460" rx="34"/>
+      </clipPath>
+      <!-- Atmospheric glow — deep maroon/red top-right -->
+      <radialGradient id="zBgGlow" cx="68%" cy="22%" r="55%">
+        <stop offset="0%"   stop-color="#8b1a2e" stop-opacity="1"/>
+        <stop offset="45%"  stop-color="#3d0a16" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#050505" stop-opacity="0"/>
+      </radialGradient>
+      <!-- Subtle lower purple fill -->
+      <radialGradient id="zBgGlow2" cx="20%" cy="85%" r="40%">
+        <stop offset="0%"   stop-color="#1a0830" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#050505" stop-opacity="0"/>
+      </radialGradient>
+      <!-- Rainbow orb icon -->
+      <radialGradient id="zIcon" cx="38%" cy="35%" r="65%">
+        <stop offset="0%"   stop-color="#60e0f8"/>
+        <stop offset="20%"  stop-color="#8b5cf6"/>
+        <stop offset="45%"  stop-color="#ec4899"/>
+        <stop offset="70%"  stop-color="#f59e0b"/>
+        <stop offset="90%"  stop-color="#10b981"/>
+        <stop offset="100%" stop-color="#06c8d8"/>
+      </radialGradient>
+      <!-- Projected card — purple → mauve → rose -->
+      <linearGradient id="zProj" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#6d28d9"/>
+        <stop offset="35%"  stop-color="#a855c8"/>
+        <stop offset="70%"  stop-color="#d08cb8"/>
+        <stop offset="100%" stop-color="#e8a0c0"/>
+      </linearGradient>
+      <!-- Titanium frame -->
+      <linearGradient id="zFrame" x1="0" y1="0" x2="0.4" y2="1">
+        <stop offset="0%"   stop-color="#b0b0b0"/>
+        <stop offset="40%"  stop-color="#8a8a8a"/>
+        <stop offset="100%" stop-color="#6e6e6e"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Phone outer frame — titanium -->
+    <rect width="220" height="472" rx="44" fill="url(#zFrame)"/>
+    <!-- Inner ring -->
+    <rect x="3" y="3" width="214" height="466" rx="41" fill="none" stroke="#505050" stroke-width="1"/>
+
+    <!-- Screen base -->
+    <rect x="6" y="6" width="208" height="460" rx="34" fill="#070707"/>
+
+    <!-- Atmospheric glows clipped to screen -->
+    <rect x="6" y="6" width="208" height="460" fill="url(#zBgGlow)"  clip-path="url(#zScrClip)"/>
+    <rect x="6" y="6" width="208" height="460" fill="url(#zBgGlow2)" clip-path="url(#zScrClip)"/>
+
+    <!-- Dynamic island -->
+    <rect x="78" y="14" width="64" height="21" rx="10.5" fill="#000"/>
+
+    <!-- ── Status bar ── -->
+    <text x="18" y="36" fill="white" font-size="11.5" font-family="Inter,sans-serif" font-weight="600" letter-spacing="-0.02em">19:02</text>
+    <!-- Signal -->
+    <rect x="164" y="30" width="3"   height="5"   rx="0.8" fill="white"/>
+    <rect x="169" y="27.5" width="3" height="7.5" rx="0.8" fill="white"/>
+    <rect x="174" y="25" width="3"   height="10"  rx="0.8" fill="white"/>
+    <rect x="179" y="22" width="3"   height="13"  rx="0.8" fill="white"/>
+    <!-- Wifi -->
+    <path d="M186,33 Q189.5,30 193,33"     stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M184,30.5 Q189.5,25 195,30.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <circle cx="189.5" cy="35.5" r="1.8" fill="white"/>
+    <!-- Battery -->
+    <rect x="198" y="26" width="13" height="8" rx="2" fill="none" stroke="white" stroke-width="1.2"/>
+    <rect x="199.5" y="27.5" width="10" height="5" rx="1" fill="white"/>
+    <rect x="211" y="28.5" width="2" height="4" rx="1" fill="rgba(255,255,255,.5)"/>
+
+    <!-- ── App icon (orb) ── -->
+    <circle cx="30" cy="74" r="16" fill="url(#zIcon)"/>
+    <circle cx="30" cy="74" r="16" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+    <!-- Orb highlight -->
+    <ellipse cx="25" cy="68" rx="6" ry="4" fill="rgba(255,255,255,.18)"/>
+
+    <!-- ── Hamburger ── -->
+    <rect x="182" y="66"   width="18" height="1.8" rx="0.9" fill="rgba(255,255,255,.5)"/>
+    <rect x="185"  y="71.5" width="14" height="1.8" rx="0.9" fill="rgba(255,255,255,.5)"/>
+    <rect x="188.5" y="77" width="11" height="1.8" rx="0.9" fill="rgba(255,255,255,.5)"/>
+
+    <!-- ── Typography ── -->
+    <text x="18" y="108" fill="rgba(255,255,255,.55)" font-size="11" font-family="Inter,sans-serif" font-weight="400">Hi Akash</text>
+    <text x="18" y="133" fill="white" font-size="24" font-family="Inter,sans-serif" font-weight="700" letter-spacing="-0.03em">Good morning</text>
+    <text x="18" y="148" fill="rgba(255,255,255,.3)" font-size="8.5" font-family="Inter,sans-serif">Live monitoring · Updated 2 min ago</text>
+
+    <!-- ── Current Health Score card ── -->
+    <rect x="13" y="158" width="194" height="80" rx="16" fill="#0d1b2e"/>
+    <text x="23" y="178" fill="#3a5070" font-size="9.5" font-family="Inter,sans-serif">Current Health</text>
+    <text x="23" y="191" fill="#3a5070" font-size="9.5" font-family="Inter,sans-serif">Score</text>
+    <text x="157" y="230" fill="#253545" font-size="52" font-family="Inter,sans-serif" font-weight="700" letter-spacing="-0.04em">92</text>
+
+    <!-- ── Projected Health Score card ── -->
+    <rect x="13" y="245" width="194" height="148" rx="16" fill="url(#zProj)"/>
+    <text x="23" y="266" fill="rgba(15,5,35,.6)" font-size="9.5" font-family="Inter,sans-serif">Projected Health</text>
+    <text x="23" y="279" fill="rgba(15,5,35,.6)" font-size="9.5" font-family="Inter,sans-serif">Score</text>
+    <text x="20" y="333" fill="rgba(8,3,20,.75)" font-size="54" font-family="Inter,sans-serif" font-weight="700" letter-spacing="-0.04em">89</text>
+    <text x="23" y="348" fill="rgba(15,5,35,.6)" font-size="8" font-family="Inter,sans-serif">No signs of instability expected in the next 3</text>
+    <text x="23" y="359" fill="rgba(15,5,35,.6)" font-size="8" font-family="Inter,sans-serif">days. Based on recent sleep, recovery, and</text>
+    <text x="23" y="370" fill="rgba(15,5,35,.6)" font-size="8" font-family="Inter,sans-serif">stress patterns.</text>
+    <!-- View Full Forecast pill -->
+    <rect x="120" y="375" width="82" height="18" rx="9" fill="white"/>
+    <text x="161" y="387.5" fill="#120820" font-size="8" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">View Full Forecast</text>
+
+    <!-- ── Bottom nav ── -->
+    <rect x="24" y="400" width="172" height="38" rx="19" fill="#161616"/>
+    <!-- Home pill -->
+    <rect x="30" y="404" width="62" height="30" rx="15" fill="white"/>
+    <text x="61" y="423" fill="#0a0a0a" font-size="10" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle">⌂ Home</text>
+    <!-- Calendar -->
+    <rect x="117" y="411" width="13" height="12" rx="2" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.3"/>
+    <line x1="120.5" y1="411" x2="120.5" y2="409" stroke="rgba(255,255,255,.4)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="126.5" y1="411" x2="126.5" y2="409" stroke="rgba(255,255,255,.4)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="117"   y1="415" x2="130"   y2="415" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
+    <!-- Clock -->
+    <circle cx="155" cy="419" r="6.5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.3"/>
+    <line x1="155" y1="419" x2="155" y2="414.5" stroke="rgba(255,255,255,.6)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="155" y1="419" x2="158" y2="421"   stroke="rgba(255,255,255,.6)" stroke-width="1.3" stroke-linecap="round"/>
+    <!-- Signal/wifi -->
+    <path d="M178,422 Q181,418.5 184,422" stroke="rgba(255,255,255,.4)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <path d="M176,419 Q181,414 186,419"   stroke="rgba(255,255,255,.28)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <circle cx="181" cy="424.5" r="1.6" fill="rgba(255,255,255,.45)"/>
+
+    <!-- LIVE FORECAST DRIVERS -->
+    <text x="18" y="450" fill="rgba(255,255,255,.2)" font-size="7.5" font-family="Inter,sans-serif" font-weight="500" letter-spacing="0.1em">LIVE FORECAST DRIVERS</text>
+  </svg>
+</template>
+
+<!-- ── JS ──────────────────────────────────────────────────── -->
+<script>
+const PROJECTS = [
+  { id:'depth', name:'Depth Ai',    sub:'\u00a0,\u00a0Fitness,\u00a02025\u00a0+', tag:'Fitness',         year:'2025' },
+  { id:'zero',  name:'Zero Health', sub:'\u00a0,\u00a0Health\u00a0\u00b7\u00a0AI,\u00a02026\u00a0+', tag:'Health \u00b7 AI', year:'2026' },
+  { id:'focus', name:'Focus',    sub:'\u00a0,\u00a0Productivity,\u00a02025\u00a0+', tag:'Productivity',    year:'2025' },
+  { id:'zerohero', name:'Zero Hero', sub:'\u00a0,\u00a0Health\u00a0\u00b7\u00a0AI,\u00a02026\u00a0+', tag:'Health \u00b7 AI', year:'2026' },
+]
+
+/* hero blur reveal */
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    var hero = document.querySelector('.hero__text');
+    if (hero) hero.classList.add('visible');
+  }, 120);
+});
+
+/* clock */
+;(function tick(){
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('en-IN',{
+      timeZone:'Asia/Kolkata',hour12:false,
+      hour:'2-digit',minute:'2-digit',second:'2-digit'
+    })+' IST'
+  setTimeout(tick,1000)
+})()
+
+/* helpers */
+const $c = id => document.getElementById(id).content.cloneNode(true)
+
+function metaNode(p){
+  const d=document.createElement('div'); d.className='bar__meta'
+  d.innerHTML=`<span class="bar__name">${p.name}</span><span class="bar__sub">${p.sub}</span>`
+  return d
+}
+/* Phone-frame card: bezel + grey placeholder screen where the UI would sit */
+function buildFrame(p){
+  const card=document.createElement('div'); card.className='grid-card'
+  if(p.id==='depth'){
+    card.style.cursor='pointer'
+    card.addEventListener('click',()=>location.href='/shlok-portfolio/depth-ai')
+  }
+  const frame=document.createElement('div'); frame.className='grid-card__frame'
+  const screen=document.createElement('div'); screen.className='grid-card__screen'
+  frame.appendChild(screen)
+  const cap=document.createElement('div'); cap.className='grid-card__caption'
+  cap.innerHTML=`<span class="grid-card__name">${p.name}</span><span class="grid-card__sub">${p.tag} · ${p.year}</span>`
+  card.appendChild(frame)
+  card.appendChild(cap)
+  return card
+}
+
+/* render */
+let cur='d'
+function sv(v){
+  if(cur===v) return; cur=v
+  ;['s','d','g'].forEach(k=>{
+    document.getElementById('btn-'+k).classList.toggle('on',k===v)
+  })
+  render()
+}
+
+function render(){
+  /* bar — static label, no scroll-tracking needed with the static grid */
+  const bm=document.getElementById('barMeta')
+  bm.innerHTML=''
+  bm.className='bar__meta'
+  bm.appendChild(metaNode(PROJECTS[0]))
+
+  /* cards */
+  const cards=document.getElementById('cards')
+  cards.innerHTML=''
+
+  const cols = cur==='s' ? 1 : cur==='g' ? 3 : 2
+  const grid=document.createElement('div')
+  grid.className='cards-grid'
+  grid.style.setProperty('--cols', cols)
+  PROJECTS.forEach(p=>grid.appendChild(buildFrame(p)))
+  cards.appendChild(grid)
+}
+render()
+
+/* ── mobile menu toggle ─────────────────────────────────── */
+;(function(){
+  var btn  = document.getElementById('menuBtn')
+  var nav  = document.getElementById('siteNav')
+  if(!btn) return
+  btn.addEventListener('click', function(){
+    var open = nav.classList.toggle('menu-open')
+    btn.classList.toggle('open', open)
+    document.body.classList.toggle('nav-open', open)
+  })
+  // close on link tap
+  nav.querySelectorAll('.nav__mob-link').forEach(function(a){
+    a.addEventListener('click', function(){
+      nav.classList.remove('menu-open')
+      btn.classList.remove('open')
+      document.body.classList.remove('nav-open')
+    })
+  })
+})()
+</script>
+</body>
+</html>
