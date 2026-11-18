@@ -1,0 +1,17 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/src/home-v2.html" },
+    { "source": "/home", "destination": "/src/home-v2.html" },
+    { "source": "/thine", "destination": "/src/thine-2-case-study.html" },
+    { "source": "/beta", "destination": "/src/thine-ai-case-study.html" },
+    { "source": "/merlin", "destination": "/src/merlin-agent-case-study.html" },
+    { "source": "/peer", "destination": "/src/peer-robotics-case-study.html" },
+    { "source": "/dbs", "destination": "/src/dbs-case-study.html" },
+    { "source": "/swivl", "destination": "/src/swivl-case-study.html" },
+    { "source": "/hyperlab", "destination": "/src/hyperlab-case-study.html" },
+    { "source": "/fynd", "destination": "/src/fynd-case-study.html" },
+    { "source": "/prototype", "destination": "/src/thine-2.html" },
+    { "source": "/work", "destination": "/src/real-projects.html" },
+    { "source": "/:path*", "destination": "/src/:path*" }
+  ]
+}
